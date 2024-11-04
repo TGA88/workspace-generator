@@ -1,0 +1,8 @@
+# pnpm-workspace.yaml
+packages:
+  # all packages in sub dirs of apps/
+  - 'apps/**'
+  # all packages in sub dirs of libs/
+  - 'libs/**'
+  # exclude packages that are inside test directories
+  - '!**/test/**'

@@ -1,2 +1,2 @@
 # workspace-generator
-script to create workspace boilerplate
+script to create pnpm workspace boilerplate

@@ -1,0 +1,82 @@
+{
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "nx/tasks-runners/default",
+      "options": {
+        "cacheableOperations": [
+          "build",
+          "lint",
+          "test"
+        ]
+      }
+    }
+  },
+  "targetDefaults": {
+    "serve": {
+      "dependsOn": [
+        "build",
+        "^build",
+        "^serve"
+      ]
+    },
+    "lint": {
+      "dependsOn": [
+        "^lint"
+      ],
+      "inputs": ["default"],
+      "cache": true
+    },
+    "test": {
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": ["default"],
+      "cache": true,
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}/"
+      ]
+    },
+    "build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": ["production","^production"],
+      "outputs": [
+        "{projectRoot}/dist/", 
+        "{projectRoot}/storybook-static/"
+      ],
+      "cache": true
+    },
+    "release": {
+      "dependsOn": [
+        "^build",
+        "build"
+      ]
+    }
+  },
+  "namedInputs": {
+    "default": ["{projectRoot}/**/*", "sharedGlobals"],
+    "production": [
+      "default",
+      "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
+      "!{projectRoot}/tsconfig.spec.json",
+      "!{projectRoot}/jest.config.[jt]s",
+      "!{projectRoot}/src/test-setup.[jt]s",
+      "!{projectRoot}/test-setup.[jt]s",
+      "!{projectRoot}/.eslintrc.json",
+      "!{projectRoot}/eslint.config.js"
+
+    ],
+    "sharedGlobals": [
+    "!{projectRoot}/node_modules/",
+    "!{projectRoot}/dist/",
+    "!{projectRoot}/coverage/",
+    "!{projectRoot}/.next/",
+    "!{projectRoot}/storybook-static/",
+    "!{projectRoot}/next-env.d.ts"
+
+  ]
+  },
+  "defaultBase": "main"
+}
