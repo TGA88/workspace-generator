@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# WORKSPACE_DIR='feedos-example-workspace'
-# SYSTEM_DIR='fos-psc-system'
+# WORKSPACE_DIR='feedos-example-system'
+# SYSTEM_DIR='node-app'
 WORKSPACE_DIR=$1
 SYSTEM_DIR=$2
 
@@ -10,7 +10,7 @@ CUR_PATH=$(pwd)
 echo "cur => $CUR_PATH"
 
 # install Tools
-cd $WORKSPACE_DIR/node-app/$SYSTEM_DIR
+cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 
 # ติดตั้ง NX ที่ระดับ Project
 pnpm install nx -D -w
@@ -33,6 +33,18 @@ npm pkg set scripts.release:all="nx run-many --target=release --all && nx run-ma
 
 # overwrite nx config
 cd $CUR_PATH
-echo "cp script-generator/template/workspace/nx.json $WORKSPACE_DIR/node-app/$SYSTEM_DIR"
-cp script-generator/template/workspace/nx.json $WORKSPACE_DIR/node-app/$SYSTEM_DIR
+echo "cp script-generator/template/workspace/nx.json $WORKSPACE_DIR/workspaces/$SYSTEM_DIR"
+cp script-generator/template/workspace/nx.json $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
+
+# install committizen
+cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
+
+pnpm add git-cz -w -D
+
+npm pkg set scripts.commit="git-cz"
+
+cd $CUR_PATH
+echo "cp script-generator/template/workspace/changelog.config.js $CUR_PATH"
+cp script-generator/template/workspace/changelog.config.js $CUR_PATH
+
     
