@@ -4,6 +4,26 @@
 # SYSTEM_DIR='node-app' [node,springboot,dotnet]
 WORKSPACE_DIR=$1
 SYSTEM_DIR=$2
+GENERATOR_DIR=$3
+
+
+
+if [ -z "$GENERATOR_DIR" ]; then
+    echo "ตัวแปร GENERATOR_DIR ไม่มีค่า หรือมีค่าว่าง"
+    if [ -d "workspace-template" ]; then
+        echo "มีโฟลเดอร์ workspace-template"
+        GENERATOR_DIR="workspace-template"
+        echo "กำหนด GENERATOR_DIR='workspace-template' "
+    else
+        echo "ไม่มีโฟลเดอร์ workspace-template"
+        GENERATOR_DIR="."
+        echo "กำหนด GENERATOR_DIR='.' "
+    fi
+else
+  echo "ตัวแปร GENERATOR_DIR มีค่า: $GENERATOR_DIR"
+fi
+
+
 
 CUR_PATH=$(pwd)
 
@@ -17,9 +37,9 @@ mkdir -p $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/apps
 mkdir -p $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs
 
 
-cp script-generator/template/workspace/.gitignore $WORKSPACE_DIR
+cp $GENERATOR_DIR/script-generator/template/workspace/.gitignore $WORKSPACE_DIR
 
-cp script-generator/template/workspace/pnpm-workspace.yaml $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
+cp $GENERATOR_DIR/script-generator/template/workspace/pnpm-workspace.yaml $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 
 
 corepack enable pnpm
