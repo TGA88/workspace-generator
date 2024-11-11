@@ -47,4 +47,15 @@ cd $CUR_PATH
 echo "cp script-generator/template/workspace/changelog.config.js $CUR_PATH"
 cp script-generator/template/workspace/changelog.config.js $CUR_PATH
 
+# install typescript
+cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
+
+pnpm add -Dw typescript
+cd $CUR_PATH
+echo "cp script-generator/template/workspace/system-workspace/* $WORKSPACE_DIR/workspaces/$SYSTEM_DIR"
+cp script-generator/template/workspace/system-workspace/* $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
+
+
+
+
     

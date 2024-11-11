@@ -1,0 +1,23 @@
+{
+    "extends": "./tsconfig.base.json",
+    "files": [],
+
+    "compilerOptions": {
+        "rootDir": "./",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "types": [
+            "node",
+            "jest"
+        ]
+    },
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "**/coverage/**",
+        "**/generated/**",
+        "**/prisma/**"
+    ]
+
+}

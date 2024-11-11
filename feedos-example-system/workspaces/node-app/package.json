@@ -6,13 +6,13 @@
   "scripts": {
     "lint": "nx lint",
     "lint:all": "nx run-many --target=lint --all",
+    "test": "nx test",
     "test:all": "nx run-many --target=test --all",
     "build": "nx build",
     "build:all": "nx run-many --target=build --all",
     "release": "nx run-many --target=build --all",
     "release:all": "nx run-many --target=release --all && nx run-many --target=release-storybook --all",
-    "commit": "git-cz",
-    "test": "nx test"
+    "commit": "git-cz"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +23,7 @@
   "packageManager": "pnpm@9.12.3+sha256.24235772cc4ac82a62627cd47f834c72667a2ce87799a846ec4e8e555e2d4b8b",
   "devDependencies": {
     "git-cz": "^4.9.0",
-    "nx": "20.0.9"
+    "nx": "20.0.12",
+    "typescript": "^5.6.3"
   }
 }
