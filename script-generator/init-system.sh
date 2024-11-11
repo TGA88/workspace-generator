@@ -55,6 +55,16 @@ cd $CUR_PATH
 echo "cp script-generator/template/workspace/system-workspace/* $WORKSPACE_DIR/workspaces/$SYSTEM_DIR"
 cp script-generator/template/workspace/system-workspace/* $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 
+# install tsup
+# install typescript
+cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
+
+pnpm add -Dw tsup@^6.6.0
+cd $CUR_PATH
+echo "cp script-generator/template/workspace/tsup.lib.config.ts $WORKSPACE_DIR/workspaces/$SYSTEM_DIR"
+cp script-generator/template/workspace/tsup.lib.config.ts $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
+
+
 
 
 
