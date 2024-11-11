@@ -10,12 +10,12 @@ GENERATOR_DIR=$3
 
 if [ -z "$GENERATOR_DIR" ]; then
     echo "ตัวแปร GENERATOR_DIR ไม่มีค่า หรือมีค่าว่าง"
-    if [ -d "workspace-template" ]; then
-        echo "มีโฟลเดอร์ workspace-template"
-        GENERATOR_DIR="workspace-template"
-        echo "กำหนด GENERATOR_DIR='workspace-template' "
+    if [ -d "workspace-generator" ]; then
+        echo "มีโฟลเดอร์ workspace-generator"
+        GENERATOR_DIR="workspace-generator"
+        echo "กำหนด GENERATOR_DIR='workspace-generator' "
     else
-        echo "ไม่มีโฟลเดอร์ workspace-template"
+        echo "ไม่มีโฟลเดอร์ workspace-generator"
         GENERATOR_DIR="."
         echo "กำหนด GENERATOR_DIR='.' "
     fi
