@@ -6,13 +6,13 @@
   "scripts": {
     "lint": "nx lint",
     "lint:all": "nx run-many --target=lint --all",
-    "test": "nx test",
     "test:all": "nx run-many --target=test --all",
     "build": "nx build",
     "build:all": "nx run-many --target=build --all",
     "release": "nx run-many --target=build --all",
     "release:all": "nx run-many --target=release --all && nx run-many --target=release-storybook --all",
-    "commit": "git-cz"
+    "commit": "git-cz",
+    "test": "nx test"
   },
   "keywords": [],
   "author": "",
@@ -24,7 +24,7 @@
   "devDependencies": {
     "git-cz": "^4.9.0",
     "nx": "20.0.12",
-    "tsup": "^6.6.0",
+    "tsup": "^6.7.0",
     "typescript": "^5.6.3"
   }
 }

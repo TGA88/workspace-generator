@@ -59,4 +59,6 @@ npm pkg set packageManager="pnpm@9.1.4"
 # upgrade packageManager to latest version
 corepack use pnpm@latest
 
+# git init
+git init
 

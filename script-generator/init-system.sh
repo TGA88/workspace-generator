@@ -63,8 +63,8 @@ pnpm add git-cz -w -D
 npm pkg set scripts.commit="git-cz"
 
 cd $CUR_PATH
-echo "cp $GENERATOR_DIR/script-generator/template/workspace/changelog.config.js $CUR_PATH"
-cp $GENERATOR_DIR/script-generator/template/workspace/changelog.config.js $CUR_PATH
+echo "cp $GENERATOR_DIR/script-generator/template/workspace/changelog.config.js $WORKSPACE_DIR"
+cp $GENERATOR_DIR/script-generator/template/workspace/changelog.config.js $WORKSPACE_DIR
 
 # install typescript
 cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
