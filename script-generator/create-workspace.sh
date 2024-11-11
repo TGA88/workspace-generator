@@ -60,5 +60,7 @@ npm pkg set packageManager="pnpm@9.1.4"
 corepack use pnpm@latest
 
 # git init
+cd $CUR_PATH
+cd $WORKSPACE_DIR
 git init
 
