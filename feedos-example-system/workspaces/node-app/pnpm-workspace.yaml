@@ -5,6 +5,6 @@ packages:
   # all packages in sub dirs of libs/
   - 'libs/**'
   # all packages in sub dirs of storybook/
-  - 'docs/**'
+  - 'storybook-host/**'
   # exclude packages that are inside test directories
   - '!**/test/**'
