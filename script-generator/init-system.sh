@@ -83,8 +83,48 @@ cd $CUR_PATH
 echo "cp $GENERATOR_DIR/script-generator/template/workspace/tsup.lib.config.ts $WORKSPACE_DIR/workspaces/$SYSTEM_DIR"
 cp $GENERATOR_DIR/script-generator/template/workspace/tsup.lib.config.ts $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 
+#=======
 
+# install dev tools
+cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 
+#install @types/node
+pnpm add -Dw @types/node
+
+#install jest
+pnpm add -Dw jest @types/jest ts-jest
+
+#install prettier
+pnpm add -Dw prettier 
+npm pkg set scripts.format:all="nx run-many --target=format --all"
+npm pkg set scripts.format-check:all="nx run-many --target=format-check --all"
+
+# install eslint
+pnpm add -Dw eslint
+
+#=========
+
+# config eslint for typescript
+pnpm add -Dw @typescript-eslint/parser @typescript-eslint/eslint-plugin @eslint/js
+
+# config plugin สำหรับ react,nextjs ถ้าใน workspace มี project type ใช้  nextjs,react หลายๆProject
+pnpm add -Dw @next/eslint-plugin-next eslint-plugin-react eslint-plugin-react-hooks
+
+# config eslint for jest เพื่อให้ ทุก project type สามารถใช้ jest ได้
+pnpm add -Dw eslint-plugin-jest
+
+# config prittier ให้ใช้งานให่้ กับ eslint
+pnpm add -Dw  eslint-config-prettier 
+
+cd $CUR_PATH
+
+# create config file jest,eslint
+ cp $GENERATOR_DIR/script-generator/template/project/.prettierignore $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
+ cp $GENERATOR_DIR/script-generator/template/project/.prettierrc $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
+ cp $GENERATOR_DIR/script-generator/template/project/root-eslint.config.mjs $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
+ cp $GENERATOR_DIR/script-generator/template/project/jest.config.base.ts $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/jest.config.ts
+
+# ===============
 
 
     
