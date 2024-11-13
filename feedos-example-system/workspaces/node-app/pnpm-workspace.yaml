@@ -4,5 +4,7 @@ packages:
   - 'apps/**'
   # all packages in sub dirs of libs/
   - 'libs/**'
+  # all packages in sub dirs of storybook/
+  - 'docs/**'
   # exclude packages that are inside test directories
   - '!**/test/**'

@@ -36,6 +36,9 @@ mkdir -p $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/apps
 
 mkdir -p $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs
 
+mkdir -p $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/docs/storybook-host
+touch $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/docs/storybook-host/.gitkeep
+
 
 cp $GENERATOR_DIR/script-generator/template/workspace/.gitignore $WORKSPACE_DIR
 
