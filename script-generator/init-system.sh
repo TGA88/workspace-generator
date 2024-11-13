@@ -91,8 +91,11 @@ cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 #install @types/node
 pnpm add -Dw @types/node
 
+# install type สำหรับ sub project type  ui-component และ features
+pnpm add -Dw @types/react @types/react-dom
+
 #install jest
-pnpm add -Dw jest @types/jest ts-jest
+pnpm add -Dw jest @types/jest ts-jest jest-config
 
 #install prettier
 pnpm add -Dw prettier 
@@ -125,6 +128,33 @@ cd $CUR_PATH
  cp $GENERATOR_DIR/script-generator/template/project/jest.config.base.ts $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/jest.config.ts
 
 # ===============
+
+# install vite และ plugin  สำหรับ sub project type ui,features
+cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
+
+pnpm add -Dw vite @vitejs/plugin-react vite-plugin-dts vite-plugin-lib-inject-css vite-plugin-sass-dts
+
+# install Rollup Plugin 
+# rollup-plugin-node-externals  สำหรับ unbundle dependency ใน package.json
+# rollup-plugin-preserve-directives เพื่อให้ ไม่ถูก remove comment 'use client' หลังจาก bunble
+pnpm add -Dw rollup-plugin-node-externals rollup-plugin-preserve-directives
+
+# instll glob สำหรับใช้ ในการ config vite ใน sub project type ui,features
+pnpm add -Dw glob
+#=====
+
+# install msw สำหรับ ใช้ mock httpClient ของ project type featues ,web หรือ service
+pnpm add -Dw msw 
+#======
+
+# # install storybook
+# # ติดตั้ง dependencies ที่ root
+# pnpm add -D @storybook/cli @storybook/addon-essentials @storybook/addon-interactions @storybook/addon-links @storybook/blocks @storybook/react @storybook/react-vite @storybook/testing-library
+
+# # ติดตั้ง dependencies เพิ่มเติมสำหรับ development
+# pnpm add -D vite @vitejs/plugin-react autoprefixer postcss tailwindcss storybook-dark-mode @storybook/addon-styling @storybook/addon-a11y chromatic
+# #=====
+
 
 
     
