@@ -1,0 +1,20 @@
+{
+  "extends":"../../tsconfig.features.base.json",
+  // "extends":"./tsconfig.json",
+  "compilerOptions": {
+
+    // "noEmit": false,
+    // "composite": true,
+    // "emitDeclarationOnly": true,
+    // "outDir": "dist",
+
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+   
+    /* Bundler mode */
+    "moduleDetection": "force",
+   
+
+
+  },
+  "include": ["src"]
+}
