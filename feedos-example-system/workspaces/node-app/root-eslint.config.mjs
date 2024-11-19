@@ -97,6 +97,7 @@ export function createBaseConfig({ tsConfigPath = './tsconfig.json' } = {}) {
         // เพิ่ม globals สำหรับ browser environment
         globals: {
           ...globals.browser, // จะได้ window, document, localStorage, etc. ทำให้ eslint ไม่ฟ้อง error
+          ...globals.jest // Config สำหรับ jest (สำหรับ test ใน nodejs จะได้รู้จัก describe,it,test,beforeAll,beforeEach,afterAll,afterEach)
         },
       },
       // กำหนด plugins
