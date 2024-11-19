@@ -1,5 +1,3 @@
-
-
 // packages/api/jest.config.ts
 // import type { Config } from 'jest';
 
@@ -9,9 +7,12 @@ import baseConfig from '../../jest.config.base';
 
 const featureConfig: Config = {
   ...baseConfig,
-  testEnvironment: 'node',
+  // use jest-fixed-jsdom to fix msw v2 error Request/Response/TextEncoder is not defined (Jest)
+  testEnvironment: 'jest-fixed-jsdom',
   testMatch: ['**/*.spec.*', '**/*.test.*'],
   moduleFileExtensions: ['ts', 'js', 'tsx', 'jsx','json', 'node'],
+
+  // setupFilesAfterEnv: ['<rootDir>/src/test/setup.ts'],
   testPathIgnorePatterns: [
     '<rootDir>/node_modules/',
     '<rootDir>/dist/'

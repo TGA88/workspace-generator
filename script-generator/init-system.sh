@@ -65,6 +65,7 @@ npm pkg set scripts.commit="git-cz"
 cd $CUR_PATH
 echo "cp $GENERATOR_DIR/script-generator/template/workspace/changelog.config.js $WORKSPACE_DIR"
 cp $GENERATOR_DIR/script-generator/template/workspace/changelog.config.js $WORKSPACE_DIR
+# ==================
 
 # install typescript
 cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
@@ -74,8 +75,10 @@ cd $CUR_PATH
 echo "cp $GENERATOR_DIR/script-generator/template/workspace/system-workspace/* $WORKSPACE_DIR/workspaces/$SYSTEM_DIR"
 cp $GENERATOR_DIR/script-generator/template/workspace/system-workspace/* $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 
+# =================
+
 # install tsup
-# install typescript
+
 cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 
 pnpm add -Dw tsup@^6.6.0
@@ -96,6 +99,9 @@ pnpm add -Dw @types/react @types/react-dom
 
 #install jest
 pnpm add -Dw jest @types/jest ts-jest jest-config
+# jest ต้องการใช้ ts-node ในการรัน ts
+pnpm add -Dw ts-node
+
 
 # intall testing tools สำหรับ Next.js หรือ feature project ที่ต้องใช้ renderHooks เพื่อ Test CustomHooks
 pnpm add -Dw jest-environment-jsdom @testing-library/react @testing-library/jest-dom @testing-library/user-event identity-obj-proxy
@@ -108,6 +114,9 @@ npm pkg set scripts.format-check:all="nx run-many --target=format-check --all"
 
 # install eslint
 pnpm add -Dw eslint
+
+# globals เอาไว้ใช้ set environment ใน eslint เพื่อให้รู้ว่า จะต้อง ignore keyword document,localstorage เมื่อ set environment เป็น globals.browser เป็นต้น
+pnpm add -Dw globals
 
 #=========
 
@@ -149,6 +158,8 @@ pnpm add -Dw glob
 
 # install msw สำหรับ ใช้ mock httpClient ของ project type featues ,web หรือ service
 pnpm add -Dw msw 
+# ใช้ jest-fixed-jsdom แทน jest-environment-jsdom เพื่อ แก้ปัญหา msw v2 Error Request/Response/TextEncoder is not defined (Jest)
+pnpm add -Dw jest-fixed-jsdom
 #======
 
 # # install storybook
