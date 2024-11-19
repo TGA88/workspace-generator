@@ -1,5 +1,3 @@
-
-
 // packages/api/jest.config.ts
 // import type { Config } from 'jest';
 
@@ -11,7 +9,7 @@ const featureConfig: Config = {
   ...baseConfig,
   testEnvironment: 'node',
   testMatch: ['**/*.spec.*', '**/*.test.*'],
-  moduleFileExtensions: ['ts', 'js', 'json', 'node'],
+  moduleFileExtensions: ['ts', 'js', 'tsx', 'jsx','json', 'node'],
   testPathIgnorePatterns: [
     '<rootDir>/node_modules/',
     '<rootDir>/dist/'

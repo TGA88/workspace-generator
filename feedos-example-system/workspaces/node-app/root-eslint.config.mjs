@@ -137,11 +137,19 @@ export function createBaseConfig({ tsConfigPath = './tsconfig.json' } = {}) {
           sourceType: 'module',
         },
         globals: {
-          ...globals.node // Config สำหรับ Node.js code (เช่น config files)
-        }
+          ...globals.node, // Config สำหรับ Node.js code (เช่น config files)
+        },
       },
     },
-
+    // แยก config สำหรับไฟล์ test โดยเฉพาะ
+    {
+      files: ['**/*.test.ts', '**/*.test.tsx', '**/*.spec.ts', '**/*.spec.tsx'],
+      languageOptions: {
+        globals: {
+          ...globals.jest, // เพิ่ม jest globals
+        },
+      },
+    },
     // Prettier config (ต้องอยู่ท้ายสุด)
     {
       files: ['**/*.{js,jsx,ts,tsx,mts,cts}'],

@@ -1,12 +1,17 @@
+
+
 // packages/api/jest.config.ts
-import type { Config } from 'jest';
+// import type { Config } from 'jest';
+
+/** @type {import('jest').Config} */
+import type {Config} from 'jest';
 import baseConfig from '../../jest.config.base';
 
 const featureConfig: Config = {
   ...baseConfig,
   testEnvironment: 'node',
   testMatch: ['**/*.spec.*', '**/*.test.*'],
-  moduleFileExtensions: ['ts', 'js', 'json', 'node'],
+  moduleFileExtensions: ['ts', 'js', 'tsx', 'jsx','json', 'node'],
   testPathIgnorePatterns: [
     '<rootDir>/node_modules/',
     '<rootDir>/dist/'
@@ -17,6 +22,7 @@ const featureConfig: Config = {
       {
         isolatedModules: true,
         tsconfig: '<rootDir>/tsconfig.json',
+        // tsconfig: './tsconfig.node.json',
         diagnostics: {
           ignoreCodes: ['TS151001']
         }
@@ -27,12 +33,13 @@ const featureConfig: Config = {
         {
           isolatedModules: true,
           tsconfig: '<rootDir>/tsconfig.json',
+          // tsconfig: './tsconfig.node.json',
           diagnostics: {
             ignoreCodes: ['TS151001']
           }
         }
       ]
   }
-};
+}
 
 export default featureConfig;

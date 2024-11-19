@@ -97,6 +97,10 @@ pnpm add -Dw @types/react @types/react-dom
 #install jest
 pnpm add -Dw jest @types/jest ts-jest jest-config
 
+# intall testing tools สำหรับ Next.js หรือ feature project ที่ต้องใช้ renderHooks เพื่อ Test CustomHooks
+pnpm add -Dw jest-environment-jsdom @testing-library/react @testing-library/jest-dom @testing-library/user-event identity-obj-proxy
+
+
 #install prettier
 pnpm add -Dw prettier 
 npm pkg set scripts.format:all="nx run-many --target=format --all"
