@@ -66,9 +66,9 @@ export default defineConfig({
       input: Object.fromEntries(
         glob
           .sync('lib/**/*.{ts,tsx}')
-          // .filter((file) => !file.endsWith('.test.ts'))
-          // .filter((file) => !file.endsWith('.test.tsx'))
-          // .filter((file) => !file.endsWith('stories.tsx'))
+          .filter((file) => !file.endsWith('.test.ts'))
+          .filter((file) => !file.endsWith('.test.tsx'))
+          .filter((file) => !file.endsWith('.stories.tsx'))
           .map((file) => [
             // The name of the entry point
             // lib/nested/foo.ts becomes nested/foo

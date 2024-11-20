@@ -9,6 +9,8 @@ import { extname, relative, resolve,dirname } from 'path';
 import { fileURLToPath } from 'node:url';
 import { glob } from 'glob';
 
+
+
 const preserveUseClientDirective = (): Plugin => {
   return {
     name: 'preserve-use-client',
@@ -66,9 +68,9 @@ export default defineConfig({
       input: Object.fromEntries(
         glob
           .sync('lib/**/*.{ts,tsx}')
-          // .filter((file) => !file.endsWith('.test.ts'))
-          // .filter((file) => !file.endsWith('.test.tsx'))
-          // .filter((file) => !file.endsWith('stories.tsx'))
+          .filter((file) => !file.endsWith('.test.ts'))
+          .filter((file) => !file.endsWith('.test.tsx'))
+          .filter((file) => !file.endsWith('.stories.tsx'))
           .map((file) => [
             // The name of the entry point
             // lib/nested/foo.ts becomes nested/foo
