@@ -162,6 +162,7 @@ pnpm add -Dw msw
 pnpm add -Dw jest-fixed-jsdom
 #======
 
+pnpm update -i
 # # install storybook
 # # ติดตั้ง dependencies ที่ root
 # pnpm add -D @storybook/cli @storybook/addon-essentials @storybook/addon-interactions @storybook/addon-links @storybook/blocks @storybook/react @storybook/react-vite @storybook/testing-library

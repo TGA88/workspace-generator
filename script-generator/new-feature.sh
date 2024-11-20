@@ -43,4 +43,6 @@ cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$PROJECT_NAME/
 npm pkg set name=@$WORKSPACE_DIR/$PROJECT_NAME
 
 pnpm install
+pnpm update -i
+
 
