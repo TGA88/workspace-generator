@@ -1,6 +1,8 @@
 {
   "files": [],
-
+  "compilerOptions": {
+    "esModuleInterop": true
+  },
   "references": [
     { "path": "./tsconfig.lib.json" },
     { "path": "./tsconfig.eslint.json" }

@@ -20,7 +20,7 @@
     "build:showConfig": "tsc --p tsconfig.lib.json --showconfig",
     "lint": "eslint . && tsc -b",
     "preview": "vite preview",
-    "test": "jest --runInBand"
+    "test": "jest --runInBand --coverage"
   },
   "peerDependencies": {
     "react": "^18.3.1",

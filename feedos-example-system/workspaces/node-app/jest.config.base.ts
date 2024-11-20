@@ -1,6 +1,8 @@
 // jest.config.base.ts
 import type { Config } from 'jest';
 import { defaults } from 'jest-config';
+import path from "path";
+
 
 const baseConfig: Config = {
   preset: 'ts-jest',
@@ -27,7 +29,9 @@ const baseConfig: Config = {
     '!src/**/index.{ts,tsx}',
     '!src/**/*.test.{ts,tsx}'
   ],
-  coverageDirectory: 'coverage',
+  
+  coverageDirectory: path.join(__dirname, 'coverage',path.relative(__dirname, process.cwd())),
+  // coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'json-summary'],
   coverageThreshold: {
     global: {
