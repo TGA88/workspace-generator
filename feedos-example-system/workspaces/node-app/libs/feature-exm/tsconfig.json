@@ -1,10 +1,29 @@
+// I am using tsconfig for eslint,jest instead of using refernce path to 
+// tsconfig.xx.json file because it's more complex to config 
+// and have to config compilationOptions for each file 
+// such as tsconfig.eslint.json,tsconfig.test.json , tsconfig.build.json and tsconfig.json for vscode
+// references artical "https://www.totaltypescript.com/concepts/option-module-must-be-set-to-nodenext-when-option-moduleresolution-is-set-to-nodenext"
 {
-  "files": [],
+  "extends": "../../tsconfig.features.base.json",
   "compilerOptions": {
-    "esModuleInterop": true
+    // If you're not bundling with TypeScript with tsc but using esbuild,swc,vite instead.
+    // you should be using moduleResolution: "bundler" and module: "ESNext":
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    // setting noEmiit for use tsc for typechecking only
+    "noEmit": true,
+
+
+    "types": [
+      "node",
+      "jest",
+      "@testing-library/jest-dom"
+    ]
   },
-  "references": [
-    { "path": "./tsconfig.lib.json" },
-    { "path": "./tsconfig.eslint.json" }
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx", "jest.config.mts",
   ]
 }

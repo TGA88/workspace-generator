@@ -22,17 +22,13 @@ const baseConfig: Config = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1'
   },
-  collectCoverageFrom: [
-    'src/**/*.{ts,tsx}',
-    '!src/**/*.d.ts',
-    '!src/**/*.stories.{ts,tsx}',
-    '!src/**/index.{ts,tsx}',
-    '!src/**/*.test.{ts,tsx}'
-  ],
+
+  coverageProvider:"v8",
+
   
   coverageDirectory: path.join(__dirname, 'coverage',path.relative(__dirname, process.cwd())),
   // coverageDirectory: 'coverage',
-  coverageReporters: ['text', 'lcov', 'json-summary'],
+  coverageReporters: ['text', 'lcov', 'json-summary','cobertura'],
   coverageThreshold: {
     global: {
       branches: 80,

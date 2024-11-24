@@ -47,7 +47,7 @@ export default defineConfig({
     //   include: ['lib'],
     //   exclude: ['lib/**/*.test.*','lib/**/*.spec.*', 'src/**/*.stories.*'],
     // }),
-    dts({tsconfigPath: 'tsconfig.lib.json',outDir: 'dist/types', }),
+    dts({tsconfigPath: 'tsconfig.build.json',outDir: 'dist/types', }),
     preserveUseClientDirective(),
     libInjectCss(),
     {

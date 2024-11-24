@@ -1,8 +1,9 @@
 // jest.config.base.ts
 import type { Config } from 'jest';
 import { defaults } from 'jest-config';
-import path from "path"; //ต้องset tsconfig compileroption{"esModuleInterop:true"} เพื่อให้ สามารถ ใช้คำสั่ง import path ซึ่ง package path ของ nodejs default เป็น commonjs ได้
- 
+import path from "path";
+
+
 const baseConfig: Config = {
   preset: 'ts-jest',
   verbose: true,
@@ -21,15 +22,13 @@ const baseConfig: Config = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1'
   },
-  collectCoverageFrom: [
-    'src/**/*.{ts,tsx}',
-    '!src/**/*.d.ts',
-    '!src/**/*.stories.{ts,tsx}',
-    '!src/**/index.{ts,tsx}',
-    '!src/**/*.test.{ts,tsx}'
-  ],
-  coverageDirectory: path.join(__dirname,'coverage',path.relative(__dirname, process.cwd())),
-  coverageReporters: ['text', 'lcov', 'json-summary'],
+
+  coverageProvider:"v8",
+
+  
+  coverageDirectory: path.join(__dirname, 'coverage',path.relative(__dirname, process.cwd())),
+  // coverageDirectory: 'coverage',
+  coverageReporters: ['text', 'lcov', 'json-summary','cobertura'],
   coverageThreshold: {
     global: {
       branches: 80,

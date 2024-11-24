@@ -1,46 +1,50 @@
 // packages/api/jest.config.ts
 // import type { Config } from 'jest';
 
-/** @type {import('jest').Config} */
+/** @type {import('jest').Config}  */
+
 import type {Config} from 'jest';
-import baseConfig from '../../jest.config.base';
+import baseConfig from '../../jest.config.features';
+
+console.log("baseRootDir",baseConfig.rootDir)
+console.log("cwd=>",process.cwd())
+console.log("__dirname=>",__dirname)
 
 const featureConfig: Config = {
+  rootDir: __dirname,
   ...baseConfig,
-  // use jest-fixed-jsdom to fix msw v2 error Request/Response/TextEncoder is not defined (Jest)
-  testEnvironment: 'jest-fixed-jsdom',
-  testMatch: ['**/*.spec.*', '**/*.test.*'],
-  moduleFileExtensions: ['ts', 'js', 'tsx', 'jsx','json', 'node'],
-
-  // setupFilesAfterEnv: ['<rootDir>/src/test/setup.ts'],
-  testPathIgnorePatterns: [
-    '<rootDir>/node_modules/',
-    '<rootDir>/dist/'
-  ],
-  transform: {
-    '^.+\\.tsx?$': [
-      'ts-jest',
-      {
-        isolatedModules: true,
-        tsconfig: '<rootDir>/tsconfig.json',
-        // tsconfig: './tsconfig.node.json',
-        diagnostics: {
-          ignoreCodes: ['TS151001']
-        }
-      }
-    ],
-    '^.+\\.ts?$': [
-        'ts-jest',
-        {
-          isolatedModules: true,
-          tsconfig: '<rootDir>/tsconfig.json',
-          // tsconfig: './tsconfig.node.json',
-          diagnostics: {
-            ignoreCodes: ['TS151001']
-          }
-        }
-      ]
-  }
+  // transform: {
+  //   '^.+\\.tsx?$': [
+  //     'ts-jest',
+  //     {
+  //       isolatedModules: true,
+  //       // tsconfig: `${process.cwd()}/tsconfig.json`,
+  //       // tsconfig: './tsconfig.json',
+  //       tsconfig: '<rootDir>/tsconfig.json',
+  //       // tsconfig: './tsconfig.node.json',
+  //       diagnostics: {
+  //         ignoreCodes: ['TS151001', 'TS5098'],
+  //         // warnOnly: true,
+  //         pretty: true
+  //       }
+  //     }
+  //   ],
+  //   '^.+\\.ts?$': [
+  //     'ts-jest',
+  //     {
+  //       isolatedModules: true,
+  //       // tsconfig: `${process.cwd()}/tsconfig.json`,
+  //       // tsconfig: './tsconfig.node.json',
+  //       tsconfig: '<rootDir>/tsconfig.json',
+  //       diagnostics: {
+  //         ignoreCodes: ['TS151001', 'TS5098'],
+  //         // warnOnly: true,
+  //         pretty: true
+  //       }
+  //     }
+  //   ]
+  // }
 }
+console.log("featureRootDir",featureConfig.rootDir)
 
 export default featureConfig;

@@ -16,11 +16,14 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "build:showConfig": "tsc --p tsconfig.lib.json --showconfig",
-    "lint": "eslint . && tsc -b",
+    "build": "tsc && vite build", 
+    "build:showConfig": "tsc --p tsconfig.eslint.json --showconfig",
+    "lint": "eslint . && tsc",
     "preview": "vite preview",
-    "test": "jest --runInBand"
+    "test": "pnpm run test:gen ; pnpm run fix:lcov",
+    "test:gen": "jest --runInBand --coverage --no-cache",
+    "fix:lcov": "bash ../../tools/fix_lcov_paths.sh ../../coverage/libs/feature-exm ",
+    "test:show": "jest --runInBand --coverage --showConfig"
   },
   "peerDependencies": {
     "react": "^18.3.1",
