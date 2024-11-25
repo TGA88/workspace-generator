@@ -16,8 +16,8 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build", 
-    "build:showConfig": "tsc --p tsconfig.eslint.json --showconfig",
+    "build": "tsc --p tsconfig.build.json && vite build", 
+    "build:showConfig": "tsc --p tsconfig.build.json --showconfig",
     "lint": "eslint . && tsc",
     "preview": "vite preview",
     "test": "pnpm run test:gen ; pnpm run fix:lcov",

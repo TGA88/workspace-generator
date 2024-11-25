@@ -59,10 +59,13 @@ export default defineConfig({
     }
   ],
   build: {
+    // lib mode กับ format: 'es' การ minify จะไม่ minify whitespaces เพราะจะทำให้ pure annotations หายและส่งผลต่อ tree-shaking
     lib: {
       entry: resolve(__dirname, 'lib/main.ts'),
-      formats: ['es'],
-      fileName: (format) => `main.${format}.js`
+      // formats: ['es','cjs'],
+      formats: ['es'], //เราจะใช้ เฉพาะ es อย่างเดียว เพราะ react component ของเราจะนำไปใช้กับ รูปแบบ esm อย่างเดียวจึงไม่ต้อง compile format cjs
+      // fileName: (format) => `main.${format}.js`
+      fileName: (format) => `[name].${format === 'es' ? 'js' : 'cjs'}`
     },
     rollupOptions: {
       input: Object.fromEntries(
@@ -82,7 +85,7 @@ export default defineConfig({
       ),
       output: {
         assetFileNames: 'assets/[name][extname]',
-        entryFileNames: '[name].js',
+        // entryFileNames: '[name].js', //ถ้าที่ build.lib มีการ set fileNameแล้ว จะใช้ตรงนั้นเป็น output name โดยที่ไม่ต้องSet entryFileNamesก็ได้
         // preserveModules: true,
         // preserveModulesRoot: 'lib',
         // plugins: [preserveUseClientDirective()]

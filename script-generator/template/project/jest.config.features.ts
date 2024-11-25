@@ -30,6 +30,9 @@ const featureConfig: Config = {
     '<rootDir>/node_modules/',
     '<rootDir>/dist/'
   ],
+  // ถ้าระบุ tsconfig ที่ต้องการใน transform กับ ts-jest จะต้อง ignore rule TS5098
+  // เพราะจะ error TS5098: Option 'resolvePackageJsonExports' can only be used when 'moduleResolution' is set to 'node16', 'nodenext', or 'bundler'.
+  // ถึงแม้จะ config tsconfig ถูกต้องแล้วก็ตาม คาดว่าน่าจะเป็น bug ของ ts-jest กับ typescript
   transform: {
     '^.+\\.tsx?$': [
       'ts-jest',

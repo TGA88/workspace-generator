@@ -6,14 +6,14 @@
 import type {Config} from 'jest';
 import baseConfig from '../../jest.config.features';
 
-console.log("baseRootDir",baseConfig.rootDir)
-console.log("cwd=>",process.cwd())
-console.log("__dirname=>",__dirname)
+// console.log("baseRootDir",baseConfig.rootDir)
+// console.log("cwd=>",process.cwd())
+// console.log("__dirname=>",__dirname)
 
 const featureConfig: Config = {
   rootDir: __dirname,
-  ...baseConfig,
+  ...baseConfig
 }
-console.log("featureRootDir",featureConfig.rootDir)
+// console.log("featureRootDir",featureConfig.rootDir)
 
 export default featureConfig;

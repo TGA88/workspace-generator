@@ -6,12 +6,12 @@
 {
   "extends": "../../tsconfig.features.base.json",
   "compilerOptions": {
-    // If you're not bundling with TypeScript with tsc but using esbuild,swc,vite instead.
-    // you should be using moduleResolution: "bundler" and module: "ESNext":
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    // setting noEmiit for use tsc for typechecking only
-    "noEmit": true,
+    // // If you're not bundling with TypeScript with tsc but using esbuild,swc,vite instead.
+    // // you should be using moduleResolution: "bundler" and module: "ESNext":
+    // "module": "ESNext",
+    // "moduleResolution": "bundler",
+    // // setting noEmiit for use tsc for typechecking only
+    // "noEmit": true,
 
 
     "types": [
@@ -24,6 +24,6 @@
     "**/*.ts",
     "**/*.tsx",
     "**/*.js",
-    "**/*.jsx", "jest.config.mts",
+    "**/*.jsx"
   ]
 }

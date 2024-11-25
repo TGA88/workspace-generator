@@ -4,10 +4,15 @@ import { defaults } from 'jest-config';
 import path from "path";
 
 
+
 const baseConfig: Config = {
   preset: 'ts-jest',
   verbose: true,
   moduleFileExtensions: [...defaults.moduleFileExtensions],
+  // ถ้าไม่ได้ระบุ tsconfig ใน transform ts-jest จะค้นหา tsconfig ตามลำกดับ ดังนี้
+  // 1. tsconfig.jest.json
+  // 2. tsconfig.test.json
+  // 3. tsconfig.json
   transform: {
     '^.+\\.tsx?$': [
       'ts-jest',
@@ -23,12 +28,12 @@ const baseConfig: Config = {
     '^@/(.*)$': '<rootDir>/src/$1'
   },
 
-  coverageProvider:"v8",
+  coverageProvider: "v8",
 
-  
-  coverageDirectory: path.join(__dirname, 'coverage',path.relative(__dirname, process.cwd())),
+
+  coverageDirectory: path.join(__dirname, 'coverage', path.relative(__dirname, process.cwd())),
   // coverageDirectory: 'coverage',
-  coverageReporters: ['text', 'lcov', 'json-summary','cobertura'],
+  coverageReporters: ['text', 'lcov', 'json-summary', 'cobertura'],
   coverageThreshold: {
     global: {
       branches: 80,
