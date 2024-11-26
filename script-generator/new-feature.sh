@@ -41,6 +41,8 @@ cp -r $GENERATOR_DIR/script-generator/template/project/features/* $WORKSPACE_DIR
 cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$PROJECT_NAME/
 
 npm pkg set name=@$WORKSPACE_DIR/$PROJECT_NAME
+npm pkg set scripts.fix:lcov="bash ../../tools/fix_lcov_paths.sh ../../coverage/libs/"$PROJECT_NAME
+
 
 pnpm install
 pnpm update -i
