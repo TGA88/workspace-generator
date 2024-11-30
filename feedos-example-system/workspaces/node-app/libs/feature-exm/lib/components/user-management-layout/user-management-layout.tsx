@@ -1,5 +1,4 @@
 import React from 'react';
-// import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 
 export interface UserManagementLayoutProps {
@@ -12,7 +11,12 @@ export const UserManagementLayout: React.FC<UserManagementLayoutProps> = ({
   listComponent 
 }) => {
   return (
-    <Stack spacing={3} px={3} py={2}>
+    <Stack
+      className="fos-space-y-3 fos-px-3 fos-py-2 fos-bg-red-200"
+      sx={{ 
+        '& > *': { width: '100%' } // ให้ children ใช้พื้นที่เต็มความกว้าง
+      }}
+    >
       {statsComponent}
       {listComponent}
     </Stack>

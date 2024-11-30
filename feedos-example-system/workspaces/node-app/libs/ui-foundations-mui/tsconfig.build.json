@@ -1,0 +1,25 @@
+{
+  "extends": "../../tsconfig.features.base.json",
+  // "extends":"./tsconfig.json",
+  "compilerOptions": {
+    // //  this options only for using reference path
+    // "noEmit": false,
+    // "composite": true,
+    // "emitDeclarationOnly": true,
+    // "outDir": "dist",
+    // ========
+    // "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.lib.tsbuildinfo",
+    // "rootDir": "lib",
+    /* Bundler mode */
+    "moduleDetection": "force",
+    "rootDir": "lib"
+  },
+  "include": [
+    "lib"
+  ],
+  "exclude": [
+    "**/*.test.*",
+    "**/*.spec.*",
+    "**/*.stories.*",
+  ]
+}

@@ -1,5 +1,12 @@
-import type { Preview } from '@storybook/react'
+
+import type { Decorator, StoryFn } from '@storybook/react';
 import { initialize, mswLoader } from 'msw-storybook-addon'
+
+// .storybook/preview.tsx
+import { ThemeProvider } from '@feedos-example-system/ui-foundations-mui';
+import '../assets/styles/tailwind.css'
+
+
 
 // Import handlers
 import { handlers as exmHandlers } from '../../../libs/feature-exm/src/mocks/handlers'
@@ -29,5 +36,13 @@ export const parameters = {
 
 
 export const loaders=[mswLoader]
+
+export const decorators: Decorator[] = [
+  ((Story: StoryFn) => (
+    <ThemeProvider>
+      <Story />
+    </ThemeProvider>
+  )) as Decorator,
+];
 
 

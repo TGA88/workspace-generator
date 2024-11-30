@@ -9,7 +9,8 @@ export default {
   corePlugins: {
     preflight: false,
   },
-  important: '#root',
+  plugins:[],
+  // important: '#root',
   theme: {
     extend: {
       fontFamily: {
