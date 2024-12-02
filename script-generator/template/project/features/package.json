@@ -12,11 +12,42 @@
     "**/*.css"
   ],
   "publishConfig": {
-    "access":"restricted" 
+    "access": "restricted"
+  },
+  "typesVersions": {
+    "*": {
+      "components/*": [
+        "./types/components/*"
+      ],
+      "containers/*": [
+        "./types/containers/*"
+      ],
+      "hooks/*": [
+        "./types/hooks/*"
+      ]
+    }
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/main.js",
+      "require": "./dist/main.cjs"
+    },
+    "./components/*": {
+      "import": "./dist/components/*.js",
+      "require": "./dist/components/*.cjs"
+    },
+    "./containers/*": {
+      "import": "./dist/containers/*.js",
+      "require": "./dist/containers/*.cjs"
+    },
+    "./hooks/*": {
+      "import": "./dist/hooks/*.js",
+      "require": "./dist/hooks/*.cjs"
+    }
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc --p tsconfig.build.json && vite build", 
+    "build": "tsc --p tsconfig.build.json && vite build",
     "build:showConfig": "tsc --p tsconfig.build.json --showconfig",
     "lint": "eslint . && tsc",
     "preview": "vite preview",

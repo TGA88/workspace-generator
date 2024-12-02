@@ -25,8 +25,8 @@ const featureConfig: Config = {
     '!**/*.spec.{ts,tsx}'
   ],
   moduleNameMapper: {
-    '^@/(.*)$': path.resolve(__dirname, './$1'),
-    '^@root/(.*)$': path.resolve(__dirname, '../../$1'),
+    '^@/(.*)$': path.resolve(__dirname, './$1'), // refs to node-app folder
+    '^@root/(.*)$': path.resolve(__dirname, '../../$1'), // refs to root workspace (feedos-example-system)
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy'
   },
 
