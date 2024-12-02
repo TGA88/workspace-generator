@@ -4,7 +4,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
-interface UserStatsProps {
+export interface UserStatsProps {
   stats: {
     total: number;
     active: number;

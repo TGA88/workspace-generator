@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { UserList } from '../user-list';
-import { User } from '../../../types/user.type';
+import { UserList } from '@feature-exm/components/user-list/user-list';
+import { User } from '@feature-exm/types/user.type';
 import { within ,userEvent} from '@storybook/testing-library'
 
 const meta = {

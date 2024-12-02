@@ -4,6 +4,7 @@
 /** @type {import('jest').Config} */
 // import path from "path"
 import type { Config } from 'jest';
+import path from 'path'
 import baseConfig from './jest.config.base';
 
 // const  rd= path.join(__dirname, 'coverage',path.relative(__dirname, process.cwd())),
@@ -23,7 +24,11 @@ const featureConfig: Config = {
     '!**/*.test.{ts,tsx}',
     '!**/*.spec.{ts,tsx}'
   ],
-
+  moduleNameMapper: {
+    '^@/(.*)$': path.resolve(__dirname, './$1'),
+    '^@root/(.*)$': path.resolve(__dirname, '../../$1'),
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy'
+  },
 
   // setupFilesAfterEnv: ['<rootDir>/src/test/setup.ts'],
   setupFilesAfterEnv: ['<rootDir>/lib/setupTest.ts'],

@@ -9,7 +9,8 @@ import '../assets/styles/tailwind.css'
 
 
 // Import handlers
-import { handlers as exmHandlers } from '../../../libs/feature-exm/src/mocks/handlers'
+// import { handlers as exmHandlers } from '@/libs/feature-exm/src/mocks/handlers'
+import { handlers as exmHandlers } from '@feature-exm/mocks/handlers'
 
 
 // Initialize MSW

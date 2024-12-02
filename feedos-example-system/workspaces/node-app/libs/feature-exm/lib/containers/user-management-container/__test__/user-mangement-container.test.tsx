@@ -1,7 +1,8 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
-import { server } from '../../../mocks/server';
-import { UserManagementContainer } from '../user-management-container';
+// import { server } from '@mocks/server';
+import { server } from '@root/workspaces/node-app/libs/feature-exm/lib/mocks/server';
+import { UserManagementContainer } from '@feature-exm/containers/user-management-container';
 
 describe('UserManagementContainer', () => {
   const mockUsers = [

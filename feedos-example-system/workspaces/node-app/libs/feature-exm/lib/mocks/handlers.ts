@@ -1,5 +1,6 @@
 import { http, HttpResponse } from 'msw';
-import { User } from '../types/user.type';
+import { User } from '@feature-exm/types/user.type';
+
 
 const mockUsers: User[] = [
   {

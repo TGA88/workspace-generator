@@ -12,7 +12,14 @@
     // "rootDir": "lib",
     /* Bundler mode */
     "moduleDetection": "force",
-    "rootDir": "lib"
+    "rootDir": "lib",
+    "paths": {
+      "@/*": ["../../*"],         // ชี้ไปที่ pnpm workspace (node-app)
+      "@root/*": ["../../../../*"],  // ชี้ไปที่ root (feedos-exmaple-system),
+      // paths ใช้สำหรับ file .stories
+      "@feature-exm/*": ["./lib/*"],         // ชี้ไปที่ root project feature-exm
+
+    },
   },
   "include": [
     "lib"
@@ -21,5 +28,7 @@
     "**/*.test.*",
     "**/*.spec.*",
     "**/*.stories.*",
+    "**/mocks",
+    "**/setupTest.*"
   ]
 }

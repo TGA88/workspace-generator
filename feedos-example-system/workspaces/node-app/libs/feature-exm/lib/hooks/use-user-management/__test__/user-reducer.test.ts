@@ -1,5 +1,5 @@
-import { userReducer } from '../userReducer';
-import { UserState, UserAction } from '../../../types/user.type';
+import { userReducer } from '@feature-exm/hooks/use-user-management/user-reducer'
+import { UserState, UserAction } from '@feature-exm/types/user.type'
 
 describe('userReducer', () => {
   // Setup initial state for testing

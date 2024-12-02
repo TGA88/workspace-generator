@@ -4,6 +4,8 @@
 /** @type {import('jest').Config}  */
 
 import type {Config} from 'jest';
+
+
 import baseConfig from '../../jest.config.features';
 
 // console.log("baseRootDir",baseConfig.rootDir)
@@ -12,7 +14,12 @@ import baseConfig from '../../jest.config.features';
 
 const featureConfig: Config = {
   rootDir: __dirname,
-  ...baseConfig
+  ...baseConfig,
+  moduleNameMapper: {
+
+    '^@feature-exm/(.*)$': '<rootDir>/lib/$1',
+
+  },
 }
 // console.log("featureRootDir",featureConfig.rootDir)
 

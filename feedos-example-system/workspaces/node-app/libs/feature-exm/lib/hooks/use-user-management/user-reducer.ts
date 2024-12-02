@@ -1,4 +1,4 @@
-import { UserState, UserAction } from '../../types/user.type';
+import { UserState, UserAction } from '@feature-exm/types/user.type';
 
 export const userReducer = (state: UserState, action: UserAction): UserState => {
   switch (action.type) {

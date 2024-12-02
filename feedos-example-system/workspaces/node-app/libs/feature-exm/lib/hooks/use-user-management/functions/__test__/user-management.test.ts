@@ -1,5 +1,5 @@
-import { filterActiveUsers, calculateUserStats, filterUsersByRole } from '../userManagement';
-import { User } from '../../../../types/user.type';
+import { filterActiveUsers, calculateUserStats, filterUsersByRole } from '@feature-exm/hooks/use-user-management/functions/user-management'
+import { User } from '@feature-exm/types/user.type';
 
 describe('User Management Functions', () => {
   const mockUsers: User[] = [

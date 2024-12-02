@@ -58,6 +58,13 @@ export default defineConfig({
       enforce: 'pre'
     }
   ],
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, '../../'),
+      '@root': resolve(__dirname, '../../../../'),
+      '@feature-exm': resolve(__dirname, './lib')
+    }
+  },
   build: {
     // lib mode กับ format: 'es' การ minify จะไม่ minify whitespaces เพราะจะทำให้ pure annotations หายและส่งผลต่อ tree-shaking
     lib: {
@@ -71,6 +78,8 @@ export default defineConfig({
       input: Object.fromEntries(
         glob
           .sync('lib/**/*.{ts,tsx}')
+          .filter((file) => !file.match('/mocks/'))
+          .filter((file) => !file.match('setupTest.*'))
           .filter((file) => !file.endsWith('.test.ts'))
           .filter((file) => !file.endsWith('.test.tsx'))
           .filter((file) => !file.endsWith('.stories.tsx'))

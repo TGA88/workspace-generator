@@ -1,10 +1,13 @@
 import type { StorybookConfig } from '@storybook/react-vite'
+import { mergeConfig } from 'vite';
+import path from 'path';
 
 const config: StorybookConfig = {
   framework: '@storybook/react-vite',
   stories: [
-    '../../../libs/feature-*/src/**/*.stories.@(js|jsx|ts|tsx)',
+    // '../../../libs/feature-*/src/**/*.stories.@(js|jsx|ts|tsx)',
     '../../../libs/feature-*/lib/**/*.stories.@(js|jsx|ts|tsx)',
+    // '../../../libs/feature-exm/lib/**/user-list.stories.@(js|jsx|ts|tsx)',
   ],
   addons: [
     '@storybook/blocks',
@@ -13,7 +16,19 @@ const config: StorybookConfig = {
     '@storybook/test' ,
     'msw-storybook-addon'  // เพิ่ม msw addon
 
-  ]
+  ],
+  viteFinal: async (config) => {
+    return mergeConfig(config, {
+      resolve: {
+        alias: {
+          '@': path.resolve(__dirname, '../../../'),
+          '@root': path.resolve(__dirname, '../../../../../'),
+          '@feature-exm': path.resolve(__dirname, '../../../libs/feature-exm/lib/'),
+
+        }
+      }
+    });
+  }
 }
 export default config
 

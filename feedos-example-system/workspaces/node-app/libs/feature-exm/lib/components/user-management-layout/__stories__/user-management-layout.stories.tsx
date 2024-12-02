@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { UserManagementLayout } from '../user-management-layout';
+import { UserManagementLayout } from '@feature-exm/components/user-management-layout';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 

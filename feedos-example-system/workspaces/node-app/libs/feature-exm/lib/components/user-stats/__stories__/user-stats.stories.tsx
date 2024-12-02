@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { UserStats } from '../user-stats';
+import { UserStats } from '@feature-exm/components/user-stats';
 
 const meta: Meta<typeof UserStats> = {
   title: 'Components/UserStats',

@@ -1,8 +1,8 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
-import { server } from '../../../mocks/server';
-import { useUserManagement } from '../useUserManagement';
-import { User } from '../../../types/user.type';
+import { server } from '@feature-exm/mocks/server';
+import { useUserManagement } from '@feature-exm/hooks/use-user-management/use-user-management';
+import { User } from '@feature-exm/types/user.type';
 
 describe('useUserManagement Integration Tests', () => {
   const mockUsers: User[] = [

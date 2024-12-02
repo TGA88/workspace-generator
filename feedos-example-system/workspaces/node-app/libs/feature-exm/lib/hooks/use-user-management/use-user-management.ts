@@ -1,7 +1,7 @@
 import { useReducer, useEffect, useMemo, useCallback, useState } from 'react';
-import { User, UserState } from '../../types/user.type';
-import { userReducer } from './userReducer';
-import { filterActiveUsers, calculateUserStats, filterUsersByRole } from './logics/userManagement'
+import { User, UserState } from '@feature-exm/types/user.type';
+import { userReducer } from './user-reducer';
+import { filterActiveUsers, calculateUserStats, filterUsersByRole } from './functions/user-management'
 // import { filterActiveUsers } from './logic/filterActiveUsers';
 // import { filterActiveUsers, calculateUserStats, filterUsersByRole } from './logic/userManagement';
 // import { filterActiveUsers, calculateUserStats, filterUsersByRole } from './logic/userManagement';

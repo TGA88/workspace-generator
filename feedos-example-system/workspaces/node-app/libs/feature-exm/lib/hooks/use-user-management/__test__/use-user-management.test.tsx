@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react';
-import { useUserManagement } from '../useUserManagement';
-import * as userManagementFunctions from '../logics/userManagement';
+import { useUserManagement } from '@feature-exm/hooks/use-user-management/use-user-management'
+import * as userManagementFunctions from '@feature-exm/hooks/use-user-management/functions/user-management';
 
 // Mock the pure functions
 jest.mock('../logics/userManagement');

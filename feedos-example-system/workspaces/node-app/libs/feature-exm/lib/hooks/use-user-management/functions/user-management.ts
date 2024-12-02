@@ -1,4 +1,4 @@
-import { User } from '../../../types/user.type';
+import { User } from '@feature-exm/types/user.type';
 
 export const filterActiveUsers = (users: User[]) =>
   users.filter(user => user.isActive && !user.isDeleted);

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { UserManagementContainer } from '../user-management-container';
+import { UserManagementContainer } from '@feature-exm/containers/user-management-container';
 import { http, HttpResponse } from 'msw';
 
 const meta: Meta<typeof UserManagementContainer> = {
