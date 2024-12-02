@@ -33,16 +33,16 @@
       "require": "./dist/main.cjs"
     },
     "./components/*": {
-      "import": "./dist/components/*.js",
-      "require": "./dist/components/*.cjs"
+      "import": "./dist/components/*/*.js",
+      "require": "./dist/components/*/*.cjs"
     },
     "./containers/*": {
-      "import": "./dist/containers/*.js",
-      "require": "./dist/containers/*.cjs"
+      "import": "./dist/containers/*/*.js",
+      "require": "./dist/containers/*/*.cjs"
     },
     "./hooks/*": {
-      "import": "./dist/hooks/*.js",
-      "require": "./dist/hooks/*.cjs"
+      "import": "./dist/hooks/*/*.js",
+      "require": "./dist/hooks/*/*.cjs"
     }
   },
   "scripts": {
