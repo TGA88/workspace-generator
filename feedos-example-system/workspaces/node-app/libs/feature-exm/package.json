@@ -1,5 +1,5 @@
 {
-  "name": "feature-exm",
+  "name": "@feedos-example-system/feature-exm",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -14,35 +14,28 @@
   "publishConfig": {
     "access": "restricted"
   },
-  "typesVersions": {
-    "*": {
-      "components/*": [
-        "./types/components/*"
-      ],
-      "containers/*": [
-        "./types/containers/*"
-      ],
-      "hooks/*": [
-        "./types/hooks/*"
-      ]
-    }
-  },
+
   "exports": {
     ".": {
       "import": "./dist/main.js",
-      "require": "./dist/main.cjs"
+      "require": "./dist/main.cjs",
+      "types": "./dist/types/main.d.ts"
+      
     },
     "./components/*": {
       "import": "./dist/components/*/*.js",
-      "require": "./dist/components/*/*.cjs"
+      "require": "./dist/components/*/*.cjs",
+      "types": "./dist/types/components/*/*.d.ts"
     },
     "./containers/*": {
       "import": "./dist/containers/*/*.js",
-      "require": "./dist/containers/*/*.cjs"
+      "require": "./dist/containers/*/*.cjs",
+      "types": "./dist/types/containers/*/*.d.ts"
     },
     "./hooks/*": {
       "import": "./dist/hooks/*/*.js",
-      "require": "./dist/hooks/*/*.cjs"
+      "require": "./dist/hooks/*/*.cjs",
+      "types": "./dist/types/hooks/*/*.d.ts"
     }
   },
   "scripts": {

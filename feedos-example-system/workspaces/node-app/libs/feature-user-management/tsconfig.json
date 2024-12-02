@@ -17,7 +17,7 @@
       "@/*": ["../../*"],         // ชี้ไปที่ pnpm workspace (node-app)
       "@root/*": ["../../../../*"],  // ชี้ไปที่ root (feedos-exmaple-system),
       // paths ใช้สำหรับ file .stories
-      "@feature-exm/*": ["./lib/*"],         // ชี้ไปที่ root project feature-exm
+      "@feature-user-management/*": ["./lib/*"],         // ชี้ไปที่ root project feature-user-management
 
     },
 

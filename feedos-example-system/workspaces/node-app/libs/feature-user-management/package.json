@@ -1,5 +1,5 @@
 {
-  "name": "@feedos-example-system/feature-exm",
+  "name": "@feedos-example-system/feature-user-management",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -14,13 +14,11 @@
   "publishConfig": {
     "access": "restricted"
   },
-
   "exports": {
     ".": {
       "import": "./dist/main.js",
       "require": "./dist/main.cjs",
       "types": "./dist/types/main.d.ts"
-      
     },
     "./components/*": {
       "import": "./dist/components/*/*.js",
@@ -46,7 +44,7 @@
     "preview": "vite preview",
     "test": "pnpm run test:gen ; pnpm run fix:lcov",
     "test:gen": "jest --runInBand --coverage --no-cache",
-    "fix:lcov": "bash ../../tools/fix_lcov_paths.sh ../../coverage/libs/feature-exm ",
+    "fix:lcov": "bash ../../tools/fix_lcov_paths.sh ../../coverage/libs/feature-user-management",
     "test:show": "jest --runInBand --coverage --showConfig"
   },
   "peerDependencies": {

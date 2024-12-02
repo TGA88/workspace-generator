@@ -24,6 +24,11 @@ else
   echo "ตัวแปร GENERATOR_DIR มีค่า: $GENERATOR_DIR"
 fi
 
+# Check if PROJECT_NAME is provided
+if [ -z "$PROJECT_NAME" ]; then
+   echo "Error: PROJECT_NAME is not set"
+   exit 1
+fi
 
 
 CUR_PATH=$(pwd)
@@ -39,12 +44,25 @@ mkdir -p $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$PROJECT_NAME
 cp -r $GENERATOR_DIR/script-generator/template/project/features/* $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$PROJECT_NAME/
 
 cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$PROJECT_NAME/
+# Search and replace in all files under features directory
+find ./ -type f -not -path "*/\.*" -exec file {} \; | 
+    grep -i 'text' | 
+    cut -d: -f1 | 
+    xargs sed -i '' "s/feature-exm/$PROJECT_NAME/g"
+    # xargs sed -i '' "s/@feature-exm/@$PROJECT_NAME/g"
+
+echo "Replaced 'feature-exm' with '$PROJECT_NAME/' in all files under $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$PROJECT_NAME/"
+
 
 npm pkg set name=@$WORKSPACE_DIR/$PROJECT_NAME
 npm pkg set scripts.fix:lcov="bash ../../tools/fix_lcov_paths.sh ../../coverage/libs/"$PROJECT_NAME
 
 
+
 pnpm install
 pnpm update -i
+
+
+
 
 
