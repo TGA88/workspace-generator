@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { UserList } from '@feature-exm/components/user-list/user-list';
 import { User } from '@feature-exm/types/user.type';
-import { within ,userEvent} from '@storybook/testing-library'
+import { within ,userEvent, waitFor} from '@storybook/testing-library'
+import { fn, expect } from '@storybook/test'; 
+
 
 const meta = {
   title: 'Components/UserList',
@@ -126,23 +128,40 @@ export const LongList: Story = {
 // Story with play function to demonstrate interactions
 export const InteractiveFilters: Story = {
   args: {
+    ...baseArgs,
     ...Default.args,
+    onFilterChange: fn(),
   },
-  play: async ({ canvasElement, step }) => {
+  play: async ({ args, canvasElement, step }) => {
     const canvas = within(canvasElement);
     
     await step('Change status filter', async () => {
-      const statusSelect = canvas.getByLabelText('Status filter');
+      const statusSelect = await canvas.findByLabelText('Status');
       await userEvent.click(statusSelect);
-      const activeOption = await canvas.findByText('Active');
+
+      // เพิ่ม type assertion เป็น HTMLElement
+      const listbox = document.querySelector('[role="listbox"]') as HTMLElement;
+      if (!listbox) throw new Error('Listbox not found');
+      
+      const activeOption = within(listbox).getByText('Active');
       await userEvent.click(activeOption);
+
+      await expect(args.onFilterChange).toHaveBeenCalledWith('status', 'active');
     });
-    
     await step('Change role filter', async () => {
-      const roleSelect = canvas.getByLabelText('Role filter');
+      const roleSelect = await canvas.findByLabelText('Role');
       await userEvent.click(roleSelect);
-      const adminOption = await canvas.findByText('Admin');
+     
+      // รอให้ dropdown menu ปรากฏใน DOM
+      await waitFor(() => {
+        expect(within(document.body).getByText('Admin')).toBeInTheDocument();
+      });
+     
+      const adminOption = within(document.body).getByText('Admin');
       await userEvent.click(adminOption);
-    });
+     
+      await expect(args.onFilterChange).toHaveBeenCalledWith('role', 'admin');
+     });
+    
   }
 };
