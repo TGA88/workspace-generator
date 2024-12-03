@@ -9,8 +9,6 @@ export default {
   content: [
     ...baseConfig.content,
     "../../libs/feature-*/lib/**/*.{js,jsx,ts,tsx}",
-    // "./src/**/*.{js,jsx,ts,tsx}",
-    // "./stories/**/*.{js,jsx,ts,tsx}"
   ]
 }
 
