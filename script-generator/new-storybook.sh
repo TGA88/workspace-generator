@@ -35,7 +35,7 @@ CUR_PATH=$(pwd)
 
 # สร้าง folder project
 # mkdir -p <workspace_dir>/workspaces/<system_name>
-echo 'mkdir -p $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/storybook-host/$PROJECT_NAME'
+echo "mkdir -p $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/storybook-host/$PROJECT_NAME"
 mkdir -p $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/storybook-host/$PROJECT_NAME
 
 
@@ -44,24 +44,12 @@ mkdir -p $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/storybook-host/$PROJECT_NAME
 cp -r $GENERATOR_DIR/script-generator/template/project/storybook-host/* $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/storybook-host/$PROJECT_NAME/
 cp -r $GENERATOR_DIR/script-generator/template/project/storybook-host/.storybook $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/storybook-host/$PROJECT_NAME/
 
-cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/storybook-host/$PROJECT_NAME/
-# Search and replace in all files under storybook-host directory
-find ./ -type f -not -path "*/\.*" -exec file {} \; | 
-    grep -i 'text' | 
-    cut -d: -f1 | 
-    xargs sed -i '' "s/feature-exm/$PROJECT_NAME/g"
-    # xargs sed -i '' "s/@feature-exm/@$PROJECT_NAME/g"
-find .storybook -type f -not -path "*/\.*" -exec file {} \; | 
-    grep -i 'text' | 
-    cut -d: -f1 | 
-    xargs sed -i '' "s/feature-exm/$PROJECT_NAME/g"
-    # xargs sed -i '' "s/@feature-exm/@$PROJECT_NAME/g"
+bash $GENERATOR_DIR/script-generator/update-sb.sh $WORKSPACE_DIR $PROJECT_NAME
 
-echo "Replaced 'feature-exm' with '$PROJECT_NAME/' in all files under $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/storybook-host/$PROJECT_NAME/"
+cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/storybook-host/$PROJECT_NAME/
 
 
 npm pkg set name=@$WORKSPACE_DIR/storybook-host-$PROJECT_NAME
-
 
 
 

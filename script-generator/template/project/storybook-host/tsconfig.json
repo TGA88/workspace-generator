@@ -16,7 +16,6 @@
     "paths": {
       "@/*": ["../../*"],         // ชี้ไปที่ pnpm workspace (node-app)
       "@root/*": ["../../../../*"],  // ชี้ไปที่ root (feedos-exmaple-system),
-      "@feature-exm/*": ["../../libs/feature-exm/lib/*"],  // ชี้ไปที่ root (feedos-exmaple-system),
     },
 
     "types": [
