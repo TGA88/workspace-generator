@@ -40,6 +40,8 @@ mkdir -p $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/storybook-host
 touch $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/storybook-host/.gitkeep
 
 
+cp -r $GENERATOR_DIR/script-generator/template/workspace/tools $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
+
 cp $GENERATOR_DIR/script-generator/template/workspace/.gitignore $WORKSPACE_DIR
 
 cp $GENERATOR_DIR/script-generator/template/workspace/pnpm-workspace.yaml $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
