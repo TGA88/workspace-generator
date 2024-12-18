@@ -71,6 +71,21 @@ cp $GENERATOR_DIR/script-generator/template/workspace/changelog.config.js $WORKS
 cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 
 pnpm add -Dw typescript
+
+# ==========
+
+# install tailwind
+pnpm add -Dw tailwindcss postcss autoprefixer
+
+# ===========
+
+# add mui
+
+pnpm add -w @mui/material @emotion/react @emotion/styled @mui/icons-material @mui/x-data-grid
+
+# ===========
+
+# copy root-config
 cd $CUR_PATH
 echo "cp $GENERATOR_DIR/script-generator/template/workspace/system-workspace/* $WORKSPACE_DIR/workspaces/$SYSTEM_DIR"
 cp $GENERATOR_DIR/script-generator/template/workspace/system-workspace/* $WORKSPACE_DIR/workspaces/$SYSTEM_DIR

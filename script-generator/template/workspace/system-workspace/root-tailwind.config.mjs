@@ -52,6 +52,5 @@ export default {
         'b4-screen': '100vh'
       }
     },
-
   }
 }
