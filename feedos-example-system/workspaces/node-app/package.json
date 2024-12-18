@@ -79,6 +79,8 @@
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
+    "@inh-lib/common": "^0.2.1",
+    "@inh-lib/ddd": "^0.2.3",
     "@mui/icons-material": "^6.1.7",
     "@mui/material": "^6.1.7",
     "@mui/x-data-grid": "^7.22.2",

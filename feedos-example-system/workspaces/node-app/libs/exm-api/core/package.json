@@ -1,0 +1,41 @@
+{
+  "name": "@feedos-example-system/exm-api-core",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "lint": "tsc -p tsconfig.json && eslint ./src",
+    "build": "tsup",
+    "test": "pnpm run test:gen ; pnpm run fix:lcov",
+    "test:gen": "jest --runInBand --coverage --no-cache",
+    "fix:lcov": "bash ../../../tools/fix_lcov_paths.sh ../../../coverage/libs/exm-api/core ",
+    "test:show": "jest --runInBand --coverage --showConfig"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./command/*": {
+      "import": "./dist/command/*/index.mjs",
+      "require": "./dist/command/*/index.js",
+      "types": "./dist/command/*/index.d.ts"
+    },
+    "./query/*": {
+      "import": "./dist/query/*/index.mjs",
+      "require": "./dist/query/*/index.js",
+      "types": "./dist/query/*/index.d.ts"
+    },
+    "./logics/*": {
+      "import": "./dist/logics/*.mjs",
+      "require": "./dist/logics/*.js",
+      "types": "./dist/logics/*.d.ts"
+    }
+  }
+}
