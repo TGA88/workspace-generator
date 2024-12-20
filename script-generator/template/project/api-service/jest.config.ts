@@ -1,29 +1,26 @@
-
 // packages/api/jest.config.ts
-import type { Config } from 'jest';
-import baseConfig from '../../jest.config.base';
+// import type { Config } from 'jest';
 
-const apiConfig: Config = {
+/** @type {import('jest').Config}  */
+
+import type {Config} from 'jest';
+
+
+import baseConfig from '../../../jest.config.api-service';
+
+// console.log("baseRootDir",baseConfig.rootDir)
+// console.log("cwd=>",process.cwd())
+// console.log("__dirname=>",__dirname)
+
+const featureConfig: Config = {
+  rootDir: __dirname,
   ...baseConfig,
-  testEnvironment: 'node',
-  testMatch: ['**/*.spec.*', '**/*.test.*'],
-  moduleFileExtensions: ['ts', 'js', 'json', 'node'],
-  testPathIgnorePatterns: [
-    '<rootDir>/node_modules/',
-    '<rootDir>/dist/'
-  ],
-  transform: {
-    '^.+\\.tsx?$': [
-      'ts-jest',
-      {
-        isolatedModules: true,
-        tsconfig: '<rootDir>/tsconfig.json',
-        diagnostics: {
-          ignoreCodes: ['TS151001']
-        }
-      }
-    ]
-  }
-};
+  moduleNameMapper: {
 
-export default apiConfig;
+    '^@exm-api-service/(.*)$': '<rootDir>/src/$1',
+
+  },
+}
+// console.log("featureRootDir",featureConfig.rootDir)
+
+export default featureConfig;

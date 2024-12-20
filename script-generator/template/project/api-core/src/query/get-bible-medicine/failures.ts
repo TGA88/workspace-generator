@@ -1,4 +1,4 @@
-
+/* eslint-disable @typescript-eslint/no-namespace */
 import { Result, UseCaseError } from '@inh-lib/common';
 
 export namespace Failures {

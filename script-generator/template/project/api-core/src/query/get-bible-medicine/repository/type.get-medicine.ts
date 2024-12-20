@@ -1,4 +1,4 @@
-
+import { Items } from '../model';
 
 export type GetMedicineInput = {
   page?: number;
@@ -12,10 +12,4 @@ export type GetMedicineInput = {
 export type GetMedicineOutput = {
   items: Items[];
   total: number;
-};
-
-export type Items = {
-  id: string;
-  medCode: string;
-  medName: string;
 };

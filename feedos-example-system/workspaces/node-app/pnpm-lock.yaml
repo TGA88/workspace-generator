@@ -207,6 +207,14 @@ importers:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
 
+  libs/sample-api/core: {}
+
+  libs/sample-api/service:
+    dependencies:
+      '@feedos-example-system/sample-api-core':
+        specifier: workspace:^
+        version: link:../core
+
   libs/ui-foundations-mui:
     dependencies:
       react:

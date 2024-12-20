@@ -1,3 +1,4 @@
+import { Items } from '../model';
 
 // input output สำหรับ db
 export type GetAnimalTypeInput = {
@@ -10,10 +11,4 @@ export type GetAnimalTypeInput = {
 export type GetAnimalTypeOutput = {
   items: Items[];
   total: number;
-};
-
-export type Items = {
-  id: string;
-  animalTypeCode: string;
-  animalTypeName: string;
 };

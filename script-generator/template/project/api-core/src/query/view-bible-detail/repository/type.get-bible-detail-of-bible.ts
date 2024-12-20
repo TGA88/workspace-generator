@@ -1,4 +1,4 @@
-
+import { Items } from "../model"
 
 export type GetBibleDetailOfBibleInput = {
 	id?: string
@@ -12,16 +12,3 @@ export type GetBibleDetailOfBibleOutPut = {
 	items: Items[],
 	total: number
 }
-export type Items = {
-	id: string
-	status: string
-	medCode: string
-	medGroup: string
-	stopPeriod: string,
-	medId: string,
-	ingredient: {
-	  activeIngredient: string
-	  qty: number
-	}[],
-  
-  }
