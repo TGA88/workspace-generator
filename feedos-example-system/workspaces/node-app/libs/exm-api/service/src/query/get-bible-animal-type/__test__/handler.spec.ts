@@ -1,18 +1,18 @@
 import { InhLogger, Result } from '@inh-lib/common';
 import { inputDTO, InputDTO, OutputDTO } from '../dto';
 import { Handler } from '../handler';
-import { Repository, OutputModel, Failures } from '@fos-psc-webapi/bible-factory-core/query/get-bible-animal-type';
+import { Repository,GetAnimalTypeOutput, Failures } from '@feedos-example-system/exm-api-core/query/get-bible-animal-type';
 
 const mockRepository: Repository = jest.createMockFromModule(
-  '@fos-psc-webapi/bible-factory-core/query/get-bible-animal-type',
+  '@feedos-example-system/exm-api-core/query/get-bible-animal-type',
 );
 const mockMapper = jest.fn();
 const mockMapperSuccess = jest.fn();
 const mockLogger: InhLogger = jest.createMockFromModule('@inh-lib/common');
 let mockDTO: InputDTO = jest.genMockFromModule('../dto');
 let mockSuccessDTO: OutputDTO = jest.genMockFromModule('../dto');
-let mockGetCountry: OutputModel = jest.genMockFromModule(
-  '@fos-psc-webapi/bible-factory-core/query/get-bible-animal-type',
+let mockGetCountry: GetAnimalTypeOutput = jest.genMockFromModule(
+  '@feedos-example-system/exm-api-core/query/get-bible-animal-type',
 );
 const mockHandler = new Handler(mockMapper, mockMapperSuccess, mockRepository, mockLogger);
 beforeEach(() => {

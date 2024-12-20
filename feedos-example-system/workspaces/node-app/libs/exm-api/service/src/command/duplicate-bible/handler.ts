@@ -1,7 +1,7 @@
 import { UseCase } from '@inh-lib/ddd';
 import { Either, InhLogger, Result, left, right } from '@inh-lib/common';
 import { InputDTO, OutputDTO } from './dto';
-import { DataParser } from '@fos-psc-webapi/bible-factory-core';
+import { DataParser } from '@feedos-example-system/exm-api-core';
 import {
   InputModel,
   OutputModel,
@@ -11,7 +11,7 @@ import {
   CheckBibleStatusOutput,
   // GetAllAnimalTypeOutput,
 
-} from '@fos-psc-webapi/bible-factory-core/command/duplicate-bible';
+} from '@feedos-example-system/exm-api-core/command/duplicate-bible';
 
 type Response = Either<Failures.ParseFail | Failures.DuplicateFail, Result<OutputDTO>>;
 

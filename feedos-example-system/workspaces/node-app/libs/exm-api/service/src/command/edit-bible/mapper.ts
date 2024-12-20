@@ -1,7 +1,7 @@
 import { Result } from '@inh-lib/common';
 import { InputDTO, OutputDTO } from './dto';
-import { DataParser } from '@fos-psc-webapi/bible-factory-core';
-import { InputModel, OutputModel } from '@fos-psc-webapi/bible-factory-core/command/edit-bible';
+import { DataParser } from '@feedos-example-system/exm-api-core';
+import { InputModel, OutputModel } from '@feedos-example-system/exm-api-core/command/edit-bible';
 
 export const parseDTOToModel: DataParser<InputDTO, InputModel> = (rawData: InputDTO): Result<InputModel> => {
   const result: InputModel = {

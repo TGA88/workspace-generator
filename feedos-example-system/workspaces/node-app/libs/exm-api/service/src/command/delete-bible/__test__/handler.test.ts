@@ -1,18 +1,18 @@
 import { InhLogger, Result } from "@inh-lib/common"
 import { InputDTO, OutputDTO } from '../dto'
 import { Handler } from '../handler'
-import { Repository, Failures, CheckBbibleStatusOutput, DeleteBibleOutput } from '@fos-psc-webapi/bible-factory-core/command/delete-bible'
+import { Repository, Failures, CheckBbibleStatusOutput, DeleteBibleOutput } from '@feedos-example-system/exm-api-core/command/delete-bible'
 
 const mockRepository: Repository
-    = jest.createMockFromModule("@fos-psc-webapi/bible-factory-core/command/delete-bible")
+    = jest.createMockFromModule("@feedos-example-system/exm-api-core/command/delete-bible")
 const mockMapper = jest.fn()
 const mockMapperSuccess = jest.fn()
 const mockLogger: InhLogger = jest.createMockFromModule("@inh-lib/common")
 let mockDTO: InputDTO = jest.genMockFromModule('../dto')
 let mockSuccessDTO: OutputDTO = jest.genMockFromModule('../dto')
-let mockCheckPrescriptionStatus: CheckBbibleStatusOutput = jest.genMockFromModule('@fos-psc-webapi/bible-factory-core/command/delete-bible')
+let mockCheckPrescriptionStatus: CheckBbibleStatusOutput = jest.genMockFromModule('@feedos-example-system/exm-api-core/command/delete-bible')
 // let mockdeletePrescriptionDetail: DeletePrescriptionOutput = jest.genMockFromModule('@fos-psc-webapi/prescription-core/delete-prescription')
-let mockdeletePrescription: DeleteBibleOutput = jest.genMockFromModule('@fos-psc-webapi/bible-factory-core/command/delete-bible')
+let mockdeletePrescription: DeleteBibleOutput = jest.genMockFromModule('@feedos-example-system/exm-api-core/command/delete-bible')
 // let mockHasPrescriptionDetail: HasPrescriptionDetailOutput = jest.genMockFromModule('@fos-psc-webapi/prescription-core/delete-prescription')
 
 const mockHandler = new Handler(mockRepository, mockMapper, mockMapperSuccess, mockLogger)

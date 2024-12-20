@@ -8,8 +8,8 @@ import {
   OutputModel,
   Repository,
   UpdateBibleDetailStatusOutput,
-} from '@fos-psc-webapi/bible-factory-core/command/update-bible-detail-status';
-import { DataParser } from '@fos-psc-webapi/bible-factory-core';
+} from '@feedos-example-system/exm-api-core/command/update-bible-detail-status';
+import { DataParser } from '@feedos-example-system/exm-api-core';
 
 type Response = Either<Failures.UpdateFail | Failures.ParseFail, Result<OutputDTO>>;
 

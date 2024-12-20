@@ -3,13 +3,13 @@ import { InputDTO, OutputDTO } from './dto';
 import { Either, InhLogger, Result, left, right } from '@inh-lib/common';
 import {
   Failures,
-  InputModel,
-  OutputModel,
+  // InputModel,
+  // OutputModel,
+  GetAnimalTypeInput,
   Repository,
   GetAnimalTypeOutput,
-} from '@fos-psc-webapi/bible-factory-core/query/get-bible-animal-type';
-import { DataParser } from 'libs/fos-psc-webapi/prescription-core';
-
+} from '@feedos-example-system/exm-api-core/query/get-bible-animal-type';
+import { DataParser } from '@feedos-example-system/exm-api-core';
 type Response = Either<
   Failures.GetFail | Failures.ParseFail,
   // success
@@ -17,14 +17,14 @@ type Response = Either<
 >;
 
 export class Handler implements UseCase<InputDTO, Promise<Response>> {
-  private mapper: DataParser<InputDTO, InputModel>;
-  private mapperSuccess: DataParser<OutputModel, OutputDTO>;
+  private mapper: DataParser<InputDTO, GetAnimalTypeInput>;
+  private mapperSuccess: DataParser<GetAnimalTypeOutput, OutputDTO>;
   private repository: Repository;
   private logger: InhLogger;
 
   constructor(
-    mapper: DataParser<InputDTO, InputModel>,
-    mapperSuccess: DataParser<OutputModel, OutputDTO>,
+    mapper: DataParser<InputDTO, GetAnimalTypeInput>,
+    mapperSuccess: DataParser<GetAnimalTypeOutput, OutputDTO>,
     repository: Repository,
     logger: InhLogger,
   ) {
@@ -42,7 +42,7 @@ export class Handler implements UseCase<InputDTO, Promise<Response>> {
       // error พ่นไปหน้าบ้าน
       return left(new Failures.ParseFail());
     }
-    const inputModels = parseDTOToModelsOrError.getValue() as InputModel;
+    const inputModels = parseDTOToModelsOrError.getValue() as GetAnimalTypeInput;
     //inputModels ใช้ต่อ db
     const getAnimalTypeOrError = await this.repository.getAnimalType({
       page: inputModels.page,

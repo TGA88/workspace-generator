@@ -8,8 +8,8 @@ import {
   InputModel,
   OutputModel,
   Repository,
-} from '@fos-psc-webapi/bible-factory-core/command/delete-bible';
-import { DataParser } from '@fos-psc-webapi/bible-factory-core';
+} from '@feedos-example-system/exm-api-core/command/delete-bible';
+import { DataParser } from '@feedos-example-system/exm-api-core';
 
 type Response = Either<
   Failures.DeleteFail |

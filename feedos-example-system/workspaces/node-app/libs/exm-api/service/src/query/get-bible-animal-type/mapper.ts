@@ -1,6 +1,6 @@
 import { InputDTO, OutputDTO } from './dto';
-import { DataParser } from '@fos-psc-webapi/bible-factory-core';
-import { InputModel,OutputModel} from '@fos-psc-webapi/bible-factory-core/query/get-bible-animal-type';
+import { DataParser } from '@feedos-example-system/exm-api-core';
+import { InputModel,OutputModel} from '@feedos-example-system/exm-api-core/query/get-bible-animal-type';
 import { Result } from '@inh-lib/common';
 
 export const parseDTOToModel: DataParser<InputDTO, InputModel> = (rawData: InputDTO): Result<InputModel> => {

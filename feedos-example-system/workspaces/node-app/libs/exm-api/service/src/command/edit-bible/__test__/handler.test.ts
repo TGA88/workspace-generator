@@ -7,9 +7,9 @@ import {
   EditBibleOutput,
   // GetAllAnimalTypeOutput,
   GetBibleDetailOutput,
-} from '@fos-psc-webapi/bible-factory-core/command/edit-bible';
+} from '@feedos-example-system/exm-api-core/command/edit-bible';
 const mockRepository: Repository = jest.createMockFromModule(
-  '@fos-psc-webapi/bible-factory-core/command/edit-bible',
+  '@feedos-example-system/exm-api-core/command/edit-bible',
 );
 const mockMapper = jest.fn();
 const mockMapperSuccess = jest.fn();
@@ -17,13 +17,13 @@ const mockLogger: InhLogger = jest.createMockFromModule('@inh-lib/common');
 let mockDTO: InputDTO = jest.genMockFromModule('../dto');
 let mockSuccessDTO: OutputDTO = jest.genMockFromModule('../dto');
 let mockGetBibleDetail: GetBibleDetailOutput = jest.genMockFromModule(
-  '@fos-psc-webapi/bible-factory-core/command/edit-bible',
+  '@feedos-example-system/exm-api-core/command/edit-bible',
 );
 // let mockGetAllAnimalType: GetAllAnimalTypeOutput = jest.genMockFromModule(
-//   '@fos-psc-webapi/bible-factory-core/command/edit-bible',
+//   '@feedos-example-system/exm-api-core/command/edit-bible',
 // );
 let mockEditBible: EditBibleOutput = jest.genMockFromModule(
-  '@fos-psc-webapi/bible-factory-core/command/edit-bible',
+  '@feedos-example-system/exm-api-core/command/edit-bible',
 );
 const mockHandler = new Handler(mockMapper, mockMapperSuccess, mockRepository, mockLogger);
 beforeEach(() => {

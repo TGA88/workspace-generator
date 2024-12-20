@@ -6,9 +6,9 @@ import {
   Failures,
   DeleteBibleDetailOutput,
   GetBibleDetailOutput,
-} from '@fos-psc-webapi/bible-factory-core/command/delete-bible-detail';
+} from '@feedos-example-system/exm-api-core/command/delete-bible-detail';
 const mockRepository: Repository = jest.createMockFromModule(
-  '@fos-psc-webapi/bible-factory-core/command/delete-bible-detail',
+  '@feedos-example-system/exm-api-core/command/delete-bible-detail',
 );
 const mockMapper = jest.fn();
 const mockMapperSuccess = jest.fn();
@@ -16,10 +16,10 @@ const mockLogger: InhLogger = jest.createMockFromModule('@inh-lib/common');
 let mockDTO: InputDTO = jest.genMockFromModule('../dto');
 let mockSuccessDTO: OutputDTO = jest.genMockFromModule('../dto');
 let mockGetBibleDetail: GetBibleDetailOutput = jest.genMockFromModule(
-  '@fos-psc-webapi/bible-factory-core/command/delete-bible-detail',
+  '@feedos-example-system/exm-api-core/command/delete-bible-detail',
 );
 let mockDeleteBibleDetail: DeleteBibleDetailOutput = jest.genMockFromModule(
-  '@fos-psc-webapi/bible-factory-core/command/delete-bible-detail',
+  '@feedos-example-system/exm-api-core/command/delete-bible-detail',
 );
 const mockHandler = new Handler(mockMapper, mockMapperSuccess, mockRepository, mockLogger);
 beforeEach(() => {

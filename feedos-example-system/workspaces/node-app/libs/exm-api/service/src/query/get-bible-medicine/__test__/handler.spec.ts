@@ -1,10 +1,10 @@
 import { InhLogger, Result } from '@inh-lib/common';
 import { inputDTO, InputDTO, OutputDTO } from '../dto';
 import { Handler } from '../handler';
-import { Repository, OutputModel, Failures } from '@fos-psc-webapi/bible-factory-core/query/get-bible-medicine';
+import { Repository, OutputModel, Failures } from '@feedos-example-system/exm-api-core/query/get-bible-medicine';
 
 const mockRepository: Repository = jest.createMockFromModule(
-  '@fos-psc-webapi/bible-factory-core/query/get-bible-medicine',
+  '@feedos-example-system/exm-api-core/query/get-bible-medicine',
 );
 const mockMapper = jest.fn();
 const mockMapperSuccess = jest.fn();
@@ -12,7 +12,7 @@ const mockLogger: InhLogger = jest.createMockFromModule('@inh-lib/common');
 let mockDTO: InputDTO = jest.genMockFromModule('../dto');
 let mockSuccessDTO: OutputDTO = jest.genMockFromModule('../dto');
 let mockGetMedicine: OutputModel = jest.genMockFromModule(
-  '@fos-psc-webapi/bible-factory-core/query/get-bible-medicine',
+  '@feedos-example-system/exm-api-core/query/get-bible-medicine',
 );
 const mockHandler = new Handler(mockMapper, mockMapperSuccess, mockRepository, mockLogger);
 beforeEach(() => {

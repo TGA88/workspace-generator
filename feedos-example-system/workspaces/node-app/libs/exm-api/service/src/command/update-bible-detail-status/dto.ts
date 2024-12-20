@@ -9,8 +9,8 @@ export const inputDTO = z.object({
 
 export type InputDTO = z.infer<typeof inputDTO>;
 
-export const OutputDTO = z.object({
+export const outputDTO = z.object({
   detailId: z.string(),
 });
 
-export type OutputDTO = z.infer<typeof OutputDTO>;
+export type OutputDTO = z.infer<typeof outputDTO>;

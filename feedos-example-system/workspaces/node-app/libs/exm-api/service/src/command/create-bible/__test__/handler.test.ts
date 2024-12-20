@@ -6,9 +6,9 @@ import {
   Failures,
   CreateBibleOutput,
   // GetAllAnimalTypeOutput,
-} from '@fos-psc-webapi/bible-factory-core/command/create-bible';
+} from '@feedos-example-system/exm-api-core/command/create-bible';
 const mockRepository: Repository = jest.createMockFromModule(
-  '@fos-psc-webapi/bible-factory-core/command/create-bible',
+  '@feedos-example-system/exm-api-core/command/create-bible',
 );
 const mockMapper = jest.fn();
 const mockMapperSuccess = jest.fn();
@@ -16,10 +16,10 @@ const mockLogger: InhLogger = jest.createMockFromModule('@inh-lib/common');
 let mockDTO: InputDTO = jest.genMockFromModule('../dto');
 let mockSuccessDTO: OutputDTO = jest.genMockFromModule('../dto');
 // let mockGetAllAnimalType: GetAllAnimalTypeOutput = jest.genMockFromModule(
-//   '@fos-psc-webapi/bible-factory-core/command/create-bible',
+//   '@feedos-example-system/exm-api-core/command/create-bible',
 // );
 let mockCreateBible: CreateBibleOutput = jest.genMockFromModule(
-  '@fos-psc-webapi/bible-factory-core/command/create-bible',
+  '@feedos-example-system/exm-api-core/command/create-bible',
 );
 const mockHandler = new Handler(mockMapper, mockMapperSuccess, mockRepository, mockLogger);
 beforeEach(() => {

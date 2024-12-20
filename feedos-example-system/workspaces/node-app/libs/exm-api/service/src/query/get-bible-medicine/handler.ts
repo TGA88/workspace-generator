@@ -7,8 +7,8 @@ import {
   InputModel,
   OutputModel,
   Repository,
-} from '@fos-psc-webapi/bible-factory-core/query/get-bible-medicine';
-import { DataParser } from '@fos-psc-webapi/bible-factory-core';
+} from '@feedos-example-system/exm-api-core/query/get-bible-medicine';
+import { DataParser } from '@feedos-example-system/exm-api-core';
 
 type Response = Either<Failures.GetFail | Failures.ParseFail, Result<OutputDTO>>;
 

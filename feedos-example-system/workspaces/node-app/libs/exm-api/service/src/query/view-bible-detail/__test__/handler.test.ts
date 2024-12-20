@@ -2,10 +2,10 @@
 import { InhLogger, Result } from '@inh-lib/common';
 import { InputDTO, OutputDTO } from '../dto';
 import { Handler } from '../handler';
-import { Repository, Failures } from '@fos-psc-webapi/bible-factory-core/query/view-bible-detail';
+import { Repository, Failures } from '@feedos-example-system/exm-api-core/query/view-bible-detail';
 
 const mockRepository: Repository = jest.createMockFromModule(
-    '@fos-psc-webapi/bible-factory-core/query/view-bible-detail',
+    '@feedos-example-system/exm-api-core/query/view-bible-detail',
 );
 const mockMapper = jest.fn();
 const mockMapperSuccess = jest.fn();

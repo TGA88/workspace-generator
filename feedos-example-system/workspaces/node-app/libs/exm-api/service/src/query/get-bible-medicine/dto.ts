@@ -24,9 +24,9 @@ export const medicineItemsTemplate = z.object({
   medName: z.string(),
 });
 
-export const OutputDTO = z.object({
+export const outputDTO = z.object({
   items: z.array(medicineItemsTemplate),
   total: z.number(),
 });
 
-export type OutputDTO = z.infer<typeof OutputDTO>;
+export type OutputDTO = z.infer<typeof outputDTO>;

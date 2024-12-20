@@ -12,7 +12,7 @@
     "build": "tsup --config ../../../tsup.lib.config.ts",
     "test": "pnpm run test:gen ; pnpm run fix:lcov",
     "test:gen": "jest --runInBand --coverage --no-cache",
-    "fix:lcov": "bash ../../../tools/fix_lcov_paths.sh ../../../coverage/libs/exm-api/core ",
+    "fix:lcov": "bash ../../../tools/fix_lcov_paths.sh ../../../coverage/libs/exm-api/service ",
     "test:show": "jest --runInBand --coverage --showConfig",
     "showConfig": "tsc --showConfig"
   },

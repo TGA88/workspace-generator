@@ -8,8 +8,8 @@ import {
     Repository,
     GetDetailBibleOutput,
     GetBibleDetailOfBibleOutPut
-} from '@fos-psc-webapi/bible-factory-core/query/view-bible-detail';
-import { DataParser } from '@fos-psc-webapi/bible-factory-core';
+} from '@feedos-example-system/exm-api-core/query/view-bible-detail';
+import { DataParser } from '@feedos-example-system/exm-api-core';
 
 type Response = Either<
     Failures.GetFail |

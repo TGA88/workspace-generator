@@ -7,9 +7,9 @@ import {
     DuplicateBibleOutput,
     // GetAllAnimalTypeOutput,
     CheckBibleStatusOutput
-} from '@fos-psc-webapi/bible-factory-core/command/duplicate-bible';
+} from '@feedos-example-system/exm-api-core/command/duplicate-bible';
 const mockRepository: Repository = jest.createMockFromModule(
-    '@fos-psc-webapi/bible-factory-core/command/duplicate-bible',
+    '@feedos-example-system/exm-api-core/command/duplicate-bible',
 );
 const mockMapper = jest.fn();
 const mockMapperSuccess = jest.fn();
@@ -17,13 +17,13 @@ const mockLogger: InhLogger = jest.createMockFromModule('@inh-lib/common');
 let mockDTO: InputDTO = jest.genMockFromModule('../dto');
 let mockSuccessDTO: OutputDTO = jest.genMockFromModule('../dto');
 // let mockGetAllAnimalType: GetAllAnimalTypeOutput = jest.genMockFromModule(
-//     '@fos-psc-webapi/bible-factory-core/command/duplicate-bible',
+//     '@feedos-example-system/exm-api-core/command/duplicate-bible',
 // );
 let mockGetAllStatus: CheckBibleStatusOutput = jest.genMockFromModule(
-    '@fos-psc-webapi/bible-factory-core/command/duplicate-bible',
+    '@feedos-example-system/exm-api-core/command/duplicate-bible',
 );
 let mockCreateBible: DuplicateBibleOutput = jest.genMockFromModule(
-    '@fos-psc-webapi/bible-factory-core/command/duplicate-bible',
+    '@feedos-example-system/exm-api-core/command/duplicate-bible',
 );
 const mockHandler = new Handler(mockRepository, mockMapper, mockMapperSuccess, mockLogger);
 beforeEach(() => {
