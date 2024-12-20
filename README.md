@@ -58,3 +58,32 @@ bash script-generator/update-sb.sh feedos-example-system example
 bash workspace-generator/script-generator/update-sb.sh feedos-example-system example
 
 ```
+---
+## API Project
+### API-CORE
+ตัวอย่างการ update project api-core  สำหรับเก็บ abstract layer เช่น interface,type,repository,และ BusinessLogic ที่ต้องการ Share ระหว่าง DataLayer และ ServiceLayer
+```bash
+# param1=ชื่อ workspace
+# param2=ชื่อ api
+
+# pwd is folder workspace-template
+bash script-generator/new-apicore.sh feedos-example-system sample-api
+
+# สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
+bash workspace-generator/script-generator/new-apicore.sh feedos-example-system sample-api
+
+```
+### API-Service
+ตัวอย่างการ update project api-service สำหรับ Provide Action ตาม Business Requirement
+
+```bash
+# param1=ชื่อ workspace
+# param2=ชื่อ api
+
+# pwd is folder workspace-template
+bash script-generator/new-apiservice.sh feedos-example-system sample-api
+
+# สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
+bash workspace-generator/script-generator/new-service.sh feedos-example-system sample-api
+
+```
