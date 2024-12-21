@@ -1,0 +1,724 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../../../../node_modules/@prisma/exm-data-client"
+  binaryTargets = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x", "linux-musl", "linux-musl-openssl-3.0.x", "rhel-openssl-1.0.x", "linux-musl-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model PRESCRIPTION {
+  ID                         String                       @id @default(uuid())
+  PRESCRIPTION_ID            Int?                         @default(autoincrement())
+  DOCUMENT_NO                String?
+  DOC_DATE                   DateTime //                   @default(now())
+  START_DATE                 DateTime //
+  END_DATE                   DateTime //
+  STATUS                     String                       @default("ACTIVE")
+  COUNTRY_CODE               String //
+  COUNTRY_NAME               String //
+  VETERINARIAN_CODE          String //
+  VETERINARIAN_NAME          String //
+  FARM_CODE                  String //
+  FARM_NAME                  String //
+  FARM_TYPE_CODE             String //
+  FARM_TYPE_NAME             String //
+  FARM_TYPE                  String?
+  FARM_ADDRESS               String //
+  ANIMAL_TYPE_CODE           String //
+  ANIMAL_TYPE_NAME           String //
+  MEDICINE_TYPE_CODE         String //
+  MEDICINE_TYPE_NAME         String //
+  SPECIES_CODE               String //
+  SPECIES_NAME               String //
+  AGE                        String?
+  AGE_UNIT                   String? //
+  ORDER_PLANT                String //
+  ORDER_PLANT_CODE           String?
+  RECEIVE_PLANT              String //
+  RECEIVE_PLANT_CODE         String?
+  REMARKS                    String? //
+  CANCEL_REMARKS             String? //
+  SUBMIT_DATE                DateTime?
+  HOUSE                      String? //
+  CREATE_BY                  String?
+  UPDATE_BY                  String?
+  CREATE_AT                  DateTime?                    @default(now())
+  UPDATE_AT                  DateTime?                    @updatedAt
+  CANCEL_DATE                DateTime?
+  UPDATE_TIME                Int?                         @default(0)
+  DOC_NUMBER_RESERVE         String?
+  FARM_LICENSE               String?
+  PROFESSIONAL_LICENSE       String?
+  PRESCRIPTION_DETAIL        PRESCRIPTION_DETAIL[]
+  PRESCRIPTION_REASON        PRESCRIPTION_REASON[]
+  PRESCRIPTION_ANIMAL_PERIOD PRESCRIPTION_ANIMAL_PERIOD[]
+}
+
+model PRESCRIPTION_DETAIL {
+  ID                             String                           @id @default(uuid())
+  BRANDE_CODE                    String
+  MED_CODE                       String
+  DOCUMENT_NO                    String?
+  FEED_PERIOD                    Int?
+  FEED_PERIOD_UNIT               String?
+  STOP_PERIOD                    Int?
+  STOP_PERIOD_UNIT               String?
+  WARNING                        String?
+  QUANTITY                       Float?
+  CREATE_BY                      String?
+  UPDATE_BY                      String?
+  CREATE_AT                      DateTime?                        @default(now())
+  UPDATE_AT                      DateTime?                        @updatedAt
+  PRESCRIPTION_ID                String
+  PRESCRIPTION                   PRESCRIPTION                     @relation(fields: [PRESCRIPTION_ID], references: [ID])
+  PRESCRIPTION_ACTIVE_INGREDIENT PRESCRIPTION_ACTIVE_INGREDIENT[]
+}
+
+model PRESCRIPTION_ACTIVE_INGREDIENT {
+  ID                     String              @id @default(uuid())
+  ACTIVE_INGREDIENT_SEQ  Int
+  ACTIVE_INGREDIENT_CODE String
+  ACTIVE_INGREDIENT_NAME String
+  INGREDIENT_QUANTITY    Float?
+  CREATE_BY              String?
+  UPDATE_BY              String?
+  CREATE_AT              DateTime?           @default(now())
+  UPDATE_AT              DateTime?           @updatedAt
+  PRESCRIPTION_DETAIL_ID String
+  PRESCRIPTION_DETAIL    PRESCRIPTION_DETAIL @relation(fields: [PRESCRIPTION_DETAIL_ID], references: [ID], onDelete: Cascade)
+}
+
+model PRESCRIPTION_REASON {
+  ID              String       @id @default(uuid())
+  REASON_CODE     String
+  REASON_NAME     String
+  SEQUENCE_NO     Int?
+  CREATE_BY       String?
+  UPDATE_BY       String?
+  CREATE_AT       DateTime?    @default(now())
+  UPDATE_AT       DateTime?    @updatedAt
+  PRESCRIPTION_ID String
+  PRESCRIPTION    PRESCRIPTION @relation(fields: [PRESCRIPTION_ID], references: [ID])
+}
+
+model PRESCRIPTION_ANIMAL_PERIOD {
+  ID                 String       @id @default(uuid())
+  ANIMAL_PERIOD_CODE String
+  ANIMAL_PERIOD_NAME String
+  CREATE_BY          String?
+  UPDATE_BY          String?
+  CREATE_AT          DateTime?    @default(now())
+  UPDATE_AT          DateTime?    @updatedAt
+  PRESCRIPTION_ID    String
+  PRESCRIPTION       PRESCRIPTION @relation(fields: [PRESCRIPTION_ID], references: [ID])
+}
+
+model MAS_COUNTRY {
+  ID                  String                @id @default(uuid())
+  COUNTRY_CODE        String                @unique
+  COUNTRY_NAME        String
+  CREATE_BY           String?
+  UPDATE_BY           String?
+  CREATE_AT           DateTime?             @default(now())
+  UPDATE_AT           DateTime?             @updatedAt
+  MAS_ORG             MAS_ORG[]
+  ACCOUNT_MAS_COUNTRY ACCOUNT_MAS_COUNTRY[]
+}
+
+model MAS_COUNTRY_FARM {
+  ID                                      String                                    @id @default(uuid())
+  COUNTRY_CODE                            String?
+  COUNTRY_NAME                            String?
+  FARM_CODE                               String?                                   @unique
+  FARM_NAME                               String?
+  FARM_TYPE_CODE                          String?
+  FARM_TYPE_NAME                          String?
+  CV_CODE                                 String?
+  SPECIES_CODE                            String?
+  SPECIES_NAME                            String?
+  ANIMAL_NUMBER                           String?
+  ADDRESS                                 String?
+  CITY                                    String?
+  PROVINCE                                String?
+  POSTAL_CODE                             String?
+  DESC                                    String?
+  CPFYN                                   String?
+  ZONE                                    String?
+  CON1                                    String?
+  CON2                                    String?
+  CON3                                    String?
+  FULL_ADDRESS                            String?
+  EMAIL                                   String?
+  STATUS                                  String?                                   @default("ACTIVE")
+  SUBZONE                                 String?
+  CREATE_BY                               String?
+  UPDATE_BY                               String?
+  CREATE_AT                               DateTime?                                 @default(now())
+  UPDATE_AT                               DateTime?                                 @updatedAt
+  ACCOUNT_MAS_COUNTRY_FARM                ACCOUNT_MAS_COUNTRY_FARM[]
+  FARM_ANIMAL_TYPE                        FARM_ANIMAL_TYPE[]
+  MATCHING_EMAIL_MAPPING_MAS_COUNTRY_FARM MATCHING_EMAIL_MAPPING_MAS_COUNTRY_FARM[]
+  FARM_ORG                                FARM_ORG[]
+}
+
+model MAS_ORG {
+  ID                             String                           @id @default(uuid())
+  COUNTRY_CODE                   String?
+  ORG_CODE                       String?                          @unique
+  ORG_NAME                       String?
+  STATUS                         String?                          @default("ACTIVE")
+  ORG_SHORT_NAME                 String?
+  BU_CODE                        String?
+  CREATE_BY                      String?
+  UPDATE_BY                      String?
+  CREATE_AT                      DateTime?                        @default(now())
+  UPDATE_AT                      DateTime?                        @updatedAt
+  MAS_COUNTRY                    MAS_COUNTRY?                     @relation(fields: [MAS_COUNTRY_ID], references: [ID])
+  MAS_COUNTRY_ID                 String?
+  BU_ID                          String?
+  MAS_BU                         MAS_BU?                          @relation(fields: [BU_ID], references: [ID])
+  MATCHING_EMAIL_MAPPING_MAS_ORG MATCHING_EMAIL_MAPPING_MAS_ORG[]
+}
+
+model MAS_FEED_INFO {
+  ID                String    @id @default(uuid())
+  COUNTRY_CODE      String?
+  ORG_CODE          String?
+  PRODUCT_CODE      String?
+  BRAND_CODE        String?
+  SAP_CODE          String?
+  PRODUCT_NAME      String?
+  FORMULA_CODE      String?
+  MAIN_FORMULA      String?
+  MAIN_FORMULA_NAME String?
+  STATUS            String?   @default("ACTIVE")
+  CREATE_BY         String?
+  UPDATE_BY         String?
+  CREATE_AT         DateTime? @default(now())
+  UPDATE_AT         DateTime? @updatedAt
+}
+
+model MAS_MEDICINE {
+  ID                                String                              @id @default(uuid())
+  MEDICINE_CAT                      String?
+  MEDICINE_GROUP                    String?
+  MEDICINE_TYPE_CODE                String?
+  COUNTRY_CODE                      String?
+  COUNTRY_NAME                      String?
+  MEDICINE_CODE                     String?                             @unique
+  MEDICINE_NAME_LOCAL               String?
+  MEDICINE_NAME_ENG                 String?
+  STATUS                            String?                             @default("ACTIVE")
+  REGISTER_NUMBER                   String?
+  PACK_SIZE                         Float?
+  UNIT                              String?
+  ANIMAL_TYPE_CODE                  String?
+  ANIMAL_TYPE_NAME                  String?
+  WHO_CLASSIFICATION                String?
+  STOP_MEDICATION                   Int?
+  STOP_UNIT                         String?
+  REASON                            String?
+  HOW_TO_USER                       String?
+  OBJECTIVE                         String?
+  SPECIES_SHOW_DESC                 String?
+  QT_STRING                         String?
+  WARNING                           String?
+  DISPLAY_INGREDIENT                String?
+  COMMERCIAL                        Boolean?
+  CREATE_BY                         String?
+  UPDATE_BY                         String?
+  CREATE_AT                         DateTime?                           @default(now())
+  UPDATE_AT                         DateTime?                           @updatedAt
+  MAS_MAPPING_MEDICINE_INGREDIENT   MAS_MAPPING_MEDICINE_INGREDIENT[]
+  MAS_MEDICINE_ANIMALTYPE           MAS_MEDICINE_ANIMALTYPE[]
+  BIBLE_DETAIL_MAPPING_MAS_MEDICINE BIBLE_DETAIL_MAPPING_MAS_MEDICINE[]
+  MAS_MEDICINE_SPECIES              MAS_MEDICINE_SPECIES[]
+}
+
+model MAS_MEDICINE_SPECIES {
+  ID              String        @id @default(uuid())
+  MEDICINE_CODE   String?
+  SPECIES_CODE    String?
+  SPECIES_NAME    String?
+  CREATE_BY       String?
+  UPDATE_BY       String?
+  CREATE_AT       DateTime?     @default(now())
+  UPDATE_AT       DateTime?     @updatedAt
+  MAS_MEDICINE_ID String?
+  MAS_MEDICINE    MAS_MEDICINE? @relation(fields: [MAS_MEDICINE_ID], references: [ID], onDelete: Cascade)
+}
+
+model MAS_INGREDIENT {
+  ID                              String                            @id @default(uuid())
+  INGREDIENT_CODE                 String?
+  INGREDIENT_NAME                 String?
+  QUANTITY                        Float?
+  STATUS                          String?                           @default("ACTIVE")
+  REF_CODE                        String?
+  CREATE_BY                       String?
+  UPDATE_BY                       String?
+  CREATE_AT                       DateTime?                         @default(now())
+  UPDATE_AT                       DateTime?                         @updatedAt
+  MAS_MAPPING_MEDICINE_INGREDIENT MAS_MAPPING_MEDICINE_INGREDIENT[]
+}
+
+model MAS_MAPPING_MEDICINE_INGREDIENT {
+  INGREDIENT_ID   String
+  MAS_INGREDIENT  MAS_INGREDIENT @relation(fields: [INGREDIENT_ID], references: [ID])
+  INGREDIENT_CODE String?
+  MEDICINE_ID     String
+  MAS_MEDICINE    MAS_MEDICINE   @relation(fields: [MEDICINE_ID], references: [ID])
+  MEDICINE_CODE   String?
+  QUANTITY        Float
+  CREATE_BY       String?
+  UPDATE_BY       String?
+  CREATE_AT       DateTime?      @default(now())
+  UPDATE_AT       DateTime?      @updatedAt
+
+  @@id([INGREDIENT_ID, MEDICINE_ID])
+}
+
+model MAS_MEDICINE_ANIMALTYPE {
+  ID               String       @id @default(uuid())
+  ANIMAL_TYPE_CODE String
+  ANIMAL_TYPE_DESC String?
+  MEDICINE_ID      String
+  MAS_MEDICINE     MAS_MEDICINE @relation(fields: [MEDICINE_ID], references: [ID])
+  CREATE_BY        String?
+  UPDATE_BY        String?
+  CREATE_AT        DateTime?    @default(now())
+  UPDATE_AT        DateTime?    @updatedAt
+}
+
+model VETERINARIAN {
+  ID                     String                  @id @default(uuid())
+  VETERINARIAN_ID        Int?                    @unique @default(autoincrement())
+  STATUS                 String?                 @default("ACTIVE")
+  EMAIL                  String?
+  FIRST_NAME_LOCAL       String?
+  FIRST_NAME_ENG         String?
+  LAST_NAME_LOCAL        String?
+  LAST_NAME_ENG          String?
+  NAME_LOCAL             String?
+  NAME_ENG               String?
+  TITLE_CODE             String?
+  FARM_LICENSE           String?
+  FARM_LICENSE_CK        String?
+  PROFESSIONAL_LICENSE   String?
+  VETERINARIAN_CODE      String?                 @unique
+  POSITION               String?
+  CREATE_BY              String?
+  UPDATE_BY              String?
+  CREATE_AT              DateTime?               @default(now())
+  UPDATE_AT              DateTime?               @updatedAt
+  VETERINARIAN_SIGNATURE VETERINARIAN_SIGNATURE?
+  ACCOUNT                ACCOUNT[]
+}
+
+model VETERINARIAN_SIGNATURE {
+  ID              String       @id @default(uuid())
+  S3_URL          String?
+  VETERINARIAN_ID String       @unique
+  VETERINARIAN    VETERINARIAN @relation(fields: [VETERINARIAN_ID], references: [ID])
+  CREATE_BY       String?
+  UPDATE_BY       String?
+  CREATE_AT       DateTime?    @default(now())
+  UPDATE_AT       DateTime?    @updatedAt
+}
+
+model MAS_GENERAL_TYPE {
+  ID               String             @id @default(uuid())
+  GDTYPE           String             @unique
+  TYPE_DESCRIPTION String?
+  STATUS           String?            @default("ACTIVE")
+  CREATE_BY        String?
+  UPDATE_BY        String?
+  CREATE_AT        DateTime?          @default(now())
+  UPDATE_AT        DateTime?          @updatedAt
+  MAS_GENERAL_DESC MAS_GENERAL_DESC[]
+}
+
+model MAS_GENERAL_DESC {
+  ID                    String                  @id @default(uuid())
+  MAS_GENERAL_TYPE_ID   String
+  MAS_GENERAL_TYPE      MAS_GENERAL_TYPE        @relation(fields: [MAS_GENERAL_TYPE_ID], references: [ID])
+  GDCODE                String                  @unique
+  LOCAL_DESCRIPTION     String?
+  ENGLISH_DESCRIPTION   String?
+  SPTYPE                String?
+  SEQUENCE_NO           Int?
+  CONDITION             String?
+  STATUS                String?                 @default("ACTIVE")
+  CREATE_BY             String?
+  UPDATE_BY             String?
+  CREATE_AT             DateTime?               @default(now())
+  UPDATE_AT             DateTime?               @updatedAt
+  ACCOUNT_MAS_SPECIES   ACCOUNT_MAS_SPECIES[]
+  ACCOUNT_MAS_FARM_TYPE ACCOUNT_MAS_FARM_TYPE[]
+}
+
+model BIBLE {
+  ID                 String              @id @default(uuid())
+  SPECIES_CODE       String
+  SPECIES_NAME       String?
+  BIBLE_STATUS       String
+  YEAR               Int
+  COUNTRY_CODE       String?
+  COUNTRY_NAME       String?
+  STATUS             String?             @default("ACTIVE")
+  REVISED            Int?
+  MEDICINE_TYPE_CODE String?
+  MEDICINE_TYPE_NAME String?
+  SUBMIT_DATE        DateTime?
+  REMARKS            String?
+  CANCEL_DATE        DateTime?
+  CANCEL_REASON      String?
+  CREATE_BY          String?
+  UPDATE_BY          String?
+  CREATE_AT          DateTime?           @default(now())
+  UPDATE_AT          DateTime?           @updatedAt
+  BIBLE_DETAIL       BIBLE_DETAIL[]
+  BIBLE_ANIMAL_TYPE  BIBLE_ANIMAL_TYPE[]
+}
+
+model BIBLE_DETAIL {
+  ID                                String                              @id @default(uuid())
+  SPECIES_CODE                      String?
+  MEDICINE_CODE                     String?
+  MEDICINE_GROUP                    String?
+  MEDICINE_TYPE                     String?
+  COUNTRY_CODE                      String?
+  STATUS                            String?
+  CREATE_BY                         String?
+  UPDATE_BY                         String?
+  CREATE_AT                         DateTime?                           @default(now())
+  UPDATE_AT                         DateTime?                           @updatedAt
+  BIBLE_ID                          String
+  BIBLE                             BIBLE                               @relation(fields: [BIBLE_ID], references: [ID])
+  BIBLE_DETAIL_MAPPING_MAS_MEDICINE BIBLE_DETAIL_MAPPING_MAS_MEDICINE[]
+}
+
+model BIBLE_ANIMAL_TYPE {
+  ID               String    @id @default(uuid())
+  ANIMAL_TYPE_CODE String?
+  ANIMAL_TYPE_NAME String?
+  CREATE_BY        String?
+  UPDATE_BY        String?
+  CREATE_AT        DateTime? @default(now())
+  UPDATE_AT        DateTime? @updatedAt
+  BIBLE_ID         String
+  BIBLE            BIBLE     @relation(fields: [BIBLE_ID], references: [ID])
+}
+
+model BIBLE_DETAIL_MAPPING_MAS_MEDICINE {
+  ID              String       @id @default(uuid())
+  BIBLE_DETAIL_ID String
+  BIBLE_DETAIL    BIBLE_DETAIL @relation(fields: [BIBLE_DETAIL_ID], references: [ID])
+  MAS_MEDICINE_ID String
+  MAS_MEDICINE    MAS_MEDICINE @relation(fields: [MAS_MEDICINE_ID], references: [ID])
+  CREATE_BY       String?
+  UPDATE_BY       String?
+  CREATE_AT       DateTime?    @default(now())
+  UPDATE_AT       DateTime?    @updatedAt
+}
+
+model ACCOUNT {
+  ID                        String                     @id @default(uuid())
+  EMAIL                     String
+  FULL_NAME                 String?
+  USERNAME                  String                     @unique
+  STATUS                    String?                    @default("ACTIVE")
+  LOCAL_LANGUAGE            String?                    @default("Thai")
+  VETERINARIAN_ID           String?
+  VETERINARIAN              VETERINARIAN?              @relation(fields: [VETERINARIAN_ID], references: [ID])
+  IDENTIFY_ID               String                     @unique
+  USERNAME_PORTAL           String?
+  PROVIDER                  String?
+  ONBOARDING_USER_1         Boolean?                   @default(false)
+  ONBOARDING_USER_2         Boolean?                   @default(false)
+  ONBOARDING_VETERINARIAN   Boolean?                   @default(false)
+  ONBOARDING_MATCHING_EMAIL Boolean?                   @default(false)
+  ONBOARDING_TUTORIAL_ORDER Boolean?                   @default(false)
+  CREATE_BY                 String?
+  UPDATE_BY                 String?
+  CREATE_AT                 DateTime?                  @default(now())
+  UPDATE_AT                 DateTime?                  @updatedAt
+  ACCOUNT_MAS_FARM_TYPE     ACCOUNT_MAS_FARM_TYPE[]
+  ACCOUNT_MAS_SPECIES       ACCOUNT_MAS_SPECIES[]
+  ACCOUNT_MAS_COUNTRY_FARM  ACCOUNT_MAS_COUNTRY_FARM[]
+  ACCOUNT_MAS_COUNTRY       ACCOUNT_MAS_COUNTRY[]
+  ACCOUNT_ORG               ACCOUNT_ORG[]
+  ACCOUNT_BU                ACCOUNT_BU[]
+  ACCOUNT_ROLE              ACCOUNT_ROLE[]
+}
+
+model ACCOUNT_MAS_COUNTRY {
+  ID             String      @id @default(uuid())
+  CREATE_BY      String?
+  UPDATE_BY      String?
+  CREATE_AT      DateTime?   @default(now())
+  UPDATE_AT      DateTime?   @updatedAt
+  ACCOUNT_ID     String
+  ACCOUNT        ACCOUNT     @relation(fields: [ACCOUNT_ID], references: [ID])
+  MAS_COUNTRY_ID String
+  COUNTRY_CODE   String?
+  MAS_COUNTRY    MAS_COUNTRY @relation(fields: [MAS_COUNTRY_ID], references: [ID])
+}
+
+model ACCOUNT_MAS_SPECIES {
+  ID               String           @id @default(uuid())
+  CREATE_BY        String?
+  UPDATE_BY        String?
+  CREATE_AT        DateTime?        @default(now())
+  UPDATE_AT        DateTime?        @updatedAt
+  ACCOUNT_ID       String
+  ACCOUNT          ACCOUNT          @relation(fields: [ACCOUNT_ID], references: [ID])
+  SPECIES_CODE     String
+  MAS_GENERAL_DESC MAS_GENERAL_DESC @relation(fields: [SPECIES_CODE], references: [GDCODE])
+}
+
+model ACCOUNT_MAS_COUNTRY_FARM {
+  ID               String           @id @default(uuid())
+  CREATE_BY        String?
+  UPDATE_BY        String?
+  CREATE_AT        DateTime?        @default(now())
+  UPDATE_AT        DateTime?        @updatedAt
+  ACCOUNT_ID       String
+  ACCOUNT          ACCOUNT          @relation(fields: [ACCOUNT_ID], references: [ID])
+  COUNTRY_FARM_ID  String
+  MAS_COUNTRY_FARM MAS_COUNTRY_FARM @relation(fields: [COUNTRY_FARM_ID], references: [ID])
+}
+
+model ACCOUNT_MAS_FARM_TYPE {
+  ID               String           @id @default(uuid())
+  CREATE_BY        String?
+  UPDATE_BY        String?
+  CREATE_AT        DateTime?        @default(now())
+  UPDATE_AT        DateTime?        @updatedAt
+  ACCOUNT_ID       String
+  ACCOUNT          ACCOUNT          @relation(fields: [ACCOUNT_ID], references: [ID])
+  FARM_TYPE_CODE   String
+  MAS_GENERAL_DESC MAS_GENERAL_DESC @relation(fields: [FARM_TYPE_CODE], references: [GDCODE])
+}
+
+model FARM_ANIMAL_TYPE {
+  ID               String           @id @default(uuid())
+  CREATE_BY        String?
+  UPDATE_BY        String?
+  CREATE_AT        DateTime?        @default(now())
+  UPDATE_AT        DateTime?        @updatedAt
+  FARM_ID          String
+  MAS_COUNTRY_FARM MAS_COUNTRY_FARM @relation(fields: [FARM_ID], references: [ID])
+  ANIMAL_TYPE_CODE String?
+}
+
+model MATCHING_EMAIL {
+  ID                                      String                                    @id @default(uuid())
+  GROUP_NAME                              String?
+  GROUP_TYPE                              String?
+  STATUS                                  String?                                   @default("ACTIVE")
+  EMAIL                                   String?
+  PLANT_CODE                              String?
+  FARM_ORG                                String?
+  CREATE_BY                               String?
+  UPDATE_BY                               String?
+  CREATE_AT                               DateTime?                                 @default(now())
+  UPDATE_AT                               DateTime?                                 @updatedAt
+  MATCHING_EMAIL_MAPPING_MAS_ORG          MATCHING_EMAIL_MAPPING_MAS_ORG[]
+  MATCHING_EMAIL_MAPPING_MAS_COUNTRY_FARM MATCHING_EMAIL_MAPPING_MAS_COUNTRY_FARM[]
+}
+
+model MATCHING_EMAIL_MAPPING_MAS_ORG {
+  ID                String         @id @default(uuid())
+  CREATE_BY         String?
+  UPDATE_BY         String?
+  CREATE_AT         DateTime?      @default(now())
+  UPDATE_AT         DateTime?      @updatedAt
+  MAS_ORG_ID        String
+  MAS_ORG           MAS_ORG        @relation(fields: [MAS_ORG_ID], references: [ID])
+  MATCHING_EMAIL_ID String
+  MATCHING_EMAIL    MATCHING_EMAIL @relation(fields: [MATCHING_EMAIL_ID], references: [ID], onDelete: Cascade)
+}
+
+model MATCHING_EMAIL_MAPPING_MAS_COUNTRY_FARM {
+  ID                  String           @id @default(uuid())
+  CREATE_BY           String?
+  UPDATE_BY           String?
+  CREATE_AT           DateTime?        @default(now())
+  UPDATE_AT           DateTime?        @updatedAt
+  MAS_COUNTRY_FARM_ID String
+  MAS_COUNTRY_FARM    MAS_COUNTRY_FARM @relation(fields: [MAS_COUNTRY_FARM_ID], references: [ID])
+  MATCHING_EMAIL_ID   String
+  MATCHING_EMAIL      MATCHING_EMAIL   @relation(fields: [MATCHING_EMAIL_ID], references: [ID], onDelete: Cascade)
+}
+
+model SYNC_FM_BRAND_INFO {
+  PLANT_CODE          String
+  BRAND_CODE          String
+  MEDICINE_FLAG       String
+  PACKSIZE_CODE       Int
+  PRODUCT_CODE        String?
+  GRADE_CODE          String?
+  FORMULA_CODE        String?
+  PACKAGING_CODE      String?
+  WEM_FORMULA         String?
+  PROCESS_LINE        String?
+  CANCEL_FLAG         String?
+  USER_CREATE         String?
+  CREATE_DATE         DateTime?
+  EXPIRE_DAY          Int?
+  BLOCK_SALE          String?
+  EXCEPT_SPECIAL_DISC String?
+  DESC_LOC            String?
+  DESC_ENG            String?
+
+  @@id([PLANT_CODE, BRAND_CODE, MEDICINE_FLAG, PACKSIZE_CODE])
+}
+
+model SYNC_FM_MAS_MEDICINE {
+  PLANT_CODE        String
+  MEDICINE_CODE     String
+  DESC_LOC          String?
+  DESC_ENG          String?
+  OWNER             String?
+  CREATE_DATE       DateTime?
+  LAST_UPDATE_OWNER String?
+  LAST_UPDATE_DATE  DateTime?
+  LAST_FUNCTION     String?
+
+  @@id([PLANT_CODE, MEDICINE_CODE])
+}
+
+model SYNC_FM_INGREDIENT_INFO {
+  PLANT_CODE         String
+  INGREDIENT_CODE    String
+  INGREDIENT_NAME    String?
+  CANCEL_FLAG        String?
+  USER_CREATE        String?
+  CREATE_DATE        DateTime?
+  LAST_USER_ID       String?
+  LAST_UPDATE_DATE   DateTime?
+  INGREDIENT_TYPE    String?
+  INGREDIENT_PROCESS String?
+  FORMULA_FLAG       String?
+
+  @@id([PLANT_CODE, INGREDIENT_CODE])
+}
+
+model SYNC_FM_MAS_MAPPING_INGREDIENT_MED {
+  PLANT_CODE        String
+  INGREDIENT_CODE   String
+  MEDICINE_CODE     String
+  OWNER             String?
+  CREATE_DATE       DateTime?
+  LAST_UPDATE_OWNER String?
+  LAST_UPDATE_DATE  DateTime?
+  LAST_FUNCTION     String?
+
+  @@id([PLANT_CODE, INGREDIENT_CODE, MEDICINE_CODE])
+}
+
+model SYNC_GD2_FM_MEDICINE {
+  MEDICINE_CODE    String    @id
+  DESC_LOC         String?
+  DESC_ENG         String?
+  CANCEL_FLAG      String?
+  USER_CREATE      String?
+  CREATE_DATE      DateTime?
+  LAST_USER_ID     String?
+  LAST_UPDATE_DATE DateTime?
+}
+
+model SYNC_MAS_PRODUCT_GENERAL {
+  REF_ACCOUNT_PRODUCT  String?
+  SHORT_PRODUCT_CODE   String?
+  PRODUCT_CODE         String    @id
+  DESC_LOC             String?
+  DESC_ENG             String?
+  COMMERCIAL_NAME      String?
+  SEARCH_CODE          String?
+  ACCOUNT_PRODUCT_TYPE String?
+  MIS_PRODUCT_TYPE     String?
+  CANCEL_FLAG          String?
+  USER_CREATE          String?
+  CREATE_DATE          DateTime?
+  LAST_USER_ID         String?
+  LAST_UPDATE_DATE     DateTime?
+  LAST_FUNCTION        String?
+  SAP_MATERIAL_GROUP   String?
+  SAP_PRODUCT_GROUP    String?
+  PACKING_CONVERT_FLAG String?
+}
+
+model MAS_BU {
+  ID             String     @id @default(uuid())
+  BU_CODE        String
+  BU_NAME        String     @unique
+  BU_DESCRIPTION String
+  STATUS         String?    @default("ACTIVE")
+  CREATE_BY      String?
+  UPDATE_BY      String?
+  CREATE_AT      DateTime?  @default(now())
+  UPDATE_AT      DateTime?  @updatedAt
+  FARM_ORG       FARM_ORG[]
+  MAS_ORG        MAS_ORG[]
+}
+
+model FARM_ORG {
+  ID               String           @id @default(uuid())
+  FARM_ID          String
+  MAS_COUNTRY_FARM MAS_COUNTRY_FARM @relation(fields: [FARM_ID], references: [ID])
+  FARM_CODE        String
+  BU_ID            String
+  MAS_BU           MAS_BU           @relation(fields: [BU_ID], references: [ID])
+  CV_CODE          String?
+  CREATE_BY        String?
+  UPDATE_BY        String?
+  CREATE_AT        DateTime?        @default(now())
+  UPDATE_AT        DateTime?        @updatedAt
+}
+
+model ACCOUNT_ORG {
+  ID         String    @id @default(uuid())
+  ORG_CODE   String
+  ORG_NAME   String
+  ACCOUNT_ID String
+  ACCOUNT    ACCOUNT   @relation(fields: [ACCOUNT_ID], references: [ID])
+  CREATE_BY  String?
+  UPDATE_BY  String?
+  CREATE_AT  DateTime? @default(now())
+  UPDATE_AT  DateTime? @updatedAt
+}
+
+model ACCOUNT_BU {
+  ID         String    @id @default(uuid())
+  BU_CODE    String
+  BU_NAME    String
+  ACCOUNT_ID String
+  ACCOUNT    ACCOUNT   @relation(fields: [ACCOUNT_ID], references: [ID])
+  CREATE_BY  String?
+  UPDATE_BY  String?
+  CREATE_AT  DateTime? @default(now())
+  UPDATE_AT  DateTime? @updatedAt
+}
+
+model ACCOUNT_ROLE {
+  ID         String    @id @default(uuid())
+  ACCOUNT_ID String
+  ACCOUNT    ACCOUNT   @relation(fields: [ACCOUNT_ID], references: [ID])
+  ROLE_CODE  String
+  ROLE_NAME  String
+  CREATE_BY  String?
+  UPDATE_BY  String?
+  CREATE_AT  DateTime? @default(now())
+  UPDATE_AT  DateTime? @updatedAt
+}

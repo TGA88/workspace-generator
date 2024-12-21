@@ -1,0 +1,44 @@
+version: '3.8'
+services:
+  postgres_sv:
+    container_name: pg_exm_data
+    image: postgres:15.2
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=EXM_DATA_SHADOW
+    volumes:
+      - ./initdb/init.postgresql.sql:/docker-entrypoint-initdb.d/init.postgresql.sql  #ต้องลบ ./vol/data/postgresql script ถึงจะใช้ได้
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - 5432:5432
+    networks:
+      - my-network      
+  exm_data_migrate:
+    build:
+      context: ../../../../release
+      dockerfile: container-apps/exm-data-store-prisma/store-prisma/Dockerfile
+    depends_on:
+      - postgres_sv
+    container_name: exm_data_migrate_db
+    environment:
+      - DATABASE_URL=jdbc:postgresql://postgres_sv:5432/EXM_DATA_SHADOW
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres
+      - DATABASE_SCHEMA=EXM
+      - LQB_COMMAND=update-testing-rollback
+
+      # - DB_SERVER=postgresdb
+    ports:
+      - 5400:3000
+    links:
+      - postgres_sv
+    networks:
+      - my-network
+networks:
+  my-network:
+    driver: bridge
