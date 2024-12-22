@@ -1,0 +1,27 @@
+{
+    "extends": "../../../tsconfig-api-store-prisma.base.json",
+    "files": [],
+    "compilerOptions": {
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "types": [
+            "node",
+            "jest"
+        ],
+        "paths": {
+            "@/*": ["../../../*"],         // ชี้ไปที่ pnpm workspace (node-app)
+            "@root/*": ["../../../../../*"],  // ชี้ไปที่ root (feedos-exmaple-system),
+            // paths ใช้สำหรับ file .stories
+            "@exm-data-store-prisma/*": ["./src/*"],         // ชี้ไปที่ root project feature-exm
+      
+          },
+    },
+    "include": [
+        "src",
+        "**/*.config.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
+}

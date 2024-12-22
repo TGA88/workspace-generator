@@ -1,5 +1,5 @@
 {
-    "extends": "../../../tsconfig-api-service.base.json",
+    "extends": "../../../tsconfig-api-store-prisma.base.json",
     "files": [],
     "compilerOptions": {
         "module": "NodeNext",

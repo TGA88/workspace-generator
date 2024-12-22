@@ -1,0 +1,5 @@
+node_modules
+# Keep environment variables out of version control
+
+# need libquery_*  for running api in Docker on node-alpine
+# libquery_* 

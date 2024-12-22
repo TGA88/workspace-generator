@@ -7,11 +7,26 @@ import {
 } from '@feedos-example-system/exm-api-core/command/create-bible';
 import { InhLogger, Result } from '@inh-lib/common';
 import { PrismaClient } from '@exm-data-store-prisma/dbclient';
+import { Prisma as ExmPrisma } from '@prisma/exm-data-client';
+
+// Function สำหรับจัดการ Prisma query แต่ละอัน
+async function prismaExecute<T>(
+  executtor: () => Promise<T>
+): Promise<Result<T>> {
+  try {
+    const data = await executtor();
+    return Result.ok(data)
+  } catch (error) {
+    return Result.fail(error)
+    // return { success: false, error: error as Error };
+  }
+}
 
 // สำหรับต่อ database
 export class CreateBibleRepo implements Repository {
   private logger: InhLogger;
   private client: PrismaClient;
+
 
   constructor(client: PrismaClient, logger: InhLogger) {
     this.client = client;
@@ -19,9 +34,11 @@ export class CreateBibleRepo implements Repository {
   }
 
   async createBible(props: CreateBibleInput): Promise<Result<CreateBibleOutput>> {
-    try {
-      this.logger.info("createBible: execute bIBLE.create ")
-      const raw = await this.client.bIBLE.create({
+    type BibleCreateRes = ExmPrisma.PromiseReturnType<typeof this.client.bIBLE.create>
+
+// create Bible
+    const bibleCreateOrFail = await prismaExecute(() => {
+      return this.client.bIBLE.create({
         data: {
           COUNTRY_CODE: props.country.countryCode,
           COUNTRY_NAME: props.country.countryName,
@@ -36,10 +53,17 @@ export class CreateBibleRepo implements Repository {
           MEDICINE_TYPE_NAME: props.medType?.medTypeName,
         },
       });
-      // console.log('raw', raw);
+    })
+    if (bibleCreateOrFail.isFailure) {
+      this.logger.error("CreateBibleRepo: Bible Create fail")
+      return Result.fail(bibleCreateOrFail.error); // ส่ง error กลับไปเลย
+    }
+    const raw=bibleCreateOrFail.getValue() as BibleCreateRes;
 
-      for (const i of props.items) {
-        const medDetail = await this.client.mAS_MEDICINE.findUnique({
+    for (const i of props.items) {
+      // find Medecine
+      const findMedOrFail = await prismaExecute(() => {
+        return this.client.mAS_MEDICINE.findUnique({
           where: {
             ID: i,
             AND: {
@@ -49,7 +73,18 @@ export class CreateBibleRepo implements Repository {
           select: { MEDICINE_GROUP: true, MEDICINE_TYPE_CODE: true, MEDICINE_CODE: true },
         });
 
-        const rawDetail = await this.client.bIBLE_DETAIL.create({
+      })
+      if (findMedOrFail.isFailure) {
+        this.logger.error("CreateBibleRepo: mAS_MEDICINE.findUnique fail")
+        return Result.fail(findMedOrFail.error); // ส่ง error กลับไปเลย
+      }
+      const medDetail = findMedOrFail.getValue()
+
+
+      // Create Bilbel Detail
+      type BibleDetailCreateRes = ExmPrisma.PromiseReturnType<typeof this.client.bIBLE_DETAIL.create>
+      const bibleDtlCreateOrFail = await prismaExecute(() => {
+        return this.client.bIBLE_DETAIL.create({
           data: {
             BIBLE_ID: raw.ID,
             COUNTRY_CODE: raw.COUNTRY_CODE,
@@ -61,25 +96,38 @@ export class CreateBibleRepo implements Repository {
             CREATE_AT: new Date(),
             CREATE_BY: props.createBy,
           },
-        });
-        if (!rawDetail) {
-          throw new Error('Create Bible Detail Fail');
-        }
-        // console.log('rawDetail', rawDetail);
-
-        await this.client.bIBLE_DETAIL_MAPPING_MAS_MEDICINE.create({
-          data: {
-            BIBLE_DETAIL_ID: rawDetail.ID,
-            MAS_MEDICINE_ID: i,
-            CREATE_AT: new Date(),
-            CREATE_BY: props.createBy,
-          },
-        });
-        // console.log('rawMapDetailWithMed', rawMapDetailWithMed);
+        })
+      })
+      if (bibleDtlCreateOrFail.isFailure) {
+        this.logger.error("CreateBibleRepo: bIBLE_DETAIL.create fail")
+        return Result.fail(bibleDtlCreateOrFail.error); // ส่ง error กลับไปเลย
       }
-      for (const i of props.animalType as { animalTypeCode: string; animalTypeName: string }[]) {
-        // for (const i of props.animalType as string[]) {
-        const rawAnimalTypeDetail = await this.client.bIBLE_ANIMAL_TYPE.create({
+      const rawDetail = bibleDtlCreateOrFail.getValue() as BibleDetailCreateRes
+
+
+      // create bIBLE_DETAIL_MAPPING_MAS_MEDICINE
+      const bibleDtlMasMedCreateOrFail = await prismaExecute(
+        () => {
+          return this.client.bIBLE_DETAIL_MAPPING_MAS_MEDICINE.create({
+            data: {
+              BIBLE_DETAIL_ID: rawDetail.ID,
+              MAS_MEDICINE_ID: i,
+              CREATE_AT: new Date(),
+              CREATE_BY: props.createBy,
+            },
+          })
+        }
+      );
+      if (bibleDtlMasMedCreateOrFail.isFailure) {
+        this.logger.error("CreateBibleRepo: bIBLE_DETAIL_MAPPING_MAS_MEDICINE.create fail")
+        return Result.fail(bibleDtlMasMedCreateOrFail.error); // ส่ง error กลับไปเลย
+      }
+    }
+
+    for (const i of props.animalType as { animalTypeCode: string; animalTypeName: string }[]) {
+      // for (const i of props.animalType as string[]) {
+      const bibleAnimalTypeCreateOrFail = await prismaExecute(()=>{
+        return this.client.bIBLE_ANIMAL_TYPE.create({
           data: {
             BIBLE_ID: raw.ID,
             ANIMAL_TYPE_CODE: i.animalTypeCode,
@@ -88,18 +136,18 @@ export class CreateBibleRepo implements Repository {
             CREATE_BY: props.createBy,
           },
         });
-        if (!rawAnimalTypeDetail) {
-          throw new Error('Create Animal Type Detail Fail');
-        }
-        // console.log('rawAnimalTypeDetail', rawAnimalTypeDetail);
+      })
+      if (bibleAnimalTypeCreateOrFail.isFailure) {
+        this.logger.error("CreateBibleRepo: bIBLE_ANIMAL_TYPE.create fail")
+        return Result.fail(bibleAnimalTypeCreateOrFail.error); // ส่ง error กลับไปเลย
       }
-
-      const result: CreateBibleOutput = {
-        id: raw.ID,
-      };
-      return Result.ok(result);
-    } catch (error) {
-      return Result.fail(error);
+      const rawAnimalTypeDetail = bibleAnimalTypeCreateOrFail.getValue()
+      this.logger.debug(`rawAnimalTypeDetail: ${rawAnimalTypeDetail}`);
     }
+
+    const result: CreateBibleOutput = {
+      id: raw.ID,
+    };
+    return Result.ok(result);
   }
 }
