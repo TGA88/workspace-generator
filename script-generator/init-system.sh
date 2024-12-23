@@ -182,7 +182,7 @@ pnpm add -Dw jest-fixed-jsdom
 #======
 
 #  install storybook lib
-pnpm add -Dw   @storybook/react @storybook/testing-library
+pnpm add -Dw   @storybook/react @storybook/react-vite msw-storybook-addon @storybook/testing-library
 # =========
 pnpm update -i
 # # install storybook
