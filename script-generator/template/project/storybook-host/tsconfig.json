@@ -14,8 +14,10 @@
     // "noEmit": true,
     
     "paths": {
-      "@/*": ["../../*"],         // ชี้ไปที่ pnpm workspace (node-app)
-      "@root/*": ["../../../../*"],  // ชี้ไปที่ root (feedos-exmaple-system),
+      // ชี้ไปที่ pnpm workspace (node-app)
+      "@/*": ["../../*"],         
+      // ชี้ไปที่ root (feedos-exmaple-system)
+      "@root/*": ["../../../../*"]
     },
 
     "types": [

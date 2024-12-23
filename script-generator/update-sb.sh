@@ -46,7 +46,7 @@ EOF
 
     cat > "$temp_tsconfig" << EOF
     "paths": {
-${existing_paths}
+${existing_paths},
 ${paths_config}
     },
 EOF
