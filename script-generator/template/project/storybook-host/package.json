@@ -8,8 +8,7 @@
   },
   "dependencies": {
     "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "@feedos-example-system/ui-foundations-mui": "workspace:*"
+    "react-dom": "^18.0.0"
   },
   "keywords": [],
   "author": "",
