@@ -60,10 +60,25 @@ str=$(echo "$str" | tr '[:lower:]' '[:upper:]')
 str=$(echo "$str" | tr '-' '_')
 LOWER_PROJECT_NAME=$str
 
-find ./ -type f -not -path "*/\.*" -exec file {} \; | 
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # find ./ -type f -not -path "*/\.*" -exec file {} \; | 
+    find ./ -type f -not -path "*/\.*" -exec file {} \; | 
     grep -i -E '(text| JSON data)' | 
     cut -d: -f1 | 
-    xargs sed -i '' -e "s/exm/$PROJECT_NAME/g" -e "s/EXM/$LOWER_PROJECT_NAME/g" 
+    xargs sed -i '' -e "s/exm/$PROJECT_NAME/g" -e "s/EXM/$LOWER_PROJECT_NAME/g" -e "s/feedos-example-system/$WORKSPACE_DIR/g"
+
+else
+    # find ./ -type f -not -path "*/\.*" -exec file {} \; | 
+    find ./ -type f -not -path "*/\.*" -exec file {} \; | 
+    grep -i -E '(text| JSON data)' | 
+    cut -d: -f1 | 
+    xargs sed -i -e "s/exm/$PROJECT_NAME/g" -e "s/EXM/$LOWER_PROJECT_NAME/g" -e "s/feedos-example-system/$WORKSPACE_DIR/g"
+
+
+fi
+
+
     
 
 echo "Replaced 'exm' with '$PROJECT_NAME' in all files under $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$PROJECT_NAME-data/store-prisma/"
