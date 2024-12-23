@@ -157,7 +157,7 @@ cd $CUR_PATH
  cp $GENERATOR_DIR/script-generator/template/project/.prettierignore $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
  cp $GENERATOR_DIR/script-generator/template/project/.prettierrc $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
  cp $GENERATOR_DIR/script-generator/template/project/root-eslint.config.mjs $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
- cp $GENERATOR_DIR/script-generator/template/project/jest.config.base.ts $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/jest.config.ts
+ cp -r $GENERATOR_DIR/script-generator/template/project/jest.config* $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/
 
 # ===============
 
