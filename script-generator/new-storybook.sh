@@ -51,6 +51,23 @@ cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/storybook-host/$PROJECT_NAME/
 
 npm pkg set name=@$WORKSPACE_DIR/storybook-host-$PROJECT_NAME
 
+# Search and replace in all files under features directory
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    find ./ -type f -not -path "*/\.*" -exec file {} \; | 
+    grep -i -E '(text| JSON data)' | 
+    cut -d: -f1 | 
+    xargs sed -i '' -e "s/feedos-example-system/$WORKSPACE_DIR/g"
+    # xargs sed -i '' "s/@feature-exm/@$PROJECT_NAME/g"
+
+else
+    find ./ -type f -not -path "*/\.*" -exec file {} \; | 
+    grep -i -E '(text| JSON data)' | 
+    cut -d: -f1 | 
+    xargs sed -i -e "s/feedos-example-system/$WORKSPACE_DIR/g"
+    # xargs sed -i '' "s/@feature-exm/@$PROJECT_NAME/g"
+
+fi
+
 
 
 pnpm install

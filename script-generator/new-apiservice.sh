@@ -45,10 +45,22 @@ cp -r $GENERATOR_DIR/script-generator/template/project/api-service/* $WORKSPACE_
 
 cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$PROJECT_NAME/service
 # Search and replace in all files under features directory
-find ./ -type f -not -path "*/\.*" -exec file {} \; | 
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    find ./ -type f -not -path "*/\.*" -exec file {} \; | 
     grep -i -E '(text| JSON data)' | 
     cut -d: -f1 | 
-    xargs sed -i '' "s/exm-api/$PROJECT_NAME/g"
+    xargs sed -i '' -e "s/exm-api/$PROJECT_NAME/g" -e "s/feedos-example-system/$WORKSPACE_DIR/g"
+    # xargs sed -i '' "s/@feature-exm/@$PROJECT_NAME/g"
+
+else
+
+    find ./ -type f -not -path "*/\.*" -exec file {} \; | 
+    grep -i -E '(text| JSON data)' | 
+    cut -d: -f1 | 
+     xargs sed -i -e "s/exm-api/$PROJECT_NAME/g" -e "s/feedos-example-system/$WORKSPACE_DIR/g"
+    # xargs sed -i '' "s/@feature-exm/@$PROJECT_NAME/g"
+
+fi
 
 echo "Replaced 'exm-api' with '$PROJECT_NAME' in all files under $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$PROJECT_NAME/service/"
 
