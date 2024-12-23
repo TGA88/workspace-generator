@@ -181,13 +181,13 @@ pnpm add -Dw msw
 pnpm add -Dw jest-fixed-jsdom
 #======
 
-#  install storybook lib
-pnpm add -Dw   @storybook/react @storybook/react-vite msw-storybook-addon @storybook/testing-library
+# install storybook
+# ติดตั้ง dependencies ที่ root
+pnpm add -Dw storybook@^8.0.0 @storybook/addon-essentials @storybook/addon-interactions @storybook/addon-links @storybook/blocks @storybook/react @storybook/react-vite @storybook/test @storybook/testing-library msw-storybook-addon
+# pnpm add -Dw storybook@^8.0.0 @storybook/cli @storybook/addon-essentials @storybook/addon-interactions @storybook/addon-links @storybook/blocks @storybook/react @storybook/react-vite @storybook/test @storybook/testing-library msw-storybook-addon
 # =========
+
 pnpm update -i
-# # install storybook
-# # ติดตั้ง dependencies ที่ root
-# pnpm add -D @storybook/cli @storybook/addon-essentials @storybook/addon-interactions @storybook/addon-links @storybook/blocks @storybook/react @storybook/react-vite @storybook/testing-library
 
 # # ติดตั้ง dependencies เพิ่มเติมสำหรับ development
 # pnpm add -D vite @vitejs/plugin-react autoprefixer postcss tailwindcss storybook-dark-mode @storybook/addon-styling @storybook/addon-a11y chromatic
