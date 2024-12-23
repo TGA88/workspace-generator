@@ -1,5 +1,5 @@
 
-import type { Decorator, StoryFn } from '@storybook/react';
+// import type { Decorator, StoryFn } from '@storybook/react';
 import { initialize, mswLoader } from 'msw-storybook-addon'
 
 // .storybook/preview.tsx
@@ -38,12 +38,12 @@ export const parameters = {
 
 export const loaders=[mswLoader]
 
-export const decorators: Decorator[] = [
-  ((Story: StoryFn) => (
-    // <ThemeProvider>
-      <Story />
-    // </ThemeProvider>
-  )) as Decorator,
-];
+// export const decorators: Decorator[] = [
+//   ((Story: StoryFn) => (
+//     <ThemeProvider>
+//       <Story />
+//     </ThemeProvider>
+//   )) as Decorator,
+// ];
 
 
