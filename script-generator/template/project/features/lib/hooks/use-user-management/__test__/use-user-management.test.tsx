@@ -3,7 +3,7 @@ import { useUserManagement } from '@feature-exm/hooks/use-user-management/use-us
 import * as userManagementFunctions from '@feature-exm/hooks/use-user-management/functions/user-management';
 
 // Mock the pure functions
-jest.mock('../logics/userManagement');
+jest.mock('../functions/user-management');
 
 describe('useUserManagement - Unit Tests', () => {
   const mockFilterActiveUsers = jest.spyOn(userManagementFunctions, 'filterActiveUsers');

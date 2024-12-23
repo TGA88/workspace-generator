@@ -17,25 +17,25 @@
 
   "exports": {
     ".": {
+      "types": "./dist/types/main.d.ts",
       "import": "./dist/main.js",
-      "require": "./dist/main.cjs",
-      "types": "./dist/types/main.d.ts"
+      "require": "./dist/main.cjs"
       
     },
     "./components/*": {
+      "types": "./dist/types/components/*/*.d.ts",
       "import": "./dist/components/*/*.js",
-      "require": "./dist/components/*/*.cjs",
-      "types": "./dist/types/components/*/*.d.ts"
+      "require": "./dist/components/*/*.cjs"
     },
     "./containers/*": {
+      "types": "./dist/types/containers/*/*.d.ts",
       "import": "./dist/containers/*/*.js",
-      "require": "./dist/containers/*/*.cjs",
-      "types": "./dist/types/containers/*/*.d.ts"
+      "require": "./dist/containers/*/*.cjs"
     },
     "./hooks/*": {
+      "types": "./dist/types/hooks/*/*.d.ts",
       "import": "./dist/hooks/*/*.js",
-      "require": "./dist/hooks/*/*.cjs",
-      "types": "./dist/types/hooks/*/*.d.ts"
+      "require": "./dist/hooks/*/*.cjs"
     }
   },
   "scripts": {

@@ -183,7 +183,7 @@ pnpm add -Dw jest-fixed-jsdom
 
 # install storybook
 # ติดตั้ง dependencies ที่ root
-pnpm add -Dw storybook@^8.0.0 @storybook/addon-essentials @storybook/addon-interactions @storybook/addon-links @storybook/blocks @storybook/react @storybook/react-vite @storybook/test @storybook/testing-library msw-storybook-addon
+pnpm add -Dw storybook@^8.0.0 @storybook/addon-essentials @storybook/addon-interactions @storybook/addon-links @storybook/blocks @storybook/react @storybook/react-vite @storybook/test msw-storybook-addon
 # pnpm add -Dw storybook@^8.0.0 @storybook/cli @storybook/addon-essentials @storybook/addon-interactions @storybook/addon-links @storybook/blocks @storybook/react @storybook/react-vite @storybook/test @storybook/testing-library msw-storybook-addon
 # =========
 

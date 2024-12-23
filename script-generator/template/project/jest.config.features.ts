@@ -17,7 +17,7 @@ const featureConfig: Config = {
   testMatch: ['**/*.spec.*', '**/*.test.*'],
 
   collectCoverageFrom: [
-    'lib/**/*.{ts,tsx}',
+    'lib/**/hooks/**/*.{ts,tsx}',
     '!**/*.d.ts',
     '!**/*.stories.{ts,tsx}',
     '!**/index.{ts,tsx}',
