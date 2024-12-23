@@ -23,18 +23,6 @@ bash script-generator/init-system.sh feedos-example-system node-app
 bash workspace-generator/script-generator/init-system.sh feedos-example-system node-app
 
 ```
-
-## Lib Feature
-ตัวอย่างการ generate project type feature
-```bash
-# pwd is folder workspace-template
-bash script-generator/new-feature.sh feedos-example-system ui-foundations-mui
-
-# สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
-bash workspace-generator/script-generator/new-feature.sh feedos-example-system ui-foundations-mui
-
-```
-
 ## Storybook host
 
 ### Create
@@ -56,6 +44,19 @@ bash script-generator/update-sb.sh feedos-example-system example
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/update-sb.sh feedos-example-system example
+
+```
+---
+
+## Frontend Project
+### Feature-Lib
+ตัวอย่างการ generate project type feature
+```bash
+# pwd is folder workspace-template
+bash script-generator/new-feature.sh feedos-example-system ui-foundations-mui
+
+# สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
+bash workspace-generator/script-generator/new-feature.sh feedos-example-system ui-foundations-mui
 
 ```
 ---
