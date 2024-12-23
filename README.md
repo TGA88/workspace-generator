@@ -23,6 +23,9 @@ bash script-generator/init-system.sh feedos-example-system node-app
 bash workspace-generator/script-generator/init-system.sh feedos-example-system node-app
 
 ```
+ระหว่าง install package จะมีคถามดังนี้ ให้ตอบ skip-now
+![image](assets/Screenshot%202567-12-23%20at%2016.51.52.png)
+
 ## Storybook host
 
 ### Create
