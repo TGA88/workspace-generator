@@ -169,7 +169,7 @@ pnpm add -Dw vite @vitejs/plugin-react vite-plugin-dts vite-plugin-lib-inject-cs
 # install Rollup Plugin 
 # rollup-plugin-node-externals  สำหรับ unbundle dependency ใน package.json
 # rollup-plugin-preserve-directives เพื่อให้ ไม่ถูก remove comment 'use client' หลังจาก bunble
-pnpm add -Dw rollup-plugin-node-externals rollup-plugin-preserve-directives
+pnpm add -Dw rollup rollup-plugin-node-externals rollup-plugin-preserve-directives
 
 # instll glob สำหรับใช้ ในการ config vite ใน sub project type ui,features
 pnpm add -Dw glob
@@ -181,6 +181,9 @@ pnpm add -Dw msw
 pnpm add -Dw jest-fixed-jsdom
 #======
 
+#  install storybook lib
+pnpm add -Dw   @storybook/react @storybook/testing-library
+# =========
 pnpm update -i
 # # install storybook
 # # ติดตั้ง dependencies ที่ root
