@@ -71,8 +71,12 @@ cp $GENERATOR_DIR/script-generator/template/workspace/changelog.config.js $WORKS
 cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 
 pnpm add -Dw typescript
-
+cd $CUR_PATH
+echo "cp $GENERATOR_DIR/script-generator/template/workspace/tsconfig.base.json $WORKSPACE_DIR/workspaces/$SYSTEM_DIR"
+cp $GENERATOR_DIR/script-generator/template/workspace/tsconfig.base.json $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 # ==========
+
+cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 
 # install tailwind
 pnpm add -Dw tailwindcss postcss autoprefixer
