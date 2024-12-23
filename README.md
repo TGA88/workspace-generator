@@ -91,3 +91,18 @@ bash script-generator/new-apiservice.sh feedos-example-system sample-api
 bash workspace-generator/script-generator/new-service.sh feedos-example-system sample-api
 
 ```
+
+### API-StorePrisma
+ตัวอย่างการ update project api-store-prisma สำหรับ Provide data layer และ schema model สำหรับ prismaorm
+
+```bash
+# param1=ชื่อ workspace
+# param2=ชื่อ database schema
+
+# pwd is folder workspace-template
+bash script-generator/new-storeprisma.sh feedos-example-system demo
+
+# สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
+bash workspace-generator/script-generator/new-storeprisma.sh feedos-example-system demo
+
+```

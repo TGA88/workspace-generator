@@ -53,7 +53,7 @@ cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$PROJECT_NAME-data/store-prisma
 
 # Search and replace in all files under features directory
 
-str="aqc-adh"
+str=$PROJECT_NAME
 # แปลงเป็นตัวพิมพ์ใหญ่ก่อน
 str=$(echo "$str" | tr '[:lower:]' '[:upper:]')
 # แล้วค่อยเปลี่ยน - เป็น _
