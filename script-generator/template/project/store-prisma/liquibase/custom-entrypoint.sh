@@ -9,11 +9,11 @@ fi
 
 # Run Liquibase with the provided command
 liquibase \
-  --url=$DATABASE_URL \
-  --username=$DATABASE_USER \
-  --password=$DATABASE_PASSWORD \
-  --defaultSchemaName=$DATABASE_SCHEMA \
-  --liquibaseSchemaName=$DATABASE_SCHEMA \
+  --url=$LQB_DATABASE_URL \
+  --username=$LQB_DATABASE_USER \
+  --password=$LQB_DATABASE_PASSWORD \
+  --defaultSchemaName=$LQB_DATABASE_SCHEMA \
+  --liquibaseSchemaName=$LQB_DATABASE_SCHEMA \
   --changeLogFile=/changelog.yaml \
   --contexts=$LQB_CONTEXT \
   $LQB_COMMAND
