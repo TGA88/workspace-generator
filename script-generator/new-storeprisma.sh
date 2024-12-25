@@ -42,6 +42,7 @@ mkdir -p $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$PROJECT_NAME-data/store-pri
 
 
 cp -r $GENERATOR_DIR/script-generator/template/project/store-prisma/* $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$PROJECT_NAME-data/store-prisma/
+cp -r $GENERATOR_DIR/script-generator/template/project/store-prisma/.env $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$PROJECT_NAME-data/store-prisma/.env
 
 cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$PROJECT_NAME-data/store-prisma
 
