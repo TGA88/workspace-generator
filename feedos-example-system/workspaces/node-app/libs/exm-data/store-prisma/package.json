@@ -5,7 +5,6 @@
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
-  "type": "commonjs",
   "files": [
     "dist",
     "node_modules/@prisma",
@@ -64,20 +63,10 @@
       "import": "./dist/bible-factory/command/edit-bible/index.mjs",
       "require": "./dist/bible-factory/command/edit-bible/index.js"
     },
-    "./bible-factory/command": {
-      "types": "./dist/bible-factory/command/index.d.ts",
-      "import": "./dist/bible-factory/command/index.mjs",
-      "require": "./dist/bible-factory/command/index.js"
-    },
     "./bible-factory/command/update-bible-detail-status": {
       "types": "./dist/bible-factory/command/update-bible-detail-status/index.d.ts",
       "import": "./dist/bible-factory/command/update-bible-detail-status/index.mjs",
       "require": "./dist/bible-factory/command/update-bible-detail-status/index.js"
-    },
-    "./bible-factory": {
-      "types": "./dist/bible-factory/index.d.ts",
-      "import": "./dist/bible-factory/index.mjs",
-      "require": "./dist/bible-factory/index.js"
     },
     "./bible-factory/query/get-bible-animal-type": {
       "types": "./dist/bible-factory/query/get-bible-animal-type/index.d.ts",
