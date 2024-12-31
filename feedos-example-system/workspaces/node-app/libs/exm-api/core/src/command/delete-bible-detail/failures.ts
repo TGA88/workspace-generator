@@ -2,23 +2,23 @@
 import { Result, UseCaseError } from '@inh-lib/common';
 
 export namespace Failures {
-  export class ParseFail extends Result<UseCaseError> {
+  export class ParseFail extends  Result<void,UseCaseError>  {
     constructor() {
       super(false, { message: 'Parse fail' } as UseCaseError);
     }
   }
 
-  export class DeleteFail extends Result<UseCaseError> {
+  export class DeleteFail extends  Result<void,UseCaseError>  {
     constructor(message?: string) {
       super(false, { message: `Delete fail: ${message}` } as UseCaseError);
     }
   }
-  export class BibleDetailNotFound extends Result<UseCaseError> {
+  export class BibleDetailNotFound extends  Result<void,UseCaseError>  {
     constructor() {
       super(false, { message: 'Bible detail not found' } as UseCaseError);
     }
   }
-  export class CheckConditionFail extends Result<UseCaseError> {
+  export class CheckConditionFail extends  Result<void,UseCaseError>  {
     constructor(message?: string) {
       super(false, { message: `${message}` } as UseCaseError);
     }

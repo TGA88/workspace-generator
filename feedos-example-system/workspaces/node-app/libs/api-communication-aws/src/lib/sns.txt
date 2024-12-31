@@ -1,0 +1,151 @@
+import * as AWS from '@aws-sdk/client-sns';
+import { AxMakeHealthCheckCommandFn, AxPublisherClientItf, AxPublisherConfig, AxPublisherProviderItf, AxPublishHealthCheckCommandItf, AxPublishMessageFn, AxPublishMessageFormat, AxSnsPublisherConfig } from '../types';
+import { UniqueEntityID } from '@inh-lib/ddd';
+import { InhLogger, Result } from '@inh-lib/common'
+import { array } from 'zod';
+import { AxPublisHealthCheckFn } from '../types/sender.type';
+
+// export type CreateSNSClientInput = {
+//     region: string
+//     endpoint: string
+//     credentials: {
+//         accessKeyId: string
+//         secretAccessKey: string
+//     },
+//     topicArn?: string
+// }
+
+// export async function makeSNSAxPublisher(input: CreateSNSClientInput): Promise<AxPublisherItf> {
+//     const sns = new AWS.SNSClient({
+//         region: input.region ?? 'ap-southeast-1',
+//         endpoint: input.endpoint ?? 'http://localhost:4566',
+//         credentials: {
+//             accessKeyId: input.credentials.accessKeyId ?? 'dummy',
+//             secretAccessKey: input.credentials.secretAccessKey ?? 'dummy',
+//         }
+//     });
+
+//     //healthcheck
+//     try {
+//         const command = new AWS.GetTopicAttributesCommand({ TopicArn: input.topicArn });
+//         await sns.send(command).then().catch((err) => { throw new Error(`connect sns fail: ${err}`) })
+//         console.log('Connection to AWS SNS successful.');
+//     } catch (error) {
+//         console.error('Error testing connection to AWS SNS:', error);
+//         throw error;
+//     }
+//     const send = publishMessage.bind({ sns })
+//     const publish: AxPublisherItf = {
+//         publishMessage: send
+//     }
+//     return publish
+
+//     async function publishMessage(
+//         message: AxPublishMessageFormat
+//     ): Promise<Result<void>> {
+//         const param: AWS.PublishInput = {
+//             Message: JSON.stringify(message),
+//             TopicArn: input.topicArn,
+//         };
+//         console.log(`publishing message to ${input.topicArn}. . .`)
+//         await this.sns.send(new AWS.PublishCommand(param)).catch((err: Error) => { 
+//            return Result.fail(err.message)
+//             // throw new Error('publisher error') 
+//         });
+//         console.log('publishMessage', param)
+//         return Result.ok()
+//     };
+// }
+
+export class AxSnsPublisherProvider implements AxPublisherProviderItf {
+    private logger: InhLogger
+    constructor(logger: InhLogger) {
+        this.logger = logger
+    }
+    makePublisherClient(config: AxPublisherConfig): AxPublisherClientItf {
+        const input = config as AxSnsPublisherConfig
+
+        const sns = new AWS.SNSClient({
+            region: input.region ?? 'ap-southeast-1',
+            endpoint: input.endpoint ?? 'http://localhost:4566',
+            credentials: {
+                accessKeyId: input.credentials.accessKeyId ?? 'dummy',
+                secretAccessKey: input.credentials.secretAccessKey ?? 'dummy',
+            }
+        });
+
+        const client: AxPublisherClientItf = {
+            makePublishCommand: function (topic: string): AxPublishMessageFn {
+                throw new Error('Function not implemented.');
+            },
+            makeHealthCheckCommand: createMakeHealthCheckCommand(sns,this.logger)
+        }
+        return client
+    }
+}
+
+
+export const createMakeHealthCheckCommand = (sns: AWS.SNSClient,logger:InhLogger) => {
+    const fn: AxMakeHealthCheckCommandFn = (target: string): AxPublishHealthCheckCommandItf => {
+        const res=createHelthCheckCommand(sns,target,logger)
+        return res
+    }
+    return fn
+}
+
+export const createHelthCheckCommand = (sns: AWS.SNSClient, target: string, logger: InhLogger): AxPublishHealthCheckCommandItf => {
+    const fn: AxPublishHealthCheckCommandItf = {
+        execute: async function <R>(): Promise<Result<R>> {
+              //healthcheck
+        try { 
+            const command = new AWS.GetTopicAttributesCommand({ TopicArn: target });
+            await sns.send(command).then().catch((err) => {
+                //  throw new Error(`connect sns fail: ${err}`) }
+                logger.error(`connect sns fail: ${err}`)
+                return Result.fail(err)
+            }
+            )
+            logger.info('Connection to AWS SNS successful.');
+        } catch (error) {
+            logger.error(`Error testing connection to AWS SNS: ${error}`);
+            return Result.fail(error)
+        }
+        return Result.ok()
+        }
+    }
+    return fn
+}
+
+
+
+// export function makeSNSFIFOAxPublisher(config: AxPublisherConfig): AxPublisherItf {
+//     const input= config as AxSnsPublisherConfig
+//     const sns = new AWS.SNSClient({
+//         region: input.region ?? 'ap-southeast-1',
+//         endpoint: input.endpoint ?? 'http://localhost:4566',
+//         credentials: {
+//             accessKeyId: input.credentials.accessKeyId ?? 'dummy',
+//             secretAccessKey: input.credentials.secretAccessKey ?? 'dummy',
+//         }
+//     });
+//     const send = publishMessage.bind({ sns })
+//     const publish: AxPublisherItf = { publishMessage: send }
+//     return publish
+
+//     async function publishMessage(
+//         topicArn: string,
+//         message: AxPublishMessageFormat
+//     ) {
+//         const uniqueId = new UniqueEntityID().toString();
+//         const param: AWS.PublishInput = {
+//             Message: JSON.stringify(message),
+//             TopicArn: topicArn,
+//             MessageGroupId: 'inh-sso-message',
+//             MessageDeduplicationId: uniqueId,
+//         };
+//         console.log(`publishing message to ${topicArn}. . .`)
+//         const publishMessageV3 = await this.sns.send(new AWS.PublishCommand(param));
+//         console.log('after publishing message. . .')
+//         console.log('publishMessageFIFOV3', param)
+//     };
+// }

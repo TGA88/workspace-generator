@@ -25,15 +25,6 @@ node_modules
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# misc
-/.sass-cache
-/connect.lock
-/coverage
-/libpeerconnection.log
-npm-debug.log
-yarn-error.log
-testem.log
-/typings
 
 # System Files
 .DS_Store
@@ -59,13 +50,32 @@ nx-cache
 .pnpm-store
 .pnpm-store/**
 
-coverage
+# env
+.env
+.env.local
+.env.*
+!.env.example
 
+# custom build
+coverage
 deploy
 
+# npm
 .npmrc
 
-data
 
 # Infrastructure
 infrastructure/vol/*
+
+# etc
+data
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+/typings
