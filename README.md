@@ -106,3 +106,31 @@ bash script-generator/new-storeprisma.sh feedos-example-system demo
 bash workspace-generator/script-generator/new-storeprisma.sh feedos-example-system demo
 
 ```
+
+### Web-API
+ตัวอย่างการ สร้าง Project apps ประเถท webapi
+
+```bash
+# param1=ชื่อ workspace
+# param2=ชื่อ projectname เช่น demo-exm-webapi
+
+# pwd is folder workspace-template
+bash script-generator/new-webapi.sh feedos-example-system demo-exm-webapi
+
+# สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
+bash workspace-generator/script-generator/new-webapi.sh feedos-example-system demo-exm-webapi
+
+```
+หลังจาก สร้างแล้วให้แก้ไข file package.json 
+
+```json
+// ให้แก้ไข exm-data เป็น ชื่อ Folder ของ store-prisma ตัวที่้จต้องการ
+"release": "cd ../../../ && bash ../build-script/container/release-api.sh demo-exm-webapi mcs-fastify demo-exm-webapi-mcs-fastify exm-data"
+
+```
+
+```json
+// ให้แก้ไข -p เป็น port ที่ต้องการ เพื่อ เอาไว้รัน DOCKER ทดสอบใน local
+"docker:run": "docker rm -f demo-funny-webapi-mcs-fastify  && cd ../../../release && docker run -p 4001:3000 --env-file container-apps/demo-funny-webapi/mcs-fastify/.env --name demo-funny-webapi-mcs-fastify demo-funny-webapi-mcs-fastify:latest  ",
+
+```
