@@ -123,6 +123,7 @@ export function createBaseConfig({ tsConfigPath = './tsconfig.json' } = {}) {
           {
             argsIgnorePattern: '^_',
             varsIgnorePattern: '^_',
+            caughtErrorsIgnorePattern: '^_'
           },
         ],
       },
