@@ -1,10 +1,19 @@
+// hooks/__test__/use-local-storage.test.tsx
 import { renderHook, act } from '@testing-library/react';
-import useLocalStorage  from '../use-local-storage';
+import useLocalStorage from '../use-local-storage';
+import { LocalStorageMock } from '@ui-exm/mocks/local-storage.mock';
 
 describe('useLocalStorage', () => {
+  let mockStorage: LocalStorageMock;
+
   beforeEach(() => {
-    // Clear localStorage before each test
-    window.localStorage.clear();
+    // สร้าง instance ใหม่ของ LocalStorageMock
+    mockStorage = new LocalStorageMock();
+    // Mock window.localStorage ด้วย mockStorage
+    Object.defineProperty(window, 'localStorage', {
+      value: mockStorage,
+      writable: true
+    });
   });
 
   it('should return initial value when no stored value exists', () => {
@@ -13,7 +22,7 @@ describe('useLocalStorage', () => {
   });
 
   it('should return stored value when it exists', () => {
-    window.localStorage.setItem('test-key', JSON.stringify('stored value'));
+    mockStorage.setItem('test-key', JSON.stringify('stored value'));
     const { result } = renderHook(() => useLocalStorage('test-key', 'initial'));
     expect(result.current[0]).toBe('stored value');
   });
@@ -29,7 +38,7 @@ describe('useLocalStorage', () => {
     expect(result.current[0]).toBe('new value');
     
     // Check localStorage value
-    expect(JSON.parse(window.localStorage.getItem('test-key')!)).toBe('new value');
+    expect(JSON.parse(mockStorage.getItem('test-key')!)).toBe('new value');
   });
 
   it('should handle storing objects', () => {
@@ -42,19 +51,37 @@ describe('useLocalStorage', () => {
     });
 
     expect(result.current[0]).toEqual(newValue);
-    expect(JSON.parse(window.localStorage.getItem('test-key')!)).toEqual(newValue);
+    expect(JSON.parse(mockStorage.getItem('test-key')!)).toEqual(newValue);
   });
 
   it('should handle errors when localStorage is not available', () => {
-    // Mock localStorage.getItem to throw error
-    const mockGetItem = jest.spyOn(Storage.prototype, 'getItem');
-    mockGetItem.mockImplementationOnce(() => {
+    // Mock getItem method to throw error
+    jest.spyOn(mockStorage, 'getItem').mockImplementationOnce(() => {
       throw new Error('localStorage not available');
     });
 
     const { result } = renderHook(() => useLocalStorage('test-key', 'initial'));
     expect(result.current[0]).toBe('initial');
+  });
 
-    mockGetItem.mockRestore();
+  // เพิ่ม test case สำหรับทดสอบ removeItem
+  it('should handle removeItem correctly', () => {
+    mockStorage.setItem('test-key', JSON.stringify('value'));
+    mockStorage.removeItem('test-key');
+    expect(mockStorage.getItem('test-key')).toBeNull();
+  });
+
+  // เพิ่ม test case สำหรับทดสอบ length
+  it('should update length when adding and removing items', () => {
+    expect(mockStorage.length).toBe(0);
+    
+    mockStorage.setItem('key1', 'value1');
+    expect(mockStorage.length).toBe(1);
+    
+    mockStorage.setItem('key2', 'value2');
+    expect(mockStorage.length).toBe(2);
+    
+    mockStorage.removeItem('key1');
+    expect(mockStorage.length).toBe(1);
   });
 });

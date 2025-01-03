@@ -1,8 +1,8 @@
 import { http, HttpResponse } from 'msw';
-import { User } from '@ui-exm/types/user.type';
+// import { User } from '@ui-exm/types/user.type';
 
 
-const mockUsers: User[] = [
+const mockUsers: unknown[] = [
   {
     id: 1,
     name: 'John Doe',
@@ -31,7 +31,7 @@ export const handlers = [
   
   http.put('/api/users/:id', async ({ params, request }) => {
     console.log("params",params)
-    const updatedUser = await request.json() as User;
+    const updatedUser = await request.json() ;
     return HttpResponse.json(updatedUser);
   }),
 

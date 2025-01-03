@@ -1,13 +1,26 @@
 import '@testing-library/jest-dom';
 import { server } from './mocks/api/server';
+import { LocalStorageMock } from '@ui-exm/mocks/local-storage.mock';
 
-// // Mock localStorage
-// const localStorageMock = {
-//   getItem: jest.fn(),
-//   setItem: jest.fn(),
-//   clear: jest.fn()
-// };
-// global.localStorage = localStorageMock;
+
+global.localStorage = new LocalStorageMock();
+
+// jest.setup.ts
+
+// // เก็บ function ดั้งเดิมไว้
+// const originalLog = console.log
+// const originalInfo = console.info 
+// const originalDebug = console.debug
+
+// override console methods
+global.console.log = () => {}
+global.console.warn = () => {}
+global.console.info = () => {}
+global.console.debug = () => {}
+global.console.trace = () => {}
+
+// console.error ยังคงทำงานตามปกติ
+
 
 // Establish API mocking before all tests
 beforeAll(() => {
