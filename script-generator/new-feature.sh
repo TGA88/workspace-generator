@@ -23,11 +23,10 @@ if [ -z "$GENERATOR_DIR" ]; then
 else
   echo "ตัวแปร GENERATOR_DIR มีค่า: $GENERATOR_DIR"
 fi
-
 # Check if PROJECT_NAME is provided
 if [ -z "$PROJECT_NAME" ]; then
-   echo "Error: PROJECT_NAME is not set"
-   exit 1
+    PROJECT_NAME='ui-components'
+   echo "PROJECT_NAME: $PROJECT_NAME"
 fi
 
 

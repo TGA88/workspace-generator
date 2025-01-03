@@ -51,6 +51,7 @@ bash workspace-generator/script-generator/update-sb.sh feedos-example-system exa
 ```
 ---
 
+# System Workspace
 ## Frontend Project
 ### Feature-Lib
 ตัวอย่างการ generate project type feature
@@ -60,6 +61,18 @@ bash script-generator/new-feature.sh feedos-example-system ui-foundations-mui
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/new-feature.sh feedos-example-system ui-foundations-mui
+
+```
+
+### ui-components
+เป็น project ที่ component ,customhooks ที่เอาไว้แชร์ เฉพาะภายใน scope ของ system worksapce เท่านั้น ซึ่งจะไม่ deploy ขึ้น npm
+**ใช้ new-feature.sh แต่ไม่ระบุ project name จะได้ project ui-components**
+```bash
+# pwd is folder workspace-template
+bash script-generator/new-feature.sh feedos-example-system 
+
+# สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
+bash workspace-generator/script-generator/new-feature.sh feedos-example-system 
 
 ```
 ---
