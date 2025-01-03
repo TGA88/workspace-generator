@@ -134,3 +134,22 @@ bash workspace-generator/script-generator/new-webapi.sh feedos-example-system de
 "docker:run": "docker rm -f demo-funny-webapi-mcs-fastify  && cd ../../../release && docker run -p 4001:3000 --env-file container-apps/demo-funny-webapi/mcs-fastify/.env --name demo-funny-webapi-mcs-fastify demo-funny-webapi-mcs-fastify:latest  ",
 
 ```
+
+---
+## Global Packagaes
+คือ Package ที่สร้างไว้ใน Global Workspace สำหรับ เอาไว้ Share การใช้งาน ในหลายๆ System Workspace
+
+### ui-common
+เป็น Project ที่ เก็บ Common-Component เช่น DataTable,Dropdown เป็นต็น , Generic Custom-hook อย่างเช่น useDebounce และ Theme
+
+```bash
+# param1=ชื่อ workspace
+# param2=ชื่อ project nameที่ต้องการ ควรจะ prefix ด้วย ui-xxx หากไม่ตั้ง จะDefault เป็น ui-common
+
+# pwd is folder workspace-template
+bash script-generator/new-uicommon.sh feedos-example-system 
+
+# สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
+bash workspace-generator/script-generator/new-uicommon.sh feedos-example-system 
+
+```

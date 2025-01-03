@@ -20,7 +20,6 @@ const featureConfig: Config = {
     '^@ui-exm/(.*)$': '<rootDir>/lib/$1',
 
   },
-  
 }
 // console.log("featureRootDir",featureConfig.rootDir)
 
