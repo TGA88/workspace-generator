@@ -1,5 +1,6 @@
 ## Project ต้องการ Package ดังนี้ กรณีไม่ได้ ใช้ workspace
 
+### สำหรับ Project Type Feature และ ui-component
 **dependencies**
 ```json
 
@@ -69,7 +70,6 @@
 
 
 // editor tools
-"ts-node": "^10.9.2",
 "prettier": "^3.3.3",
 "eslint": "^9.14.0",
 "eslint-config-prettier": "^9.1.0",
