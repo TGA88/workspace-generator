@@ -89,6 +89,7 @@ npm pkg set name=@$WORKSPACE_DIR/$PROJECT_NAME-data-store-prisma
 npm pkg set scripts.fix:lcov="bash ../../../tools/fix_lcov_paths.sh ../../../coverage/libs/"$PROJECT_NAME-data/store-prisma
 
 
+pnpm add -w @prisma/client@^5.6.0 prisma@^5.6.0
 pnpm install
 pnpm update -i
 
