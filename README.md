@@ -75,6 +75,24 @@ bash script-generator/new-feature.sh feedos-example-system
 bash workspace-generator/script-generator/new-feature.sh feedos-example-system 
 
 ```
+
+### web-config
+
+เป็น project ที่ config สำหรับ webproject และ เอาไว้ share ให้ feature project ใช้งานด้วย
+
+**ใช้ new-feature.sh  แต่ให้ระบุ suffix project name เช่น demo-exm-web-config**
+
+**param1=ชื่อ workspace**
+**param2=ชื่อ webproject**
+```bash
+# pwd is folder workspace-template
+bash script-generator/new-webconfig.sh feedos-example-system demo-exm-web
+
+# สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
+bash workspace-generator/script-generator/new-webconfig.sh feedos-example-system demo-exm-web
+
+```
+
 ---
 ## API Project
 ### API-CORE
