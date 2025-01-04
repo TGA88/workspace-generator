@@ -1,0 +1,16 @@
+import React from 'react';
+import '../../globals.css';
+import { CustomLayout } from '../../components/customLayout';
+
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <div>
+      <CustomLayout>{children}</CustomLayout>
+    </div>
+  );
+}

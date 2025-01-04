@@ -1,23 +1,45 @@
-# Getting Started with [Fastify-CLI](https://www.npmjs.com/package/fastify-cli)
-This project was bootstrapped with Fastify-CLI.
+## Project ต้องการ Package ดังนี้ กรณีไม่ได้ ใช้ workspace
 
-## Available Scripts
+**dependencies**
+```
+"@fastify/autoload": "^5.0.0",
+"@fastify/cors": "^9.0.1",
+"@fastify/sensible": "^5.0.0",
+"@fastify/swagger": "^8.14.0",
+"fastify": "^4.26.1",
+"fastify-cli": "^6.1.1",
+"fastify-cron": "^1.3.1",
+"fastify-plugin": "^4.0.0",
+"fastify-tsconfig": "^2.0.0",
+"tslib": "^2.3.0",
+"zod": "^3.24.1"
 
-In the project directory, you can run:
+<!-- common lib use both api and frontend -->
+"dotenv": "^16.4.5",
 
-### `npm run dev`
+```
 
-To start the app in dev mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+**devDependencies**
+```
+"typescript": "^5.6.3",
+"ts-node": "^10.9.2",
+"tsc-watch": "^6.2.0"
+"ts-jest": "^29.2.5",
+"ts-node": "^10.9.2",
+"jest": "^29.7.0",
+"jest-config": "^29.7.0",
 
-### `npm start`
+<!-- type -->
+"@types/jest": "^29.5.14",
+"@types/node": "^22.9.0",
 
-For production mode
 
-### `npm run test`
+<!-- editor devtools -->
 
-Run the test cases.
-
-## Learn More
-
-To learn Fastify, check out the [Fastify documentation](https://fastify.dev/docs/latest/).
+"prettier": "^3.3.3",
+"eslint": "^9.14.0",
+"eslint-config-prettier": "^9.1.0",
+"@typescript-eslint/eslint-plugin": "^8.14.0",
+"@typescript-eslint/parser": "^8.14.0",
+"eslint-plugin-jest": "^28.9.0",
+```
