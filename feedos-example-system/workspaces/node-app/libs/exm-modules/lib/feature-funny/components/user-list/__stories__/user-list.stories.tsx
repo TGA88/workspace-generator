@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { UserList } from '@feature-exm/components/user-list/user-list';
-import { User } from '@feature-exm/types/user.type';
+import { UserList } from '@feature-funny/components/user-list/user-list';
+import { User } from '@feature-funny/types/user.type';
 import { within ,userEvent, waitFor} from '@storybook/testing-library'
 import { fn, expect } from '@storybook/test'; 
 
 
 const meta = {
-  title: 'Feature-Exm/Components/UserList',
+  title: 'Feature-Funny/Components/UserList',
   component: UserList,
   parameters: {
     layout: 'padded',

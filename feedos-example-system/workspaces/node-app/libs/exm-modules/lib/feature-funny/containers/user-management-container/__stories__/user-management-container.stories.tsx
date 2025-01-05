@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { UserManagementContainer } from '@feature-exm/containers/user-management-container';
+import { UserManagementContainer } from '@feature-funny/containers/user-management-container';
 import { http, HttpResponse } from 'msw';
 
 const meta: Meta<typeof UserManagementContainer> = {
-  title: 'Feature-Exm/Containers/UserManagementContainer',
+  title: 'Feature-Funny/Containers/UserManagementContainer',
   component: UserManagementContainer,
   tags: ['autodocs'],
   parameters: {

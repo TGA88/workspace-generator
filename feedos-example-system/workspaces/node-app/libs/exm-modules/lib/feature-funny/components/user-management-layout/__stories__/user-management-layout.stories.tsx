@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { UserManagementLayout } from '@feature-exm/components/user-management-layout';
+import { UserManagementLayout } from '@feature-funny/components/user-management-layout';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
 const meta: Meta<typeof UserManagementLayout> = {
-  title: 'Feature-Exm/Components/Layout/UserManagementLayout',
+  title: 'Feature-Funny/Components/Layout/UserManagementLayout',
   component: UserManagementLayout,
   parameters: {
     layout: 'padded',

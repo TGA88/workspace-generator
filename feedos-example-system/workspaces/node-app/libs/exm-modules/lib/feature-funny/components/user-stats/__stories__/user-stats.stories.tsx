@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { UserStats } from '@feature-exm/components/user-stats';
+import { UserStats } from '@feature-funny/components/user-stats';
 
 const meta: Meta<typeof UserStats> = {
-  title: 'Feature-Exm/Components/UserStats',
+  title: 'Feature-Funny/Components/UserStats',
   component: UserStats,
   tags: ['autodocs'],
 };
