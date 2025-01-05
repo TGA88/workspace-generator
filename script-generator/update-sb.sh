@@ -27,14 +27,21 @@ update_config_files() {
     while IFS= read -r dir; do
         feature_name=$(basename "$dir")
         feature_dirs+=("$feature_name")
+        feature_path=$(dirname "$dir")
+        
+        suffix_path=''
+        if [ -f "$dir/package.json" ]; then
+            suffix_path='lib/'
+        fi
         
         # สร้าง alias และ path configs
-        alias_config+="    '@${feature_name}': path.resolve(__dirname, '../../../libs/${feature_name}/lib/'),"
-        paths_config+="      \"@${feature_name}/*\": [\"../../libs/${feature_name}/lib/*\"],"
-    done < <(find "$LIBS_PATH" -maxdepth 1 -type d -name "feature-*")
+        alias_config+="    '@${feature_name}': path.resolve(__dirname, '../../../libs/${feature_name}/${suffix_path}'),"
+        paths_config+="      \"@${feature_name}/*\": [\"../../libs/${feature_name}/${suffix_path}*\"],"
+    done < <(find "$LIBS_PATH" -maxdepth 3 -type d  \( -name "feature-*" -o -name "ui-components" -o -name "ui-common" \) -not -path "*/dist/*" -not -path "*/node_modules/*")
   # กำหนด path สำหรับ temporary files
     local temp_main="$PROJECT_PATH/temp_main.ts"
     local temp_tsconfig="$PROJECT_PATH/temp_tsconfig.json"
+
 
     # สร้าง temporary files
     cat > "$temp_main" << EOF
