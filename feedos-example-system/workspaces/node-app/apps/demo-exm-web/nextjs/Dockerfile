@@ -5,7 +5,7 @@ WORKDIR /app/standalone
 ENV NODE_ENV production
 ENV PORT 3000
 
-COPY dist/apps/fos-psc-web/nextjs/standalone ./
+COPY dist/apps/demo-exm-web/nextjs/standalone ./
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system nextjs 1001

@@ -1,39 +1,74 @@
-import globals from "globals";
-import pluginJs from "@eslint/js";
-import tseslint from "typescript-eslint";
-import pluginReactConfig from "eslint-plugin-react/configs/recommended.js";
-import nextPlugin from '@next/eslint-plugin-next';
+// libs/ui/eslint.config.mjs
+import { createBaseConfig } from '../../../root-eslint.config.mjs';
 import reactPlugin from 'eslint-plugin-react';
-import hooksPlugin from 'eslint-plugin-react-hooks';
+import reactHooksPlugin from 'eslint-plugin-react-hooks';
+import globals from "globals";
+import nextPlugin from '@next/eslint-plugin-next';
+import nextConfig from 'eslint-config-next';
 
 export default [
-  pluginJs.configs.recommended,
-  ...tseslint.configs.recommended,
+  ...createBaseConfig({ tsConfigPath: './tsconfig.json' }),
+  ...nextConfig.configs,  // นำ config ของ Next.js มาใช้
   {
-    ...pluginReactConfig,
+    files: ['**/*.{jsx,tsx}'],
+    plugins: {
+      'react': reactPlugin,
+      'react-hooks': reactHooksPlugin
+    },
+    settings: {
+      react: {
+        version: 'detect'
+      }
+    },
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        // ...globals.commonjs, // ถ้าใช้ CommonJS modules
+        JSX: 'readonly' // สำหรับ React JSX
+      }
+    },
     rules: {
-      ...pluginReactConfig.rules,
-      "@typescript-eslint/no-unused-vars": "off",
-      "no-unused-vars": "off",
-      "@typescript-eslint/no-explicit-any": "warn",
-      "react/react-in-jsx-scope": "off",
+      'react/react-in-jsx-scope': 'off',
+      'react/prop-types': 'off',
+      'react/display-name': 'error',
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn'
     }
   },
-  {
-    files: ["**/*.ts", "**/*.tsx"],
+   // เพิ่ม rules จาก next plugin
+   {
+    files: ['**/*.{js,jsx,ts,tsx}'],
     plugins: {
-      react: reactPlugin,
-      'react-hooks': hooksPlugin,
-      '@next/next': nextPlugin,
+      '@next/next': nextPlugin
     },
-    languageOptions: { globals: { ...globals.browser, ...globals.node } },
-    ignores: ["**/*"],
     rules: {
-      ...reactPlugin.configs['jsx-runtime'].rules,
-      ...hooksPlugin.configs.recommended.rules,
-      ...nextPlugin.configs.recommended.rules,
-      ...nextPlugin.configs['core-web-vitals'].rules,
-      '@next/next/no-img-element': 'error',
-    },
+      // ปิด rules จาก eslint-config-next
+      '@next/next/no-img-element': 'off',
+      '@next/next/no-html-link-for-pages': 'off',
+
+      // เพิ่มหรือแก้ไข rules
+      '@next/next/google-font-display': 'error',
+      '@next/next/no-page-custom-font': 'warn',
+      '@next/next/no-sync-scripts': 'error',
+      '@next/next/no-unwanted-polyfillio': 'error',
+    }
   },
+
+  // config เฉพาะ page directory
+  {
+    files: ['pages/**/*.{js,jsx,ts,tsx}'],
+    rules: {
+      '@next/next/no-document-import-in-page': 'error',
+      '@next/next/no-head-import-in-document': 'error',
+    }
+  },
+
+  // config เฉพาะ app directory
+  {
+    files: ['app/**/*.{js,jsx,ts,tsx}'],
+    rules: {
+      '@next/next/no-head-element': 'error',
+      '@next/next/no-before-interactive-script-outside-document': 'error',
+    }
+  }
 ];

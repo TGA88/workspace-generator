@@ -34,7 +34,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-, "app/[locale]/(main)/layout.tปะ"  ],
+, "app/[locale]/(main)/layout.tsx"  ],
   "exclude": [
     "node_modules"
   ]
