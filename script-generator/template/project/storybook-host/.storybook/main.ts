@@ -5,7 +5,8 @@ import path from 'path';
 const config: StorybookConfig = {
   framework: '@storybook/react-vite',
   stories: [
-    '../../../libs/feature-*/lib/**/*.stories.@(js|jsx|ts|tsx)',
+    '../../../libs/**/feature-*/**/*.stories.@(js|jsx|ts|tsx)',
+    '../../../libs/**/ui-*/**/*.stories.@(js|jsx|ts|tsx)',
   ],
   addons: [
     '@storybook/blocks',
