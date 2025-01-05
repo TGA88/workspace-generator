@@ -3,7 +3,7 @@ import '../globals.css';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { cookies } from 'next/headers';
-import { CustomLayout } from '../components/customLayout';
+
 
 export default async function LocaleLayout({
   children,
@@ -19,7 +19,7 @@ export default async function LocaleLayout({
     <html lang={locale ?? lang}>
       <body>
         <NextIntlClientProvider messages={messages}>
-          <CustomLayout>{children}</CustomLayout>
+          {children}
         </NextIntlClientProvider>
       </body>
     </html>

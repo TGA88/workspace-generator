@@ -1,7 +1,7 @@
 import { Config } from 'tailwindcss';
 import { createBase4Spacing } from './base4-spacing.mjs'
 
-import { axonsPreset } from '@axons-ui/react/tailwind';
+// import { axonsPreset } from '@axons-ui/react/tailwind';
 const config: Config = {
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -25,7 +25,7 @@ const config: Config = {
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     '../../../node_modules/@axons-ui/react/dist/**/*.js',
   ],
-  presets: [axonsPreset],
+  // presets: [axonsPreset],
   theme: {
     extend: {
       spacing: createBase4Spacing(),
