@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "next dev",
-    "lint": "eslint ./app && tsc",
+    "serve": "next dev",   
+    "lint": "eslint . && tsc",
     "test": "jest",
     "build": "next build",
     "release": "pnpm build && cd ../../../ && bash build-script/container/release-next-app.sh demo-exm-web nextjs",
