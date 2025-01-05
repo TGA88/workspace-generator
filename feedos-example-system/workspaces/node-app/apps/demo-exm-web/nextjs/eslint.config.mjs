@@ -4,11 +4,12 @@ import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import globals from "globals";
 import nextPlugin from '@next/eslint-plugin-next';
-import nextConfig from 'eslint-config-next';
+// import nextConfig from 'eslint-config-next'; // ยังใช้กับ eslint 9.X ไม่ได้
 
 export default [
   ...createBaseConfig({ tsConfigPath: './tsconfig.json' }),
-  ...nextConfig.configs,  // นำ config ของ Next.js มาใช้
+  // ...nextConfig.configs,  // นำ config ของ Next.js มาใช้
+  
   {
     files: ['**/*.{jsx,tsx}'],
     plugins: {
@@ -17,7 +18,7 @@ export default [
     },
     settings: {
       react: {
-        version: 'detect'
+        version: '^18.3.1'
       }
     },
     languageOptions: {
@@ -42,6 +43,7 @@ export default [
       '@next/next': nextPlugin
     },
     rules: {
+      ...nextPlugin.configs.recommended.rules, // นำ config ของ Next.js มาใช้
       // ปิด rules จาก eslint-config-next
       '@next/next/no-img-element': 'off',
       '@next/next/no-html-link-for-pages': 'off',

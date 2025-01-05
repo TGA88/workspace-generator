@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# context ที่ run cli อยู่ที่ workspaces/node-app
+
 APP_NAME=$1
 APP_TYPE=$2
 
@@ -12,7 +14,7 @@ mkdir -p dist/apps/$APP_NAME/$APP_TYPE
 cp -r apps/$APP_NAME/$APP_TYPE/.next dist/apps/$APP_NAME/$APP_TYPE
 cp -r apps/$APP_NAME/$APP_TYPE/public dist/apps/$APP_NAME/$APP_TYPE/.next/standalone/apps/$APP_NAME/$APP_TYPE/
 cp -r dist/apps/$APP_NAME/$APP_TYPE/.next/static dist/apps/$APP_NAME/$APP_TYPE/.next/standalone/apps/$APP_NAME/$APP_TYPE/.next/
-cp script/next-start.sh dist/apps/$APP_NAME/$APP_TYPE/.next/standalone/
+cp tools/next-start.sh dist/apps/$APP_NAME/$APP_TYPE/.next/standalone/
 
 
 # copy app is compiled to release folder
