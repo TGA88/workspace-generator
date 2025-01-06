@@ -3,7 +3,7 @@ import type { Decorator, StoryFn } from '@storybook/react';
 import { initialize, mswLoader } from 'msw-storybook-addon'
 
 // .storybook/preview.tsx
-// import { ThemeProvider } from '@feedos-example-system/ui-foundations-mui';
+// import { ThemeProvider } from '@gu-example-system/ui-foundations-mui';
 import '../assets/styles/tailwind.css'
 
 

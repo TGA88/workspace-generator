@@ -6,10 +6,10 @@ script to create pnpm workspace boilerplate
 ```bash
 # pwd is folder workspace-template
 # bash script-generator/template/create-workspace.sh [parameter1:workspace-folder] [programing-type]
-bash script-generator/create-workspace.sh feedos-example-system node-app
+bash script-generator/create-workspace.sh gu-example-system node-app
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
-bash workspace-generator/script-generator/create-workspace.sh feedos-example-system node-app
+bash workspace-generator/script-generator/create-workspace.sh gu-example-system node-app
 
 ```
 
@@ -17,10 +17,10 @@ bash workspace-generator/script-generator/create-workspace.sh feedos-example-sys
 ตัวอย่างการ init system-workspace เพื่อ intall and config tools 
 ```bash
 # pwd is folder workspace-template
-bash script-generator/init-system.sh feedos-example-system node-app
+bash script-generator/init-system.sh gu-example-system node-app
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
-bash workspace-generator/script-generator/init-system.sh feedos-example-system node-app
+bash workspace-generator/script-generator/init-system.sh gu-example-system node-app
 
 ```
 ระหว่าง install package จะมีคถามดังนี้ ให้ตอบ skip-now
@@ -32,10 +32,10 @@ bash workspace-generator/script-generator/init-system.sh feedos-example-system n
 ตัวอย่างการ generate project type storybook-host
 ```bash
 # pwd is folder workspace-template
-bash script-generator/new-storybook.sh feedos-example-system example
+bash script-generator/new-storybook.sh gu-example-system example
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
-bash workspace-generator/script-generator/new-storybook.sh feedos-example-system example
+bash workspace-generator/script-generator/new-storybook.sh gu-example-system example
 
 ```
 
@@ -43,10 +43,10 @@ bash workspace-generator/script-generator/new-storybook.sh feedos-example-system
 ตัวอย่างการ update project storybook-host เพื่อ update reference lib feature
 ```bash
 # pwd is folder workspace-template
-bash script-generator/update-sb.sh feedos-example-system example
+bash script-generator/update-sb.sh gu-example-system example
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
-bash workspace-generator/script-generator/update-sb.sh feedos-example-system example
+bash workspace-generator/script-generator/update-sb.sh gu-example-system example
 
 ```
 ---
@@ -55,27 +55,27 @@ bash workspace-generator/script-generator/update-sb.sh feedos-example-system exa
 ## Frontend Project
 
 ### Web-Nextjs
-**param1=ชื่อ workspace** เช่น feedos-example-system
+**param1=ชื่อ workspace** เช่น gu-example-system
 **param2=ชื่อ webproject** เช่น demo-exm-web
 ตัวอย่างการ generate project type web nextjs
 ```bash
 # pwd is folder workspace-template
-bash script-generator/new-web.sh feedos-example-system demo-exm-web
+bash script-generator/new-web.sh gu-example-system demo-exm-web
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
-bash workspace-generator/script-generator/new-web.sh feedos-example-system demo-exm-web
+bash workspace-generator/script-generator/new-web.sh gu-example-system demo-exm-web
 
 ```
 ### Feature-Lib
 ตัวอย่างการ generate project type feature
-**param1=ชื่อ workspace** เช่น feedos-example-system
+**param1=ชื่อ workspace** เช่น gu-example-system
 **param2=ชื่อ fetaure** เช่น feature-funny
 ```bash
 # pwd is folder workspace-template
-bash script-generator/new-feature.sh feedos-example-system feature-funny
+bash script-generator/new-feature.sh gu-example-system feature-funny
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
-bash workspace-generator/script-generator/new-feature.sh feedos-example-system feature-funny
+bash workspace-generator/script-generator/new-feature.sh gu-example-system feature-funny
 
 ```
 
@@ -83,13 +83,13 @@ bash workspace-generator/script-generator/new-feature.sh feedos-example-system f
 เป็น project ที่ component ,customhooks ที่เอาไว้แชร์ เฉพาะภายใน scope ของ system worksapce เท่านั้น ซึ่งจะไม่ deploy ขึ้น npm
 **ใช้ new-feature.sh แต่ไม่ระบุ project name จะได้ project ui-components**
 
-**param1=ชื่อ workspace** เช่น feedos-example-system
+**param1=ชื่อ workspace** เช่น gu-example-system
 ```bash
 # pwd is folder workspace-template
-bash script-generator/new-feature.sh feedos-example-system 
+bash script-generator/new-feature.sh gu-example-system 
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
-bash workspace-generator/script-generator/new-feature.sh feedos-example-system 
+bash workspace-generator/script-generator/new-feature.sh gu-example-system 
 
 ```
 
@@ -103,10 +103,10 @@ bash workspace-generator/script-generator/new-feature.sh feedos-example-system
 **param2=ชื่อ webproject**
 ```bash
 # pwd is folder workspace-template
-bash script-generator/new-webconfig.sh feedos-example-system demo-exm-web
+bash script-generator/new-webconfig.sh gu-example-system demo-exm-web
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
-bash workspace-generator/script-generator/new-webconfig.sh feedos-example-system demo-exm-web
+bash workspace-generator/script-generator/new-webconfig.sh gu-example-system demo-exm-web
 
 ```
 
@@ -119,10 +119,10 @@ bash workspace-generator/script-generator/new-webconfig.sh feedos-example-system
 # param2=ชื่อ api
 
 # pwd is folder workspace-template
-bash script-generator/new-apicore.sh feedos-example-system sample-api
+bash script-generator/new-apicore.sh gu-example-system sample-api
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
-bash workspace-generator/script-generator/new-apicore.sh feedos-example-system sample-api
+bash workspace-generator/script-generator/new-apicore.sh gu-example-system sample-api
 
 ```
 ### API-Service
@@ -133,10 +133,10 @@ bash workspace-generator/script-generator/new-apicore.sh feedos-example-system s
 # param2=ชื่อ api
 
 # pwd is folder workspace-template
-bash script-generator/new-apiservice.sh feedos-example-system sample-api
+bash script-generator/new-apiservice.sh gu-example-system sample-api
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
-bash workspace-generator/script-generator/new-service.sh feedos-example-system sample-api
+bash workspace-generator/script-generator/new-service.sh gu-example-system sample-api
 
 ```
 
@@ -148,10 +148,10 @@ bash workspace-generator/script-generator/new-service.sh feedos-example-system s
 # param2=ชื่อ database schema
 
 # pwd is folder workspace-template
-bash script-generator/new-storeprisma.sh feedos-example-system demo
+bash script-generator/new-storeprisma.sh gu-example-system demo
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
-bash workspace-generator/script-generator/new-storeprisma.sh feedos-example-system demo
+bash workspace-generator/script-generator/new-storeprisma.sh gu-example-system demo
 
 ```
 
@@ -163,10 +163,10 @@ bash workspace-generator/script-generator/new-storeprisma.sh feedos-example-syst
 # param2=ชื่อ projectname เช่น demo-exm-webapi
 
 # pwd is folder workspace-template
-bash script-generator/new-webapi.sh feedos-example-system demo-exm-webapi
+bash script-generator/new-webapi.sh gu-example-system demo-exm-webapi
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
-bash workspace-generator/script-generator/new-webapi.sh feedos-example-system demo-exm-webapi
+bash workspace-generator/script-generator/new-webapi.sh gu-example-system demo-exm-webapi
 
 ```
 หลังจาก สร้างแล้วให้แก้ไข file package.json 
@@ -195,10 +195,10 @@ bash workspace-generator/script-generator/new-webapi.sh feedos-example-system de
 # param2=ชื่อ project nameที่ต้องการ ควรจะ prefix ด้วย ui-xxx หากไม่ตั้ง จะDefault เป็น ui-common
 
 # pwd is folder workspace-template
-bash script-generator/new-uicommon.sh feedos-example-system 
+bash script-generator/new-uicommon.sh gu-example-system 
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
-bash workspace-generator/script-generator/new-uicommon.sh feedos-example-system 
+bash workspace-generator/script-generator/new-uicommon.sh gu-example-system 
 
 ```
 
@@ -214,10 +214,10 @@ bash workspace-generator/script-generator/new-uicommon.sh feedos-example-system
 # param2=ให้กำนดว่า เป็น api หรือ ui ตามต้องการ
 
 # pwd is folder workspace-template
-bash script-generator/new-functions.sh feedos-example-system ui
+bash script-generator/new-functions.sh gu-example-system ui
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
-bash workspace-generator/script-generator/new-functions.sh feedos-example-system ui
+bash workspace-generator/script-generator/new-functions.sh gu-example-system ui
 
 ```
 
@@ -226,10 +226,10 @@ bash workspace-generator/script-generator/new-functions.sh feedos-example-system
 # param1=ชื่อ workspace
 
 # pwd is folder workspace-template
-bash script-generator/new-functions.sh feedos-example-system 
+bash script-generator/new-functions.sh gu-example-system 
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
-bash workspace-generator/script-generator/new-functions.sh feedos-example-system 
+bash workspace-generator/script-generator/new-functions.sh gu-example-system 
 
 ```
 
@@ -245,10 +245,10 @@ bash workspace-generator/script-generator/new-functions.sh feedos-example-system
 # param2= ชื่อ base-types  ที่ต้องการ
 
 # pwd is folder workspace-template
-bash script-generator/new-basetypes.sh feedos-example-system ui-router
+bash script-generator/new-basetypes.sh gu-example-system ui-router
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
-bash workspace-generator/script-generator/new-functions.sh feedos-example-system ui-router
+bash workspace-generator/script-generator/new-functions.sh gu-example-system ui-router
 
 ```
 > หลังสร้าง BaseType Project แล้ว ให้ลบ คำสั่ง test ใน package.json ออกให้หมด

@@ -11,7 +11,7 @@
         ],
         "paths": {
             "@/*": ["../../../*"],         // ชี้ไปที่ pnpm workspace (node-app)
-            "@root/*": ["../../../../../*"],  // ชี้ไปที่ root (feedos-exmaple-system),
+            "@root/*": ["../../../../../*"],  // ชี้ไปที่ root (gu-exmaple-system),
             // paths ใช้สำหรับ file .stories
             "@exm-data-store-prisma/*": ["./src/*"],         // ชี้ไปที่ root project feature-exm
       

@@ -1,0 +1,23 @@
+{
+  "name": "@gu-example-system/demo-exm-web-config",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "dist/main.js",
+  "types": "dist/types/main.d.ts",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "scripts": {
+    "build": "tsc --p tsconfig.build.json && vite build",
+    "build:showConfig": "tsc --p tsconfig.build.json --showconfig",
+    "lint": "eslint . && tsc",
+    "fix:lcov": "bash ../../tools/fix_lcov_paths.sh ../../coverage/libs/demo-exm-web-config"
+  }
+}

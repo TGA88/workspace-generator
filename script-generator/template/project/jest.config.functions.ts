@@ -22,7 +22,7 @@ const apiCoreConfig: Config = {
   ],
   moduleNameMapper: {
     '^@/(.*)$': path.resolve(__dirname, './$1'), // refs to node-app folder
-    '^@root/(.*)$': path.resolve(__dirname, '../../$1'), // refs to root workspace (feedos-example-system)
+    '^@root/(.*)$': path.resolve(__dirname, '../../$1'), // refs to root workspace (gu-example-system)
   },
 
   // setupFilesAfterEnv: ['<rootDir>/src/test/setup.ts'],

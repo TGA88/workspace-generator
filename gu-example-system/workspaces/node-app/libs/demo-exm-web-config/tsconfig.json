@@ -1,0 +1,36 @@
+// I am using tsconfig for eslint,jest instead of using refernce path to 
+// tsconfig.xx.json file because it's more complex to config 
+// and have to config compilationOptions for each file 
+// such as tsconfig.eslint.json,tsconfig.test.json , tsconfig.build.json and tsconfig.json for vscode
+// references artical "https://www.totaltypescript.com/concepts/option-module-must-be-set-to-nodenext-when-option-moduleresolution-is-set-to-nodenext"
+{
+  "extends": "../../tsconfig.features.base.json",
+  "compilerOptions": {
+    // // If you're not bundling with TypeScript with tsc but using esbuild,swc,vite instead.
+    // // you should be using moduleResolution: "bundler" and module: "ESNext":
+    // "module": "ESNext",
+    // "moduleResolution": "bundler",
+    // // setting noEmiit for use tsc for typechecking only
+    // "noEmit": true,
+
+    "paths": {
+      "@/*": ["../../*"],         // ชี้ไปที่ pnpm workspace (node-app)
+      "@root/*": ["../../../../*"],  // ชี้ไปที่ root (gu-exmaple-system),
+      // paths ใช้สำหรับ file .stories
+      "@demo-exm-web-config/*": ["./lib/*"],         // ชี้ไปที่ root project demo-exm-web-config
+
+    },
+
+    "types": [
+      "node",
+      "jest",
+      "@testing-library/jest-dom"
+    ]
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx"
+  ]
+}

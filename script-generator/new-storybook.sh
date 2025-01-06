@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# WORKSPACE_DIR='feedos-example-system'
+# WORKSPACE_DIR='gu-example-system'
 # PROJECT_NAME='feature-example'
 WORKSPACE_DIR=$1
 PROJECT_NAME=$2
@@ -57,13 +57,13 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     find ./ -type f -exec file {} \; | 
     grep -i -E '(text| JSON data)' | 
     cut -d: -f1 | 
-    xargs sed -i '' -e "s/feedos-example-system/$WORKSPACE_DIR/g"
+    xargs sed -i '' -e "s/gu-example-system/$WORKSPACE_DIR/g"
 
 else
     find ./ -type f -exec file {} \; | 
     grep -i -E '(text| JSON data)' | 
     cut -d: -f1 | 
-    xargs sed -i -e "s/feedos-example-system/$WORKSPACE_DIR/g"
+    xargs sed -i -e "s/gu-example-system/$WORKSPACE_DIR/g"
     # xargs sed -i '' "s/@feature-exm/@$PROJECT_NAME/g"
 
 fi

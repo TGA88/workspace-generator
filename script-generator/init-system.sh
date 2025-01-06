@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# WORKSPACE_DIR='feedos-example-system'
+# WORKSPACE_DIR='gu-example-system'
 # SYSTEM_DIR='node-app'
 WORKSPACE_DIR=$1
 SYSTEM_DIR=$2

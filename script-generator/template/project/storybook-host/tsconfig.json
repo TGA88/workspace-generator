@@ -16,7 +16,7 @@
     "paths": {
       // ชี้ไปที่ pnpm workspace (node-app)
       "@/*": ["../../*"],         
-      // ชี้ไปที่ root (feedos-exmaple-system)
+      // ชี้ไปที่ root (gu-exmaple-system)
       "@root/*": ["../../../../*"]
     },
 

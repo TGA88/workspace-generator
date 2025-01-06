@@ -1,5 +1,5 @@
 {
-  "name": "@feedos-example-system/exm-api-core",
+  "name": "@gu-example-system/exm-api-core",
   "version": "1.0.0",
   "description": "",
   "main": "./dist/index.js",

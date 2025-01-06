@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-// import { PrismaClient, getPrismaInstance } from '@feedos-example-system/exm-data-store-prisma';
+// import { PrismaClient, getPrismaInstance } from '@gu-example-system/exm-data-store-prisma';
 
 export async function healthCheckRoute(fastify: FastifyInstance):Promise<void> {
     fastify.get('/', async (_request: FastifyRequest, reply: FastifyReply) => {

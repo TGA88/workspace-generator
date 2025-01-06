@@ -1,5 +1,5 @@
 {
-  "name": "@feedos-example-system/exm-data-store-prisma",
+  "name": "@gu-example-system/exm-data-store-prisma",
   "version": "1.0.1",
   "description": "",
   "main": "./dist/index.js",
@@ -85,10 +85,10 @@
       "types": "./dist/prescription/query/get-animal-period/index.d.ts",
       "require": "./dist/prescription/query/get-animal-period/index.js"
     },
-    "./get-feed-list": {
-      "import": "./dist/prescription/query/get-feed-list/index.mjs",
-      "types": "./dist/prescription/query/get-feed-list/index.d.ts",
-      "require": "./dist/prescription/query/get-feed-list/index.js"
+    "./get-gulist": {
+      "import": "./dist/prescription/query/get-gulist/index.mjs",
+      "types": "./dist/prescription/query/get-gulist/index.d.ts",
+      "require": "./dist/prescription/query/get-gulist/index.js"
     },
     "./save-prescription-detail": {
       "import": "./dist/prescription/command/save-prescription-detail/index.mjs",

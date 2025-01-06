@@ -1,0 +1,41 @@
+{
+  "name": "@gu-example-system/exm-api-core",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "lint": "tsc -p tsconfig.json && eslint ./src",
+    "build": "tsup",
+    "test": "pnpm run test:gen ; pnpm run fix:lcov",
+    "test:gen": "jest --runInBand --coverage --no-cache",
+    "fix:lcov": "bash ../../../tools/fix_lcov_paths.sh ../../../coverage/libs/exm-api/core ",
+    "test:show": "jest --runInBand --coverage --showConfig"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./command/*": {
+      "types": "./dist/command/*/index.d.ts",
+      "import": "./dist/command/*/index.mjs",
+      "require": "./dist/command/*/index.js"
+    },
+    "./query/*": {
+      "types": "./dist/query/*/index.d.ts",
+      "import": "./dist/query/*/index.mjs",
+      "require": "./dist/query/*/index.js"
+    },
+    "./logics/*": {
+      "types": "./dist/logics/*.d.ts",
+      "import": "./dist/logics/*.mjs",
+      "require": "./dist/logics/*.js"
+    }
+  }
+}
