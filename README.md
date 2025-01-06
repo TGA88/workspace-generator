@@ -53,20 +53,37 @@ bash workspace-generator/script-generator/update-sb.sh feedos-example-system exa
 
 # System Workspace
 ## Frontend Project
-### Feature-Lib
-ตัวอย่างการ generate project type feature
+
+### Web-Nextjs
+**param1=ชื่อ workspace** เช่น feedos-example-system
+**param2=ชื่อ webproject** เช่น demo-exm-web
+ตัวอย่างการ generate project type web nextjs
 ```bash
 # pwd is folder workspace-template
-bash script-generator/new-feature.sh feedos-example-system ui-foundations-mui
+bash script-generator/new-web.sh feedos-example-system demo-exm-web
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
-bash workspace-generator/script-generator/new-feature.sh feedos-example-system ui-foundations-mui
+bash workspace-generator/script-generator/new-web.sh feedos-example-system demo-exm-web
+
+```
+### Feature-Lib
+ตัวอย่างการ generate project type feature
+**param1=ชื่อ workspace** เช่น feedos-example-system
+**param2=ชื่อ fetaure** เช่น feature-funny
+```bash
+# pwd is folder workspace-template
+bash script-generator/new-feature.sh feedos-example-system feature-funny
+
+# สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
+bash workspace-generator/script-generator/new-feature.sh feedos-example-system feature-funny
 
 ```
 
 ### ui-components
 เป็น project ที่ component ,customhooks ที่เอาไว้แชร์ เฉพาะภายใน scope ของ system worksapce เท่านั้น ซึ่งจะไม่ deploy ขึ้น npm
 **ใช้ new-feature.sh แต่ไม่ระบุ project name จะได้ project ui-components**
+
+**param1=ชื่อ workspace** เช่น feedos-example-system
 ```bash
 # pwd is folder workspace-template
 bash script-generator/new-feature.sh feedos-example-system 
@@ -182,5 +199,35 @@ bash script-generator/new-uicommon.sh feedos-example-system
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/new-uicommon.sh feedos-example-system 
+
+```
+### ui-function, api-functions, common-funtions
+เป็น Project ที่เก็บ แต่ pure function ที่เอาไว้ใช้ ให้ Project อื่นๆ นำไปใช้งาน โดย
+- **ui-functions** คือ project ที่มีการใช้ builtin ของ browser เช่น window,localstorage เป็นต้น
+- **api-functions** คือ project ที่มีการใช้ buitin ของ nodejs เช่น path,os,fs เป็นต้น
+- **common-functions** ตือ project ที่รันไ้ด้ทั้ง ใน  browser และ nodejs environemnt
+
+ตัวอย่าง การสร้าง api-function และ ui-functions
+```bash
+# param1=ชื่อ workspace
+# param2=ให้กำนดว่า เป็น api หรือ ui ตามต้องการ
+
+# pwd is folder workspace-template
+bash script-generator/new-functions.sh feedos-example-system ui
+
+# สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
+bash workspace-generator/script-generator/new-functions.sh feedos-example-system ui
+
+```
+
+ตัวอย่าง การสร้าง common-functions
+```bash
+# param1=ชื่อ workspace
+
+# pwd is folder workspace-template
+bash script-generator/new-functions.sh feedos-example-system 
+
+# สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
+bash workspace-generator/script-generator/new-functions.sh feedos-example-system 
 
 ```

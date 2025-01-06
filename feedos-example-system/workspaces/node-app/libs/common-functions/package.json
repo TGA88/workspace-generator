@@ -1,0 +1,31 @@
+{
+  "name": "@feedos-example-system/common-functions",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "lint": "tsc -p tsconfig.json && eslint ./src",
+    "build": "tsup",
+    "test": "pnpm run test:gen ; pnpm run fix:lcov",
+    "test:gen": "jest --runInBand --coverage --no-cache",
+    "fix:lcov": "bash ../../tools/fix_lcov_paths.sh ../../coverage/libs/common-functions ",
+    "test:show": "jest --runInBand --coverage --showConfig"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./logics/*": {
+      "types": "./dist/logics/*.d.ts",
+      "import": "./dist/logics/*.mjs",
+      "require": "./dist/logics/*.js"
+    }
+  }
+}
