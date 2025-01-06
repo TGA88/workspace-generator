@@ -239,7 +239,7 @@ bash workspace-generator/script-generator/new-functions.sh feedos-example-system
 - base-types project คือ api-communication  และ implementation project คือ api-communication-aws
     - api-communication จะมี producerItf และ senderItf ให้ใช้งาน
 
-ตัวอย่าง การสร้าง base-types
+**ตัวอย่าง การสร้าง base-types**
 ```bash
 # param1=ชื่อ workspace
 # param2= ชื่อ base-types  ที่ต้องการ
@@ -254,10 +254,17 @@ bash workspace-generator/script-generator/new-functions.sh feedos-example-system
 > หลังสร้าง BaseType Project แล้ว ให้ลบ คำสั่ง test ใน package.json ออกให้หมด
 
 
-**ส่วน การ implementation Project**
+#### ส่วน การสร้าง implementation Project
 แนะนำให้ใช้ แบบเดียวกันกับ baseTypes แต่ ให้ Clear โครงสร้าง ใน folder src ก่อน และ สร้าง project ได้ตามต้องการ
+**แต่จะต้องเพิ่ม collectCoverage เพื่อเก็บ coverage file ที่จะต้องtest เช่น**
+```json
+  collectCoverageFrom: [
+    '**/*.{ts,tsx}',
+    '!**/*.d.ts',
+  ],
+```
 
-### ก่อน push commit project Bastype
+#### ก่อน push commit project Bastype
 ให้รันคำสั่ง เพื่อสร้าง export path ใน package.json
 ```bash
 # จะ export ทุก path ที่มี file index.ts
