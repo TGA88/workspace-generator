@@ -201,6 +201,7 @@ bash script-generator/new-uicommon.sh feedos-example-system
 bash workspace-generator/script-generator/new-uicommon.sh feedos-example-system 
 
 ```
+
 ### ui-function, api-functions, common-funtions
 เป็น Project ที่เก็บ แต่ pure function ที่เอาไว้ใช้ ให้ Project อื่นๆ นำไปใช้งาน โดย
 - **ui-functions** คือ project ที่มีการใช้ builtin ของ browser เช่น window,localstorage เป็นต้น
@@ -231,3 +232,56 @@ bash script-generator/new-functions.sh feedos-example-system
 bash workspace-generator/script-generator/new-functions.sh feedos-example-system 
 
 ```
+
+### base-types
+เป็น Project ที่เก็บ Types สำหรับ นำไปใช้งาน และ จะต้องมี  project implementation ด้วย เช่น
+- base-types project คือ ui-router  และ implementation project คือ ui-router-nextjs
+- base-types project คือ api-communication  และ implementation project คือ api-communication-aws
+    - api-communication จะมี producerItf และ senderItf ให้ใช้งาน
+
+ตัวอย่าง การสร้าง base-types
+```bash
+# param1=ชื่อ workspace
+# param2= ชื่อ base-types  ที่ต้องการ
+
+# pwd is folder workspace-template
+bash script-generator/new-basetypes.sh feedos-example-system ui-router
+
+# สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
+bash workspace-generator/script-generator/new-functions.sh feedos-example-system ui-router
+
+```
+> หลังสร้าง BaseType Project แล้ว ให้ลบ คำสั่ง test ใน package.json ออกให้หมด
+
+
+**ส่วน การ implementation Project**
+แนะนำให้ใช้ แบบเดียวกันกับ baseTypes แต่ ให้ Clear โครงสร้าง ใน folder src ก่อน และ สร้าง project ได้ตามต้องการ
+
+### ก่อน push commit project Bastype
+ให้รันคำสั่ง เพื่อสร้าง export path ใน package.json
+```bash
+# จะ export ทุก path ที่มี file index.ts
+pnpm gen:exports
+```
+โครงสร้าง folder ใน source ดังนี้
+![image](assets/Screenshot%202568-01-06%20at%2019.25.53.png)
+
+จะได้ผลลัพ ใน package.json ดังนี้
+```json
+  "exports": {
+    "./exm": {
+      "types": "./dist/exm/index.d.ts",
+      "import": "./dist/exm/index.mjs",
+      "require": "./dist/exm/index.js"
+    },
+    "./hello": {
+      "types": "./dist/hello/index.d.ts",
+      "import": "./dist/hello/index.mjs",
+      "require": "./dist/hello/index.js"
+    }
+  }
+```
+
+## fastify-plugins
+### ยังไม่ได้สร้าง 
+
