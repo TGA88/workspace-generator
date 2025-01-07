@@ -42,7 +42,7 @@ mkdir -p $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/apps/$PROJECT_NAME/nextjs
 
 
 cp -r $GENERATOR_DIR/script-generator/template/project/web/nextjs/* $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/apps/$PROJECT_NAME/nextjs/
-cp -r $GENERATOR_DIR/script-generator/template/project/web/nextjs/.env.example $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/apps/$PROJECT_NAME/nextjs/.env
+cp -r $GENERATOR_DIR/script-generator/template/project/web/nextjs/.env.example $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/apps/$PROJECT_NAME/nextjs/.env.development
 
 cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/apps/$PROJECT_NAME/nextjs
 # Search and replace in all files under web directory
