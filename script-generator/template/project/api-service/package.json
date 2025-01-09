@@ -5,8 +5,6 @@
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
-  
-  
   "scripts": {
     "lint": "tsc -p tsconfig.json && eslint ./src",
     "build": "tsup --config ../../../tsup.lib.config.ts",
@@ -15,6 +13,12 @@
     "fix:lcov": "bash ../../../tools/fix_lcov_paths.sh ../../../coverage/libs/exm-api/service ",
     "test:show": "jest --runInBand --coverage --showConfig",
     "showConfig": "tsc --showConfig"
+  },
+  "peerDependencies": {
+    "@inh-lib/common": "^1.0.7",
+    "@inh-lib/ddd": "^1.0.1",
+    "tslib": "^2.3.0",
+    "zod": "^3.24.1"
   },
   "exports": {
     ".": {
