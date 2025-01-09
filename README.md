@@ -114,11 +114,11 @@ bash workspace-generator/script-generator/new-webconfig.sh gu-example-system dem
 ## API Project
 ### API-CORE
 ตัวอย่างการ update project api-core  สำหรับเก็บ abstract layer เช่น interface,type,repository,และ BusinessLogic ที่ต้องการ Share ระหว่าง DataLayer และ ServiceLayer
-```bash
-# param1=ชื่อ workspace
-# param2=ชื่อ api
-# param3=ชื่อ scope  เช่น demo-funny-web แต่ถ้าไม่ใส่ จะ default เป็น shares-webapi
 
+**param1=ชื่อ workspace**
+**param2=ชื่อ api**
+**param3=ชื่อ scope  เช่น demo-funny-web แต่ถ้าไม่ใส่ จะ default เป็น shared-webapi**
+```bash
 # pwd is folder workspace-template
 bash script-generator/new-apicore.sh gu-example-system sample-api
 
@@ -129,10 +129,11 @@ bash workspace-generator/script-generator/new-apicore.sh gu-example-system sampl
 ### API-Service
 ตัวอย่างการ update project api-service สำหรับ Provide Action ตาม Business Requirement
 
+**param1=ชื่อ workspace**
+**param2=ชื่อ api**
+**param3=ชื่อ scope  เช่น demo-funny-web แต่ถ้าไม่ใส่ จะ default เป็น shared-webapi**
+
 ```bash
-# param1=ชื่อ workspace
-# param2=ชื่อ api
-# param3=ชื่อ scope  เช่น demo-funny-web แต่ถ้าไม่ใส่ จะ default เป็น shares-webapi
 
 # pwd is folder workspace-template
 bash script-generator/new-apiservice.sh gu-example-system sample-api
@@ -145,9 +146,10 @@ bash workspace-generator/script-generator/new-service.sh gu-example-system sampl
 ### API-StorePrisma
 ตัวอย่างการ update project api-store-prisma สำหรับ Provide data layer และ schema model สำหรับ prismaorm
 
+**param1=ชื่อ workspace**
+**param2=ชื่อ database schema**
+**param3=ชื่อ scope  เช่น demo-funny-web แต่ถ้าไม่ใส่ จะ default เป็น shared-webapi**
 ```bash
-# param1=ชื่อ workspace
-# param2=ชื่อ database schema
 
 # pwd is folder workspace-template
 bash script-generator/new-storeprisma.sh gu-example-system demo
