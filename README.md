@@ -117,6 +117,7 @@ bash workspace-generator/script-generator/new-webconfig.sh gu-example-system dem
 ```bash
 # param1=ชื่อ workspace
 # param2=ชื่อ api
+# param3=ชื่อ scope  เช่น demo-funny-web แต่ถ้าไม่ใส่ จะ default เป็น shares-webapi
 
 # pwd is folder workspace-template
 bash script-generator/new-apicore.sh gu-example-system sample-api
@@ -131,6 +132,7 @@ bash workspace-generator/script-generator/new-apicore.sh gu-example-system sampl
 ```bash
 # param1=ชื่อ workspace
 # param2=ชื่อ api
+# param3=ชื่อ scope  เช่น demo-funny-web แต่ถ้าไม่ใส่ จะ default เป็น shares-webapi
 
 # pwd is folder workspace-template
 bash script-generator/new-apiservice.sh gu-example-system sample-api
