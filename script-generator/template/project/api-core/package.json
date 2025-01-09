@@ -16,6 +16,11 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "peerDependencies": {
+    "@inh-lib/common": "^1.0.7",
+    "@inh-lib/ddd": "^1.0.1",
+    "tslib": "^2.3.0"
+  },
   "exports": {
     ".": {
       "import": "./dist/index.mjs",

@@ -6,7 +6,7 @@
 import type {Config} from 'jest';
 
 
-import baseConfig from '../../../jest.config.api-core';
+import baseConfig from '../../../../jest.config.api-core';
 
 // console.log("baseRootDir",baseConfig.rootDir)
 // console.log("cwd=>",process.cwd())
