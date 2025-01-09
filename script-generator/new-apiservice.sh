@@ -76,7 +76,7 @@ npm pkg set name=@$WORKSPACE_DIR/$PROJECT_NAME-service
 npm pkg set scripts.fix:lcov="bash ../../../../tools/fix_lcov_paths.sh ../../../../coverage/libs/$SCOPE_NAME/$PROJECT_NAME/service"
 
 # add inh-lib/common , inh-lib/ddd
-pnpm add -w @inh-lib/common@^0.2.1 @inh-lib/ddd
+pnpm add -w @inh-lib/common @inh-lib/ddd
 pnpm add -w zod
 
 pnpm install
