@@ -14,12 +14,6 @@
     "test:show": "jest --runInBand --coverage --showConfig",
     "showConfig": "tsc --showConfig"
   },
-  "peerDependencies": {
-    "@inh-lib/common": "^1.0.7",
-    "@inh-lib/ddd": "^1.0.1",
-    "tslib": "^2.3.0",
-    "zod": "^3.24.1"
-  },
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
@@ -42,5 +36,11 @@
   "license": "ISC",
   "dependencies": {
     "@gu-example-system/exm-api-core": "workspace:^"
+  },
+  "peerDependencies": {
+    "@inh-lib/common": "^1.0.7",
+    "@inh-lib/ddd": "^1.0.1",
+    "tslib": "^2.3.0",
+    "zod": "^3.24.1"
   }
 }
