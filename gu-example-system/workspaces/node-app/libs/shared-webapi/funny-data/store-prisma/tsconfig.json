@@ -1,0 +1,28 @@
+{
+    "extends": "../../../../tsconfig-api-store-prisma.base.json",
+    "files": [],
+    "compilerOptions": {
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "noEmit": true,
+        "types": [
+            "node",
+            "jest"
+        ],
+        "paths": {
+            "@/*": ["../../../../*"],         // ชี้ไปที่ pnpm workspace (node-app)
+            "@root/*": ["../../../../../../*"],  // ชี้ไปที่ root (gu-funnyaple-system),
+            // paths ใช้สำหรับ file .stories
+            "@funny-data-store-prisma/*": ["./src/*"],         // ชี้ไปที่ root project feature-funny
+      
+          },
+    },
+    "include": [
+        "src",
+        "**/*.config.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
+}

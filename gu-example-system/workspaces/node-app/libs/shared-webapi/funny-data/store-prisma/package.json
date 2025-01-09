@@ -1,0 +1,568 @@
+{
+  "name": "@gu-example-system/funny-data-store-prisma",
+  "version": "1.0.1",
+  "description": "",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "type": "commonjs",
+  "files": [
+    "dist",
+    "node_modules/@prisma",
+    "libquery_engine-linux-musl-*"
+  ],
+  "scripts": {
+    "lint": "eslint src && tsc -p tsconfig.json",
+    "dev:lib:psc": "tsup --watch --config ../../../../tsup.lib.config.ts",
+    "compose:up": "docker image prune -f && cd ../../../../release && docker compose  -f container-apps/funny-data-store-prisma/store-prisma/docker-compose.yml up",
+    "compose:stop": "docker image prune -f && cd ../../../../release && docker compose  -f container-apps/funny-data-store-prisma/store-prisma/docker-compose.yml stop",
+    "compose:down": "cd ../../../../release && docker compose  -f container-apps/funny-data-store-prisma/store-prisma/docker-compose.yml down  -v --remove-orphans --rmi local",
+    "gen:up-script": "prisma migrate dev --create-only --schema prisma/schema.prisma",
+    "gen:down-script": "prisma migrate diff --from-schema-datamodel prisma/schema.prisma --to-schema-datasource prisma/schema.prisma --script > down.sql",
+    "prisma:generate": "prisma generate",
+    "build": "pnpm run prisma:generate && bash ../../../../build-script/container/build-prisma.sh && tsup --config ../../../../tsup.lib.config.ts",
+    "release": "pnpm run build && cd ../../../../ && bash build-script/container/release-prisma-liquibase-migration.sh shared-webapi funny-data store-prisma",
+    "gen:exports": "bash ../../../../tools/generate-exports.sh src",
+    "fix:lcov": "bash ../../../../tools/fix_lcov_paths.sh ../../../../coverage/libs/shared-webapi/funny-data/store-prisma"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js"
+    },
+    "./view-prescription-detail": {
+      "import": "./dist/prescription/query/view-prescription-detail/index.mjs",
+      "types": "./dist/prescription/query/view-prescription-detail/index.d.ts",
+      "require": "./dist/prescription/query/view-prescription-detail/index.js"
+    },
+    "./create-prescription-detail": {
+      "import": "./dist/prescription/command/create-prescription-detail/index.mjs",
+      "types": "./dist/prescription/command/create-prescription-detail/index.d.ts",
+      "require": "./dist/prescription/command/create-prescription-detail/index.js"
+    },
+    "./get-farm-list": {
+      "import": "./dist/prescription/query/get-farm-list/index.mjs",
+      "types": "./dist/prescription/query/get-farm-list/index.d.ts",
+      "require": "./dist/prescription/query/get-farm-list/index.js"
+    },
+    "./get-country": {
+      "import": "./dist/prescription/query/get-country/index.mjs",
+      "types": "./dist/prescription/query/get-country/index.d.ts",
+      "require": "./dist/prescription/query/get-country/index.js"
+    },
+    "./get-plant": {
+      "import": "./dist/prescription/query/get-plant/index.mjs",
+      "types": "./dist/prescription/query/get-plant/index.d.ts",
+      "require": "./dist/prescription/query/get-plant/index.js"
+    },
+    "./get-animal-type": {
+      "import": "./dist/prescription/query/get-animal-type/index.mjs",
+      "types": "./dist/prescription/query/get-animal-type/index.d.ts",
+      "require": "./dist/prescription/query/get-animal-type/index.js"
+    },
+    "./get-active-ingredient-list": {
+      "import": "./dist/prescription/query/get-active-ingredient-list/index.mjs",
+      "types": "./dist/prescription/query/get-active-ingredient-list/index.d.ts",
+      "require": "./dist/prescription/query/get-active-ingredient-list/index.js"
+    },
+    "./get-reason": {
+      "import": "./dist/prescription/query/get-reason/index.mjs",
+      "types": "./dist/prescription/query/get-reason/index.d.ts",
+      "require": "./dist/prescription/query/get-reason/index.js"
+    },
+    "./cancel-prescription": {
+      "import": "./dist/prescription/command/cancel-prescription/index.mjs",
+      "types": "./dist/prescription/command/cancel-prescription/index.d.ts",
+      "require": "./dist/prescription/command/cancel-prescription/index.js"
+    },
+    "./delete-prescription-detail": {
+      "import": "./dist/prescription/command/delete-prescription-detail/index.mjs",
+      "types": "./dist/prescription/command/delete-prescription-detail/index.d.ts",
+      "require": "./dist/prescription/command/delete-prescription-detail/index.js"
+    },
+    "./get-animal-period": {
+      "import": "./dist/prescription/query/get-animal-period/index.mjs",
+      "types": "./dist/prescription/query/get-animal-period/index.d.ts",
+      "require": "./dist/prescription/query/get-animal-period/index.js"
+    },
+    "./get-gulist": {
+      "import": "./dist/prescription/query/get-gulist/index.mjs",
+      "types": "./dist/prescription/query/get-gulist/index.d.ts",
+      "require": "./dist/prescription/query/get-gulist/index.js"
+    },
+    "./save-prescription-detail": {
+      "import": "./dist/prescription/command/save-prescription-detail/index.mjs",
+      "types": "./dist/prescription/command/save-prescription-detail/index.d.ts",
+      "require": "./dist/prescription/command/save-prescription-detail/index.js"
+    },
+    "./get-medicine": {
+      "import": "./dist/prescription/query/get-medicine/index.mjs",
+      "types": "./dist/prescription/query/get-medicine/index.d.ts",
+      "require": "./dist/prescription/query/get-medicine/index.js"
+    },
+    "./delete-prescription": {
+      "import": "./dist/prescription/command/delete-prescription/index.mjs",
+      "types": "./dist/prescription/command/delete-prescription/index.d.ts",
+      "require": "./dist/prescription/command/delete-prescription/index.js"
+    },
+    "./edit-prescription": {
+      "import": "./dist/prescription/command/edit-prescription/index.mjs",
+      "types": "./dist/prescription/command/edit-prescription/index.d.ts",
+      "require": "./dist/prescription/command/edit-prescription/index.js"
+    },
+    "./duplicate-prescription": {
+      "import": "./dist/prescription/command/duplicate-prescription/index.mjs",
+      "types": "./dist/prescription/command/duplicate-prescription/index.d.ts",
+      "require": "./dist/prescription/command/duplicate-prescription/index.js"
+    },
+    "./update-status-expire": {
+      "import": "./dist/prescription/command/update-status-expire/index.mjs",
+      "types": "./dist/prescription/command/update-status-expire/index.d.ts",
+      "require": "./dist/prescription/command/update-status-expire/index.js"
+    },
+    "./submit-new-prescription": {
+      "import": "./dist/prescription/command/submit-new-prescription/index.mjs",
+      "types": "./dist/prescription/command/submit-new-prescription/index.d.ts",
+      "require": "./dist/prescription/command/submit-new-prescription/index.js"
+    },
+    "./get-farm-type": {
+      "import": "./dist/prescription/query/get-farm-type/index.mjs",
+      "types": "./dist/prescription/query/get-farm-type/index.d.ts",
+      "require": "./dist/prescription/query/get-farm-type/index.js"
+    },
+    "./get-veterinarian": {
+      "import": "./dist/prescription/query/get-veterinarian/index.mjs",
+      "types": "./dist/prescription/query/get-veterinarian/index.d.ts",
+      "require": "./dist/prescription/query/get-veterinarian/index.js"
+    },
+    "./get-me": {
+      "import": "./dist/prescription/query/get-me/index.mjs",
+      "types": "./dist/prescription/query/get-me/index.d.ts",
+      "require": "./dist/prescription/query/get-me/index.js"
+    },
+    "./get-list-bible": {
+      "import": "./dist/prescription/query/get-list-bible/index.mjs",
+      "types": "./dist/prescription/query/get-list-bible/index.d.ts",
+      "require": "./dist/prescription/query/get-list-bible/index.js"
+    },
+    "./save-prescription-detail-2": {
+      "import": "./dist/prescription/command/save-prescription-detail-2/index.mjs",
+      "types": "./dist/prescription/command/save-prescription-detail-2/index.d.ts",
+      "require": "./dist/prescription/command/save-prescription-detail-2/index.js"
+    },
+    "./save-prescription-remark": {
+      "import": "./dist/prescription/command/save-prescription-remark/index.mjs",
+      "types": "./dist/prescription/command/save-prescription-remark/index.d.ts",
+      "require": "./dist/prescription/command/save-prescription-remark/index.js"
+    },
+    "./notify-prescription": {
+      "import": "./dist/prescription/command/notify-prescription/index.mjs",
+      "types": "./dist/prescription/command/notify-prescription/index.d.ts",
+      "require": "./dist/prescription/command/notify-prescription/index.js"
+    },
+    "./gen-report": {
+      "import": "./dist/prescription/command/gen-report/index.mjs",
+      "types": "./dist/prescription/command/gen-report/index.d.ts",
+      "require": "./dist/prescription/command/gen-report/index.js"
+    },
+    "./publish-bible": {
+      "import": "./dist/bible-factory/command/publish-bible/index.mjs",
+      "types": "./dist/bible-factory/command/publish-bible/index.d.ts",
+      "require": "./dist/bible-factory/command/publish-bible/index.js"
+    },
+    "./get-signature": {
+      "import": "./dist/prescription/query/get-signature/index.mjs",
+      "types": "./dist/prescription/query/get-signature/index.d.ts",
+      "require": "./dist/prescription/query/get-signature/index.js"
+    },
+    "./create-bible": {
+      "import": "./dist/bible-factory/command/create-bible/index.mjs",
+      "types": "./dist/bible-factory/command/create-bible/index.d.ts",
+      "require": "./dist/bible-factory/command/create-bible/index.js"
+    },
+    "./get-species": {
+      "import": "./dist/prescription/query/get-species/index.mjs",
+      "types": "./dist/prescription/query/get-species/index.d.ts",
+      "require": "./dist/prescription/query/get-species/index.js"
+    },
+    "./get-bible-medicine": {
+      "import": "./dist/bible-factory/query/get-bible-medicine/index.mjs",
+      "types": "./dist/bible-factory/query/get-bible-medicine/index.d.ts",
+      "require": "./dist/bible-factory/query/get-bible-medicine/index.js"
+    },
+    "./sync-fm-brand-info": {
+      "import": "./dist/prescription/consumer/sync-fm-brand-info/index.mjs",
+      "types": "./dist/prescription/consumer/sync-fm-brand-info/index.d.ts",
+      "require": "./dist/prescription/consumer/sync-fm-brand-info/index.js"
+    },
+    "./sync-fm-brand-info-delete": {
+      "import": "./dist/prescription/consumer/sync-fm-brand-info-delete/index.mjs",
+      "types": "./dist/prescription/consumer/sync-fm-brand-info-delete/index.d.ts",
+      "require": "./dist/prescription/consumer/sync-fm-brand-info-delete/index.js"
+    },
+    "./get-bible-detail": {
+      "import": "./dist/bible-factory/query/get-bible-detail/index.mjs",
+      "types": "./dist/bible-factory/query/get-bible-detail/index.d.ts",
+      "require": "./dist/bible-factory/query/get-bible-detail/index.js"
+    },
+    "./edit-bible": {
+      "import": "./dist/bible-factory/command/edit-bible/index.mjs",
+      "types": "./dist/bible-factory/command/edit-bible/index.d.ts",
+      "require": "./dist/bible-factory/command/edit-bible/index.js"
+    },
+    "./edit-bible-detail": {
+      "import": "./dist/bible-factory/command/edit-bible-detail/index.mjs",
+      "types": "./dist/bible-factory/command/edit-bible-detail/index.d.ts",
+      "require": "./dist/bible-factory/command/edit-bible-detail/index.js"
+    },
+    "./update-bible-detail-status": {
+      "import": "./dist/bible-factory/command/update-bible-detail-status/index.mjs",
+      "types": "./dist/bible-factory/command/update-bible-detail-status/index.d.ts",
+      "require": "./dist/bible-factory/command/update-bible-detail-status/index.js"
+    },
+    "./delete-bible-detail": {
+      "import": "./dist/bible-factory/command/delete-bible-detail/index.mjs",
+      "types": "./dist/bible-factory/command/delete-bible-detail/index.d.ts",
+      "require": "./dist/bible-factory/command/delete-bible-detail/index.js"
+    },
+    "./sync-fm-mas-medicine": {
+      "import": "./dist/prescription/consumer/sync-fm-mas-medicine/index.mjs",
+      "types": "./dist/prescription/consumer/sync-fm-mas-medicine/index.d.ts",
+      "require": "./dist/prescription/consumer/sync-fm-mas-medicine/index.js"
+    },
+    "./sync-fm-mas-medicine-delete": {
+      "import": "./dist/prescription/consumer/sync-fm-mas-medicine-delete/index.mjs",
+      "types": "./dist/prescription/consumer/sync-fm-mas-medicine-delete/index.d.ts",
+      "require": "./dist/prescription/consumer/sync-fm-mas-medicine-delete/index.js"
+    },
+    "./sync-fm-ingredient-info": {
+      "import": "./dist/prescription/consumer/sync-fm-ingredient-info/index.mjs",
+      "types": "./dist/prescription/consumer/sync-fm-ingredient-info/index.d.ts",
+      "require": "./dist/prescription/consumer/sync-fm-ingredient-info/index.js"
+    },
+    "./sync-fm-ingredient-info-delete": {
+      "import": "./dist/prescription/consumer/sync-fm-ingredient-info-delete/index.mjs",
+      "types": "./dist/prescription/consumer/sync-fm-ingredient-info-delete/index.d.ts",
+      "require": "./dist/prescription/consumer/sync-fm-ingredient-info-delete/index.js"
+    },
+    "./duplicate-bible": {
+      "import": "./dist/bible-factory/command/duplicate-bible/index.mjs",
+      "types": "./dist/bible-factory/command/duplicate-bible/index.d.ts",
+      "require": "./dist/bible-factory/command/duplicate-bible/index.js"
+    },
+    "./cancel-bible": {
+      "import": "./dist/bible-factory/command/cancel-bible/index.mjs",
+      "types": "./dist/bible-factory/command/cancel-bible/index.d.ts",
+      "require": "./dist/bible-factory/command/cancel-bible/index.js"
+    },
+    "./get-bible-animal-type": {
+      "import": "./dist/bible-factory/query/get-bible-animal-type/index.mjs",
+      "types": "./dist/bible-factory/query/get-bible-animal-type/index.d.ts",
+      "require": "./dist/bible-factory/query/get-bible-animal-type/index.js"
+    },
+    "./sync-gd2-fm-medicine": {
+      "import": "./dist/prescription/consumer/sync-gd2-fm-medicine/index.mjs",
+      "types": "./dist/prescription/consumer/sync-gd2-fm-medicine/index.d.ts",
+      "require": "./dist/prescription/consumer/sync-gd2-fm-medicine/index.js"
+    },
+    "./sync-gd2-fm-medicine-delete": {
+      "import": "./dist/prescription/consumer/sync-gd2-fm-medicine-delete/index.mjs",
+      "types": "./dist/prescription/consumer/sync-gd2-fm-medicine-delete/index.d.ts",
+      "require": "./dist/prescription/consumer/sync-gd2-fm-medicine-delete/index.js"
+    },
+    "./sync-mas-product-general": {
+      "import": "./dist/prescription/consumer/sync-mas-product-general/index.mjs",
+      "types": "./dist/prescription/consumer/sync-mas-product-general/index.d.ts",
+      "require": "./dist/prescription/consumer/sync-mas-product-general/index.js"
+    },
+    "./sync-mas-product-general-delete": {
+      "import": "./dist/prescription/consumer/sync-mas-product-general-delete/index.mjs",
+      "types": "./dist/prescription/consumer/sync-mas-product-general-delete/index.d.ts",
+      "require": "./dist/prescription/consumer/sync-mas-product-general-delete/index.js"
+    },
+    "./create-active-ingredient": {
+      "import": "./dist/ingredient/command/create-active-ingredient/index.mjs",
+      "types": "./dist/ingredient/command/create-active-ingredient/index.d.ts",
+      "require": "./dist/ingredient/command/create-active-ingredient/index.js"
+    },
+    "./list-active-ingredient": {
+      "import": "./dist/ingredient/query/list-active-ingredient/index.mjs",
+      "types": "./dist/ingredient/query/list-active-ingredient/index.d.ts",
+      "require": "./dist/ingredient/query/list-active-ingredient/index.js"
+    },
+    "./delete-bible": {
+      "import": "./dist/bible-factory/command/delete-bible/index.mjs",
+      "types": "./dist/bible-factory/command/delete-bible/index.d.ts",
+      "require": "./dist/bible-factory/command/delete-bible/index.js"
+    },
+    "./list-master-active-ingredient": {
+      "import": "./dist/ingredient/query/list-master-active-ingredient/index.mjs",
+      "types": "./dist/ingredient/query/list-master-active-ingredient/index.d.ts",
+      "require": "./dist/ingredient/query/list-master-active-ingredient/index.js"
+    },
+    "./delete-all-active-ingredient": {
+      "import": "./dist/ingredient/command/delete-all-active-ingredient/index.mjs",
+      "types": "./dist/ingredient/command/delete-all-active-ingredient/index.d.ts",
+      "require": "./dist/ingredient/command/delete-all-active-ingredient/index.js"
+    },
+    "./list-medicine": {
+      "import": "./dist/medicine/query/list-medicine/index.mjs",
+      "types": "./dist/medicine/query/list-medicine/index.d.ts",
+      "require": "./dist/medicine/query/list-medicine/index.js"
+    },
+    "./delete-active-ingredient": {
+      "import": "./dist/ingredient/command/delete-active-ingredient/index.mjs",
+      "types": "./dist/ingredient/command/delete-active-ingredient/index.d.ts",
+      "require": "./dist/ingredient/command/delete-active-ingredient/index.js"
+    },
+    "./create-medicine": {
+      "import": "./dist/medicine/command/create-medicine/index.mjs",
+      "types": "./dist/medicine/command/create-medicine/index.d.ts",
+      "require": "./dist/medicine/command/create-medicine/index.js"
+    },
+    "./get-active-ingredient-list-2": {
+      "import": "./dist/medicine/query/get-active-ingredient-list-2/index.mjs",
+      "types": "./dist/medicine/query/get-active-ingredient-list-2/index.d.ts",
+      "require": "./dist/medicine/query/get-active-ingredient-list-2/index.js"
+    },
+    "./get-master-medicine": {
+      "import": "./dist/medicine/query/get-master-medicine/index.mjs",
+      "types": "./dist/medicine/query/get-master-medicine/index.d.ts",
+      "require": "./dist/medicine/query/get-master-medicine/index.js"
+    },
+    "./get-medicine-category": {
+      "import": "./dist/medicine/query/get-medicine-category/index.mjs",
+      "types": "./dist/medicine/query/get-medicine-category/index.d.ts",
+      "require": "./dist/medicine/query/get-medicine-category/index.js"
+    },
+    "./get-medicine-group": {
+      "import": "./dist/medicine/query/get-medicine-group/index.mjs",
+      "types": "./dist/medicine/query/get-medicine-group/index.d.ts",
+      "require": "./dist/medicine/query/get-medicine-group/index.js"
+    },
+    "./get-medicine-type": {
+      "import": "./dist/medicine/query/get-medicine-type/index.mjs",
+      "types": "./dist/medicine/query/get-medicine-type/index.d.ts",
+      "require": "./dist/medicine/query/get-medicine-type/index.js"
+    },
+    "./get-unit": {
+      "import": "./dist/medicine/query/get-unit/index.mjs",
+      "types": "./dist/medicine/query/get-unit/index.d.ts",
+      "require": "./dist/medicine/query/get-unit/index.js"
+    },
+    "./get-who-classification": {
+      "import": "./dist/medicine/query/get-who-classification/index.mjs",
+      "types": "./dist/medicine/query/get-who-classification/index.d.ts",
+      "require": "./dist/medicine/query/get-who-classification/index.js"
+    },
+    "./active-ingredient-detail": {
+      "import": "./dist/ingredient/query/active-ingredient-detail/index.mjs",
+      "types": "./dist/ingredient/query/active-ingredient-detail/index.d.ts",
+      "require": "./dist/ingredient/query/active-ingredient-detail/index.js"
+    },
+    "./edit-active-ingredient": {
+      "import": "./dist/ingredient/command/edit-active-ingredient/index.mjs",
+      "types": "./dist/ingredient/command/edit-active-ingredient/index.d.ts",
+      "require": "./dist/ingredient/command/edit-active-ingredient/index.js"
+    },
+    "./create-user": {
+      "import": "./dist/user-management/command/create-user/index.mjs",
+      "types": "./dist/user-management/command/create-user/index.d.ts",
+      "require": "./dist/user-management/command/create-user/index.js"
+    },
+    "./edit-user": {
+      "import": "./dist/user-management/command/edit-user/index.mjs",
+      "types": "./dist/user-management/command/edit-user/index.d.ts",
+      "require": "./dist/user-management/command/edit-user/index.js"
+    },
+    "./update-more-info": {
+      "import": "./dist/user-management/command/update-more-info/index.mjs",
+      "types": "./dist/user-management/command/update-more-info/index.d.ts",
+      "require": "./dist/user-management/command/update-more-info/index.js"
+    },
+    "./get-user-detail": {
+      "import": "./dist/user-management/query/get-user-detail/index.mjs",
+      "types": "./dist/user-management/query/get-user-detail/index.d.ts",
+      "require": "./dist/user-management/query/get-user-detail/index.js"
+    },
+    "./get-language": {
+      "import": "./dist/user-management/query/get-language/index.mjs",
+      "types": "./dist/user-management/query/get-language/index.d.ts",
+      "require": "./dist/user-management/query/get-language/index.js"
+    },
+    "./view-mas-medicine": {
+      "import": "./dist/medicine/query/view-mas-medicine/index.mjs",
+      "types": "./dist/medicine/query/view-mas-medicine/index.d.ts",
+      "require": "./dist/medicine/query/view-mas-medicine/index.js"
+    },
+    "./edit-medicine": {
+      "import": "./dist/medicine/command/edit-medicine/index.mjs",
+      "types": "./dist/medicine/command/edit-medicine/index.d.ts",
+      "require": "./dist/medicine/command/edit-medicine/index.js"
+    },
+    "./add-farm-to-user": {
+      "import": "./dist/user-management/command/add-farm-to-user/index.mjs",
+      "types": "./dist/user-management/command/add-farm-to-user/index.d.ts",
+      "require": "./dist/user-management/command/add-farm-to-user/index.js"
+    },
+    "./add-all-farm-to-user": {
+      "import": "./dist/user-management/command/add-all-farm-to-user/index.mjs",
+      "types": "./dist/user-management/command/add-all-farm-to-user/index.d.ts",
+      "require": "./dist/user-management/command/add-all-farm-to-user/index.js"
+    },
+    "./delete-all-farm": {
+      "import": "./dist/user-management/command/delete-all-farm/index.mjs",
+      "types": "./dist/user-management/command/delete-all-farm/index.d.ts",
+      "require": "./dist/user-management/command/delete-all-farm/index.js"
+    },
+    "./delete-farm-that-link-user": {
+      "import": "./dist/user-management/command/delete-farm-that-link-user/index.mjs",
+      "types": "./dist/user-management/command/delete-farm-that-link-user/index.d.ts",
+      "require": "./dist/user-management/command/delete-farm-that-link-user/index.js"
+    },
+    "./get-all-farm": {
+      "import": "./dist/user-management/query/get-all-farm/index.mjs",
+      "types": "./dist/user-management/query/get-all-farm/index.d.ts",
+      "require": "./dist/user-management/query/get-all-farm/index.js"
+    },
+    "./get-user-farm": {
+      "import": "./dist/user-management/query/get-user-farm/index.mjs",
+      "types": "./dist/user-management/query/get-user-farm/index.d.ts",
+      "require": "./dist/user-management/query/get-user-farm/index.js"
+    },
+    "./get-bu-list": {
+      "import": "./dist/user-management/query/get-bu-list/index.mjs",
+      "types": "./dist/user-management/query/get-bu-list/index.d.ts",
+      "require": "./dist/user-management/query/get-bu-list/index.js"
+    },
+    "./get-subzone": {
+      "import": "./dist/user-management/query/get-subzone/index.mjs",
+      "types": "./dist/user-management/query/get-subzone/index.d.ts",
+      "require": "./dist/user-management/query/get-subzone/index.js"
+    },
+    "./get-zone": {
+      "import": "./dist/user-management/query/get-zone/index.mjs",
+      "types": "./dist/user-management/query/get-zone/index.d.ts",
+      "require": "./dist/user-management/query/get-zone/index.js"
+    },
+    "./delete-med": {
+      "import": "./dist/medicine/command/delete-med/index.mjs",
+      "types": "./dist/medicine/command/delete-med/index.d.ts",
+      "require": "./dist/medicine/command/delete-med/index.js"
+    },
+    "./delete-med-all": {
+      "import": "./dist/medicine/command/delete-med-all/index.mjs",
+      "types": "./dist/medicine/command/delete-med-all/index.d.ts",
+      "require": "./dist/medicine/command/delete-med-all/index.js"
+    },
+    "./get-list-user": {
+      "import": "./dist/user-management/query/get-list-user/index.mjs",
+      "types": "./dist/user-management/query/get-list-user/index.d.ts",
+      "require": "./dist/user-management/query/get-list-user/index.js"
+    },
+    "./get-veterinarian-list": {
+      "import": "./dist/veterinarian/query/get-veterinarian-list/index.mjs",
+      "types": "./dist/veterinarian/query/get-veterinarian-list/index.d.ts",
+      "require": "./dist/veterinarian/query/get-veterinarian-list/index.js"
+    },
+    "./get-matching-email": {
+      "import": "./dist/matching-email/query/get-matching-email/index.mjs",
+      "types": "./dist/matching-email/query/get-matching-email/index.d.ts",
+      "require": "./dist/matching-email/query/get-matching-email/index.js"
+    },
+    "./create-matching-email": {
+      "import": "./dist/matching-email/command/create-matching-email/index.mjs",
+      "types": "./dist/matching-email/command/create-matching-email/index.d.ts",
+      "require": "./dist/matching-email/command/create-matching-email/index.js"
+    },
+    "./get-plant-np": {
+      "import": "./dist/prescription/query/get-plant-np/index.mjs",
+      "types": "./dist/prescription/query/get-plant-np/index.d.ts",
+      "require": "./dist/prescription/query/get-plant-np/index.js"
+    },
+    "./get-country-np": {
+      "import": "./dist/prescription/query/get-country-np/index.mjs",
+      "types": "./dist/prescription/query/get-country-np/index.d.ts",
+      "require": "./dist/prescription/query/get-country-np/index.js"
+    },
+    "./get-species-np": {
+      "import": "./dist/prescription/query/get-species-np/index.mjs",
+      "types": "./dist/prescription/query/get-species-np/index.d.ts",
+      "require": "./dist/prescription/query/get-species-np/index.js"
+    },
+    "./get-matching-email-detail": {
+      "import": "./dist/matching-email/query/get-matching-email-detail/index.mjs",
+      "types": "./dist/matching-email/query/get-matching-email-detail/index.d.ts",
+      "require": "./dist/matching-email/query/get-matching-email-detail/index.js"
+    },
+    "./edit-matching-email": {
+      "import": "./dist/matching-email/command/edit-matching-email/index.mjs",
+      "types": "./dist/matching-email/command/edit-matching-email/index.d.ts",
+      "require": "./dist/matching-email/command/edit-matching-email/index.js"
+    },
+    "./delete-matching-email": {
+      "import": "./dist/matching-email/command/delete-matching-email/index.mjs",
+      "types": "./dist/matching-email/command/delete-matching-email/index.d.ts",
+      "require": "./dist/matching-email/command/delete-matching-email/index.js"
+    },
+    "./get-farm-list-np": {
+      "import": "./dist/prescription/query/get-farm-list-np/index.mjs",
+      "types": "./dist/prescription/query/get-farm-list-np/index.d.ts",
+      "require": "./dist/prescription/query/get-farm-list-np/index.js"
+    },
+    "./check-duplicate": {
+      "import": "./dist/matching-email/command/check-duplicate/index.mjs",
+      "types": "./dist/matching-email/command/check-duplicate/index.d.ts",
+      "require": "./dist/matching-email/command/check-duplicate/index.js"
+    },
+    "./get-title-name": {
+      "import": "./dist/veterinarian/query/get-title-name/index.mjs",
+      "types": "./dist/veterinarian/query/get-title-name/index.d.ts",
+      "require": "./dist/veterinarian/query/get-title-name/index.js"
+    },
+    "./create-vet": {
+      "import": "./dist/veterinarian/command/create-vet/index.mjs",
+      "types": "./dist/veterinarian/command/create-vet/index.d.ts",
+      "require": "./dist/veterinarian/command/create-vet/index.js"
+    },
+    "./get-veterinarian-detail": {
+      "import": "./dist/veterinarian/query/get-veterinarian-detail/index.mjs",
+      "types": "./dist/veterinarian/query/get-veterinarian-detail/index.d.ts",
+      "require": "./dist/veterinarian/query/get-veterinarian-detail/index.js"
+    },
+    "./edit-vet": {
+      "import": "./dist/veterinarian/command/edit-vet/index.mjs",
+      "types": "./dist/veterinarian/command/edit-vet/index.d.ts",
+      "require": "./dist/veterinarian/command/edit-vet/index.js"
+    },
+    "./duplicate-matching-email": {
+      "import": "./dist/matching-email/command/duplicate-matching-email/index.mjs",
+      "types": "./dist/matching-email/command/duplicate-matching-email/index.d.ts",
+      "require": "./dist/matching-email/command/duplicate-matching-email/index.js"
+    },
+    "./update-onboarding": {
+      "import": "./dist/user-management/command/update-onboarding/index.mjs",
+      "types": "./dist/user-management/command/update-onboarding/index.d.ts",
+      "require": "./dist/user-management/command/update-onboarding/index.js"
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^5.6.0",
+    "prisma": "^5.6.0"
+  },
+  "devDependencies": {
+    "jest-mock-extended": "^3.0.7"
+  },
+  "peerDependencies": {
+    "@inh-lib/common": "^1.0.7",
+    "@inh-lib/ddd": "^1.0.1",
+    "@prisma/client": "^5.6.0",
+    "prisma": "^5.6.0",
+    "tslib": "^2.3.0",
+    "@gu-example-system/funny-api-core": "workspace:^"
+  }
+}

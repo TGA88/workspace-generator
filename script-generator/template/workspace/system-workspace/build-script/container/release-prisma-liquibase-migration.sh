@@ -1,7 +1,8 @@
-# ex. guportal-webapi
-APP_NAME=$1   
+# ex. gu-portal-webapi
+SCOPE_NAME=$1
+APP_NAME=$2 
 # ex. store-prisma
-APP_TYPE=$2
+APP_TYPE=$3
 # PACKAGE_NAME=$3
 
 # # run pnpm deploy
@@ -14,16 +15,16 @@ APP_TYPE=$2
 
 # make source db migration
 rm -rf release/db/$APP_NAME-$APP_TYPE/store-prisma && mkdir -p release/db/$APP_NAME-$APP_TYPE/store-prisma/
-cp -r libs/$APP_NAME/store-prisma/prisma release/db/$APP_NAME-$APP_TYPE/store-prisma/
-cp -r libs/$APP_NAME/store-prisma/liquibase release/db/$APP_NAME-$APP_TYPE/store-prisma/
+cp -r libs/$SCOPE_NAME/$APP_NAME/store-prisma/prisma release/db/$APP_NAME-$APP_TYPE/store-prisma/
+cp -r libs/$SCOPE_NAME/$APP_NAME/store-prisma/liquibase release/db/$APP_NAME-$APP_TYPE/store-prisma/
 # cp -r libs/$APP_NAME/store-prisma/.env release/db/$APP_NAME-$APP_TYPE/store-prisma/
 # cp -r libs/$APP_NAME/store-prisma/Dockerfile release/db/$APP_NAME-$APP_TYPE/store-prisma/
 
 # make container to run source db
 rm -rf release/container-apps/$APP_NAME-$APP_TYPE/ && mkdir -p release/container-apps/$APP_NAME-$APP_TYPE/store-prisma/
-cp -r libs/$APP_NAME/store-prisma/.env release/container-apps/$APP_NAME-$APP_TYPE/store-prisma/
-cp -r libs/$APP_NAME/store-prisma/initdb release/container-apps/$APP_NAME-$APP_TYPE/store-prisma/
-cp -r libs/$APP_NAME/store-prisma/Dockerfile release/container-apps/$APP_NAME-$APP_TYPE/store-prisma/Dockerfile
-cp -r libs/$APP_NAME/store-prisma/docker-compose.yml release/container-apps/$APP_NAME-$APP_TYPE/store-prisma/
-cp -r libs/$APP_NAME/store-prisma/package.json release/container-apps/$APP_NAME-$APP_TYPE/store-prisma/
+cp -r libs/$SCOPE_NAME/$APP_NAME/store-prisma/.env release/container-apps/$APP_NAME-$APP_TYPE/store-prisma/
+cp -r libs/$SCOPE_NAME/$APP_NAME/store-prisma/initdb release/container-apps/$APP_NAME-$APP_TYPE/store-prisma/
+cp -r libs/$SCOPE_NAME/$APP_NAME/store-prisma/Dockerfile release/container-apps/$APP_NAME-$APP_TYPE/store-prisma/Dockerfile
+cp -r libs/$SCOPE_NAME/$APP_NAME/store-prisma/docker-compose.yml release/container-apps/$APP_NAME-$APP_TYPE/store-prisma/
+cp -r libs/$SCOPE_NAME/$APP_NAME/store-prisma/package.json release/container-apps/$APP_NAME-$APP_TYPE/store-prisma/
 # cp -r pnpm-lock.yaml release/db/$APP_NAME-$APP_TYPE/store-prisma/

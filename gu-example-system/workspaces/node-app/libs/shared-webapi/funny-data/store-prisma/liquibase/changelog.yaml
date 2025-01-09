@@ -1,0 +1,12 @@
+databaseChangeLog:
+    - changeSet:
+            id: 1
+            author: nonthawat.pae
+            context: table,glob
+            label: F1S1,Prescription,list-prescription
+            changes:
+                - sqlFile:
+                        path: prisma/migrations/20241221082221_funny_data/migration.sql
+                - rollback:
+                      - sqlFile:
+                              path: prisma/migrations/20241221082221_funny_data/down.sql

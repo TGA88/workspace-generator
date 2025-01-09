@@ -13,16 +13,16 @@
   ],
   "scripts": {
     "lint": "eslint src && tsc -p tsconfig.json",
-    "dev:lib:psc": "tsup --watch --config ../../../tsup.lib.config.ts",
-    "compose:up": "docker image prune -f && cd ../../../release && docker compose  -f container-apps/aad-adh-data-store-prisma/store-prisma/docker-compose.yml up",
-    "compose:stop": "docker image prune -f && cd ../../../release && docker compose  -f container-apps/aad-adh-data-store-prisma/store-prisma/docker-compose.yml stop",
-    "compose:down": "cd ../../../release && docker compose  -f container-apps/aad-adh-data-store-prisma/store-prisma/docker-compose.yml down  -v --remove-orphans --rmi local",
+    "dev:lib:psc": "tsup --watch --config ../../../../tsup.lib.config.ts",
+    "compose:up": "docker image prune -f && cd ../../../../release && docker compose  -f container-apps/exm-data-store-prisma/store-prisma/docker-compose.yml up",
+    "compose:stop": "docker image prune -f && cd ../../../../release && docker compose  -f container-apps/exm-data-store-prisma/store-prisma/docker-compose.yml stop",
+    "compose:down": "cd ../../../../release && docker compose  -f container-apps/exm-data-store-prisma/store-prisma/docker-compose.yml down  -v --remove-orphans --rmi local",
     "gen:up-script": "prisma migrate dev --create-only --schema prisma/schema.prisma",
     "gen:down-script": "prisma migrate diff --from-schema-datamodel prisma/schema.prisma --to-schema-datasource prisma/schema.prisma --script > down.sql",
     "prisma:generate": "prisma generate",
-    "build": "pnpm run prisma:generate && bash ../../../build-script/container/build-prisma.sh && tsup --config ../../../tsup.lib.config.ts",
-    "release": "pnpm run build && cd ../../../ && bash build-script/container/release-prisma-liquibase-migration.sh exm-data store-prisma",
-    "gen:exports": "bash ../../../tools/generate-exports.sh src"
+    "build": "pnpm run prisma:generate && bash ../../../../build-script/container/build-prisma.sh && tsup --config ../../../../tsup.lib.config.ts",
+    "release": "pnpm run build && cd ../../../../ && bash build-script/container/release-prisma-liquibase-migration.sh scope-webapi exm-data store-prisma",
+    "gen:exports": "bash ../../../../tools/generate-exports.sh src"
   },
   "exports": {
     ".": {
@@ -555,5 +555,12 @@
   },
   "devDependencies": {
     "jest-mock-extended": "^3.0.7"
+  },
+  "peerDependencies": {
+    "@inh-lib/common": "^1.0.7",
+    "@inh-lib/ddd": "^1.0.1",
+    "tslib": "^2.3.0",
+    "@prisma/client": "^5.6.0",
+    "prisma": "^5.6.0"
   }
 }

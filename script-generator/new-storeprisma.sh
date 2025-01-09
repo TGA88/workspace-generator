@@ -4,7 +4,8 @@
 # PROJECT_NAME='feature-example'
 WORKSPACE_DIR=$1
 PROJECT_NAME=$2
-GENERATOR_DIR=$3
+SCOPE_NAME=$3
+GENERATOR_DIR=$4
 SYSTEM_DIR='node-app'
 
 
@@ -24,6 +25,12 @@ else
   echo "ตัวแปร GENERATOR_DIR มีค่า: $GENERATOR_DIR"
 fi
 
+# Check if SCOPE_NAME is null
+if [ -z "$SCOPE_NAME" ]; then
+   SCOPE_NAME='shared-webapi'
+   echo "SCOPE_NAME => $SCOPE_NAME"
+fi
+
 # Check if PROJECT_NAME is provided
 if [ -z "$PROJECT_NAME" ]; then
    echo "Error: PROJECT_NAME is not set"
@@ -35,16 +42,16 @@ CUR_PATH=$(pwd)
 
 # สร้าง folder project
 # mkdir -p <workspace_dir>/workspaces/<system_name>
-echo 'mkdir -p $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$PROJECT_NAME-data/store-prisma'
-mkdir -p $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$PROJECT_NAME-data/store-prisma
+echo 'mkdir -p $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME-data/store-prisma'
+mkdir -p $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME-data/store-prisma
 
 
 
 
-cp -r $GENERATOR_DIR/script-generator/template/project/store-prisma/* $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$PROJECT_NAME-data/store-prisma/
-cp -r $GENERATOR_DIR/script-generator/template/project/store-prisma/.env $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$PROJECT_NAME-data/store-prisma/.env
+cp -r $GENERATOR_DIR/script-generator/template/project/store-prisma/* $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME-data/store-prisma/
+cp -r $GENERATOR_DIR/script-generator/template/project/store-prisma/.env $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME-data/store-prisma/.env
 
-cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$PROJECT_NAME-data/store-prisma
+cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME-data/store-prisma
 
 # # ตรวจสอบไฟล์ที่มี EXM
 # find . -type f -exec grep -l "EXM" {} \;
@@ -67,14 +74,14 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     find ./ -type f -not -path "*/\.*" -exec file {} \; | 
     grep -i -E '(text| JSON data)' | 
     cut -d: -f1 | 
-    xargs sed -i '' -e "s/exm/$PROJECT_NAME/g" -e "s/EXM/$LOWER_PROJECT_NAME/g" -e "s/gu-example-system/$WORKSPACE_DIR/g"
+    xargs sed -i '' -e "s/exm/$PROJECT_NAME/g" -e "s/EXM/$LOWER_PROJECT_NAME/g"  -e "s/scope-webapi/$SCOPE_NAME/g" -e "s/gu-example-system/$WORKSPACE_DIR/g"
 
 else
     # find ./ -type f -not -path "*/\.*" -exec file {} \; | 
     find ./ -type f -not -path "*/\.*" -exec file {} \; | 
     grep -i -E '(text| JSON data)' | 
     cut -d: -f1 | 
-    xargs sed -i -e "s/exm/$PROJECT_NAME/g" -e "s/EXM/$LOWER_PROJECT_NAME/g" -e "s/gu-example-system/$WORKSPACE_DIR/g"
+    xargs sed -i -e "s/exm/$PROJECT_NAME/g" -e "s/EXM/$LOWER_PROJECT_NAME/g"  -e "s/scope-webapi/$SCOPE_NAME/g" -e "s/gu-example-system/$WORKSPACE_DIR/g"
 
 
 fi
@@ -82,11 +89,11 @@ fi
 
     
 
-echo "Replaced 'exm' with '$PROJECT_NAME' in all files under $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$PROJECT_NAME-data/store-prisma/"
+echo "Replaced 'exm' with '$PROJECT_NAME' in all files under $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME-data/store-prisma/"
 
 
 npm pkg set name=@$WORKSPACE_DIR/$PROJECT_NAME-data-store-prisma
-npm pkg set scripts.fix:lcov="bash ../../../tools/fix_lcov_paths.sh ../../../coverage/libs/"$PROJECT_NAME-data/store-prisma
+npm pkg set scripts.fix:lcov="bash ../../../../tools/fix_lcov_paths.sh ../../../../coverage/libs/"$SCOPE_NAME/$PROJECT_NAME-data/store-prisma
 
 
 pnpm add -w @prisma/client@^5.6.0 prisma@^5.6.0

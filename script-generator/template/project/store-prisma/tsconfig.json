@@ -1,5 +1,5 @@
 {
-    "extends": "../../../tsconfig-api-store-prisma.base.json",
+    "extends": "../../../../tsconfig-api-store-prisma.base.json",
     "files": [],
     "compilerOptions": {
         "module": "NodeNext",
@@ -10,8 +10,8 @@
             "jest"
         ],
         "paths": {
-            "@/*": ["../../../*"],         // ชี้ไปที่ pnpm workspace (node-app)
-            "@root/*": ["../../../../../*"],  // ชี้ไปที่ root (gu-exmaple-system),
+            "@/*": ["../../../../*"],         // ชี้ไปที่ pnpm workspace (node-app)
+            "@root/*": ["../../../../../../*"],  // ชี้ไปที่ root (gu-exmaple-system),
             // paths ใช้สำหรับ file .stories
             "@exm-data-store-prisma/*": ["./src/*"],         // ชี้ไปที่ root project feature-exm
       
