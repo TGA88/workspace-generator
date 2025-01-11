@@ -70,6 +70,7 @@ bash workspace-generator/script-generator/new-web.sh gu-example-system demo-exm-
 ตัวอย่างการ generate project type feature
 **param1=ชื่อ workspace** เช่น gu-example-system
 **param2=ชื่อ fetaure** เช่น feature-funny
+**param3=ชื่อ scope  เช่น demo-funny-web แต่ถ้าไม่ใส่ จะ default เป็น shared-web**
 ```bash
 # pwd is folder workspace-template
 bash script-generator/new-feature.sh gu-example-system feature-funny
@@ -84,6 +85,8 @@ bash workspace-generator/script-generator/new-feature.sh gu-example-system featu
 **ใช้ new-feature.sh แต่ไม่ระบุ project name จะได้ project ui-components**
 
 **param1=ชื่อ workspace** เช่น gu-example-system
+**param2=ชื่อ fetaure** ถ้าต้องการเปลี่ยน scope ให้ระบุ param2=ui-components
+**param3=ชื่อ scope  เช่น demo-funny-web แต่ถ้าไม่ใส่ จะ default เป็น shared-weba**
 ```bash
 # pwd is folder workspace-template
 bash script-generator/new-feature.sh gu-example-system 
@@ -117,7 +120,7 @@ bash workspace-generator/script-generator/new-webconfig.sh gu-example-system dem
 
 **param1=ชื่อ workspace**
 **param2=ชื่อ api**
-**param3=ชื่อ scope  เช่น demo-funny-web แต่ถ้าไม่ใส่ จะ default เป็น shared-webapi**
+**param3=ชื่อ scope  เช่น demo-funny-webapi แต่ถ้าไม่ใส่ จะ default เป็น shared-webapi**
 ```bash
 # pwd is folder workspace-template
 bash script-generator/new-apicore.sh gu-example-system sample-api
@@ -131,7 +134,7 @@ bash workspace-generator/script-generator/new-apicore.sh gu-example-system sampl
 
 **param1=ชื่อ workspace**
 **param2=ชื่อ api**
-**param3=ชื่อ scope  เช่น demo-funny-web แต่ถ้าไม่ใส่ จะ default เป็น shared-webapi**
+**param3=ชื่อ scope  เช่น demo-funny-webapi แต่ถ้าไม่ใส่ จะ default เป็น shared-webapi**
 
 ```bash
 
@@ -148,7 +151,7 @@ bash workspace-generator/script-generator/new-service.sh gu-example-system sampl
 
 **param1=ชื่อ workspace**
 **param2=ชื่อ database schema**
-**param3=ชื่อ scope  เช่น demo-funny-web แต่ถ้าไม่ใส่ จะ default เป็น shared-webapi**
+**param3=ชื่อ scope  เช่น demo-funny-webapi แต่ถ้าไม่ใส่ จะ default เป็น shared-webapi**
 ```bash
 
 # pwd is folder workspace-template

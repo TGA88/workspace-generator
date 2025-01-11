@@ -4,7 +4,8 @@
 # PROJECT_NAME='feature-example'
 WORKSPACE_DIR=$1
 PROJECT_NAME=$2
-GENERATOR_DIR=$3
+SCOPE_NAME=$3
+GENERATOR_DIR=$4
 SYSTEM_DIR='node-app'
 
 
@@ -23,6 +24,12 @@ if [ -z "$GENERATOR_DIR" ]; then
 else
   echo "ตัวแปร GENERATOR_DIR มีค่า: $GENERATOR_DIR"
 fi
+# Check if SCOPE_NAME is null
+if [ -z "$SCOPE_NAME" ]; then
+   SCOPE_NAME='shared-web'
+   echo "SCOPE_NAME => $SCOPE_NAME"
+fi
+
 # Check if PROJECT_NAME is provided
 if [ -z "$PROJECT_NAME" ]; then
     PROJECT_NAME='ui-components'
@@ -34,15 +41,15 @@ CUR_PATH=$(pwd)
 
 # สร้าง folder project
 # mkdir -p <workspace_dir>/workspaces/<system_name>
-echo 'mkdir -p $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$PROJECT_NAME'
-mkdir -p $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$PROJECT_NAME
+echo 'mkdir -p $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME'
+mkdir -p $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME
 
 
 
 
-cp -r $GENERATOR_DIR/script-generator/template/project/features/* $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$PROJECT_NAME/
+cp -r $GENERATOR_DIR/script-generator/template/project/features/* $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME/
 
-cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$PROJECT_NAME/
+cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME/
 # Search and replace in all files under features directory
 if [[ "$OSTYPE" == "darwin"* ]]; then
     find ./ -type f -not -path "*/\.*" -exec file {} \; | 
@@ -61,11 +68,11 @@ else
 fi
 
 
-echo "Replaced 'feature-exm' with '$PROJECT_NAME/' in all files under $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$PROJECT_NAME/"
+echo "Replaced 'feature-exm' with '$PROJECT_NAME/' in all files under $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME/"
 
 
 npm pkg set name=@$WORKSPACE_DIR/$PROJECT_NAME
-npm pkg set scripts.fix:lcov="bash ../../tools/fix_lcov_paths.sh ../../coverage/libs/"$PROJECT_NAME
+npm pkg set scripts.fix:lcov="bash ../../../tools/fix_lcov_paths.sh ../../../coverage/libs/"$SCOPE_NAME/$PROJECT_NAME
 
 
 

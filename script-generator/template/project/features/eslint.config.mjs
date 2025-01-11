@@ -1,5 +1,5 @@
 // libs/ui/eslint.config.mjs
-import { createBaseConfig } from '../../root-eslint.config.mjs';
+import { createBaseConfig } from '../../../root-eslint.config.mjs';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import globals from "globals";

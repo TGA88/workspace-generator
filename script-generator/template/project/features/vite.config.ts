@@ -60,8 +60,8 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': resolve(__dirname, '../../'),
-      '@root': resolve(__dirname, '../../../../'),
+      '@': resolve(__dirname, '../../../'),
+      '@root': resolve(__dirname, '../../../../../'),
       '@feature-exm': resolve(__dirname, './lib')
     }
   },
