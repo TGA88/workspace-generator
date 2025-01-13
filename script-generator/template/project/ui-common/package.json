@@ -14,13 +14,11 @@
   "publishConfig": {
     "access": "restricted"
   },
-
   "exports": {
     ".": {
       "types": "./dist/types/main.d.ts",
       "import": "./dist/main.js",
       "require": "./dist/main.cjs"
-      
     },
     "./components/*": {
       "types": "./dist/types/components/*/*.d.ts",
@@ -51,6 +49,11 @@
   },
   "peerDependencies": {
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^6.1.7",
+    "@mui/material": "^6.1.7",
+    "@mui/x-data-grid": "^7.22.2"
   }
 }
