@@ -12,8 +12,18 @@
   },
   "dependencies": {
     
-    "next": "14.2.20",
-    "next-intl": "^3.23.5"
+    "next": "^14.2.20",
+    "next-intl": "^3.23.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@inh-lib/common": "^1.1.0",
+    "@inh-lib/ddd": "^1.0.1",
+    "@mui/icons-material": "^6.1.7",
+    "@mui/material": "^6.1.7",
+    "@mui/x-data-grid": "^7.22.2"
   },
   "devDependencies": {
     "eslint-config-next": "14.2.3"

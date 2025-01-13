@@ -6,10 +6,6 @@
 "react": "^18.3.1",
 "react-dom": "^18.3.1",
 
-// additional package ลบได้ถ้าคิดว่าไมไ่ด้ใช้
-"autoprefixer": "^10.4.20",
-"tailwindcss": "^3.4.15",
-"postcss": "^8.4.49",
 
 // mui
 "@emotion/react": "^11.13.3",
@@ -56,6 +52,11 @@
 "@storybook/addon-essentials": "^8.0.0",
 "@storybook/addon-interactions": "^8.0.0",
 "@storybook/blocks": "^8.0.0",
+
+// additional package ลบได้ถ้าคิดว่าไมไ่ด้ใช้
+"autoprefixer": "^10.4.20",
+"tailwindcss": "^3.4.15",
+"postcss": "^8.4.49",
 
 // editor tools
 "ts-node": "^10.9.2",

@@ -2,13 +2,14 @@
 
 **dependencies**
 ```json
-
+// ควรปรับเป็น peer เพราะ webapi ที่นำไปใช้ควรติดpackage นี้ 
 "@inh-lib/common": "^1.0.7",
 "@inh-lib/ddd": "^1.0.1",
 "tslib": "^2.3.0",
+// ส่วน ตัว prisma ควรเป็น peer เพราะ ใ้ช้ แค่ gen sql script ตอน coding เท่านั้น ส่วนตอน รันใน Docker ใช้ liquibase
 "@prisma/client": "^5.6.0",
 "prisma": "^5.6.0"
-
+// prisma-client ที่ gen จาก schema file จะถูก tsup bundle ใน code เลย เพราะ ไม่ได้ติดเป็น deppendency ใน package.json file
 ```
 
 **devDependencies**

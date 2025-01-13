@@ -7,16 +7,19 @@
     "show": "tsc --showconfig"
   },
   "dependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^6.1.7",
+    "@mui/material": "^6.1.7",
+    "@mui/x-data-grid": "^7.22.2"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "msw,vite ติดตั้งไ้ว้ที่ root workspace แล้ว",
-  "devDependencies": {
-    
-  },
+  "devDependencies": {},
   "msw": {
     "workerDirectory": [
       "public"

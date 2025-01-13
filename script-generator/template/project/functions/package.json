@@ -27,5 +27,10 @@
       "import": "./dist/logics/*.mjs",
       "require": "./dist/logics/*.js"
     }
+  },
+  "peerDependencies": {
+    "@inh-lib/common": "^1.0.7",
+    "@inh-lib/ddd": "^1.0.1",
+    "tslib": "^2.3.0"
   }
 }
