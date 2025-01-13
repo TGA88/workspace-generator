@@ -85,7 +85,7 @@ pnpm add -Dw tailwindcss postcss autoprefixer
 
 # add mui
 
-pnpm add -w @mui/material @emotion/react @emotion/styled @mui/icons-material @mui/x-data-grid
+# pnpm add -w @mui/material @emotion/react @emotion/styled @mui/icons-material @mui/x-data-grid
 
 # ===========
 
@@ -190,12 +190,12 @@ pnpm add -Dw storybook@^8.0.0 @storybook/addon-essentials @storybook/addon-inter
 
 # Package สำหรับ Project Web,Feature,ui-component ที่ใช้งานบ่อยๆ
 # for GTM
-pnpm add -w @next/third-parties@^14.2.12
+# pnpm add -w @next/third-parties@^14.2.12
 
 # for onBoarding feature
-pnpm add -w react-joyride@^2.9.2
+# pnpm add -w react-joyride@^2.9.2
 # customization(position,style) of react-joyride 
-pnpm add -w react-floater@^0.9.4
+# pnpm add -w react-floater@^0.9.4
 
 # devDependencires (ยังไม่รู้ใช้ทำอะไร) และต้อง config ที่ื nextjs.config ด้วย เพื่อให้ ฺBuild Project Nextjsผ่าน
 pnpm add -Dw raw-loader@^4.0.2

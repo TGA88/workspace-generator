@@ -85,7 +85,7 @@ pnpm add -Dw tailwindcss postcss autoprefixer
 
 # add mui
 
-pnpm add -w @mui/material @emotion/react @emotion/styled @mui/icons-material @mui/x-data-grid
+# pnpm add -w @mui/material @emotion/react @emotion/styled @mui/icons-material @mui/x-data-grid
 
 # ===========
 
