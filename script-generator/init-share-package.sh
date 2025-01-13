@@ -62,6 +62,8 @@ pnpm add git-cz -w -D
 
 npm pkg set scripts.commit="git-cz"
 
+pnpm add -w -D @changesets/cli@^2.27.5
+
 cd $CUR_PATH
 echo "cp $GENERATOR_DIR/script-generator/template/workspace/changelog.config.js $WORKSPACE_DIR"
 cp $GENERATOR_DIR/script-generator/template/workspace/changelog.config.js $WORKSPACE_DIR
