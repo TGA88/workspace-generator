@@ -113,7 +113,7 @@ cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 pnpm add -Dw @types/node
 
 # install type สำหรับ sub project type  ui-component และ features
-pnpm add -Dw @types/react @types/react-dom
+pnpm add -Dw @types/react@^18.3.12 @types/react-dom@^18.3.1
 
 #install jest
 pnpm add -Dw jest @types/jest ts-jest jest-config
