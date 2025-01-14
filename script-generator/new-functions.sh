@@ -73,7 +73,7 @@ npm pkg set name=@$WORKSPACE_DIR/$PROJECT_NAME
 npm pkg set scripts.fix:lcov="bash ../../tools/fix_lcov_paths.sh ../../coverage/libs/"$PROJECT_NAME
 
 # add inh-lib/common , inh-lib/ddd
-pnpm add -w @inh-lib/common @inh-lib/ddd
+# pnpm add -w @inh-lib/common @inh-lib/ddd
 
 pnpm install
 pnpm update -i
