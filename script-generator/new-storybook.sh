@@ -49,7 +49,7 @@ bash $GENERATOR_DIR/script-generator/update-sb.sh $WORKSPACE_DIR $PROJECT_NAME
 cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/storybook-host/$PROJECT_NAME/
 
 
-npm pkg set name=@$WORKSPACE_DIR/storybook-host-$PROJECT_NAME
+npm pkg set name=storybook-host-$PROJECT_NAME
 
 # Search and replace in all files under features directory
 if [[ "$OSTYPE" == "darwin"* ]]; then
