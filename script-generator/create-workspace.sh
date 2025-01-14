@@ -46,6 +46,8 @@ cp $GENERATOR_DIR/script-generator/template/workspace/.gitignore $WORKSPACE_DIR
 
 cp $GENERATOR_DIR/script-generator/template/workspace/pnpm-workspace.yaml $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 
+cp -r $GENERATOR_DIR/script-generator/template/workspace/.changeset $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
+
 
 corepack enable pnpm
 
