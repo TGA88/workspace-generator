@@ -4,6 +4,11 @@
     "compilerOptions": {
         "module": "NodeNext",
         "moduleResolution": "NodeNext",
+        "noEmit": false,
+        "declaration": true,
+        "emitDeclarationOnly": true,
+        "outDir": "dist",
+        "rootDir": "src",
         "types": [
             "node",
             "jest"
@@ -17,11 +22,12 @@
           },
     },
     "include": [
-        "src",
-        "**/*.config.ts"
+        "src"
     ],
     "exclude": [
         "node_modules",
-        "dist"
+        "dist",
+        "**/*.spec.*",
+        "**/*.test.*",
     ]
 }

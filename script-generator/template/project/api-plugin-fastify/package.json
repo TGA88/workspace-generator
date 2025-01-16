@@ -9,7 +9,6 @@
   "author": "",
   "license": "ISC",
   "peerDependencies": {
-    "@gu-example-system/exm-data-store-prisma": "workspace:^",
     "dotenv": "^16.4.5",
     "fastify": "^4.28.1",
     "axios": "^1.7.2",
