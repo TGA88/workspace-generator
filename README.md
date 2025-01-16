@@ -296,6 +296,19 @@ pnpm gen:exports
   }
 ```
 
-## fastify-plugins
-### ยังไม่ได้สร้าง 
+### fastify-plugins
+เป็น project ที่ plugin สำหรับ web framework fastify เพื่อเอาไว้ share ให้ project type webapi ใน system-workspace อื่นๆ
+
+
+**param1=ชื่อ workspace** เช่น gu-example-system
+**param2=ชื่อ scope_name** ถ้าต้องการสร้าง project ภายใน scope folder ให้ใส่ค่าเป็น shared-webapi
+
+```bash
+# pwd is folder workspace-template
+bash script-generator/new-plugin-fastify.sh gu-example-system 
+
+# สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
+bash workspace-generator/script-generator/new-plugin-fastify.sh gu-example-system 
+
+```
 
