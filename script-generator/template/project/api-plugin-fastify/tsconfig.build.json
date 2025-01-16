@@ -1,5 +1,5 @@
 {
-    "extends": "../../tsconfig-api-service.base.json",
+    "extends": "../../tsconfig-api-plugin-fastify.base.json",
     "files": [],
     "compilerOptions": {
         "module": "NodeNext",

@@ -76,12 +76,13 @@ npm pkg set scripts.gen:exports="bash ../../tools/generate-exports.sh src "
 pnpm install
 pnpm update -i
 
-
-CUR_PATH=$(pwd)
-
 # Check if SCOPE_NAME isnot null
 if [ -n "$SCOPE_NAME" ]; then
-    echo 'mkdir -p $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME'
+    cd $CUR_PATH
+
+    echo $(pwd)
+
+    echo "mkdir -p $WORKSPACE_DIR/workspaces/${SYSTEM_DIR}/libs/${SCOPE_NAME}/${PROJECT_NAME}"
     mkdir -p $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME
 
     cp -r $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$PROJECT_NAME/* $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME/
@@ -91,9 +92,32 @@ if [ -n "$SCOPE_NAME" ]; then
     cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME
     npm pkg set scripts.fix:lcov="bash ../../../tools/fix_lcov_paths.sh ../../../coverage/libs/"$SCOPE_NAME/$PROJECT_NAME
     npm pkg set scripts.gen:exports="bash ../../../tools/generate-exports.sh src "
+
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        find ./ -type f -not -path "*/\.*" -exec file {} \; | 
+        grep -i -E '(text| JSON data)' | 
+        cut -d: -f1 | 
+        xargs sed -i '' -e "s/'..\/..\/root-eslint/'..\/..\/..\/root-eslint/g"  -e 's|\.\./\.\./tsconfig-|../../../tsconfig-|g' -e "s/'..\/..\/jest.config/'..\/..\/..\/jest.config/g"  
+        # xargs sed -i '' "s/@feature-exm/@$PROJECT_NAME/g"
+
+        # if it is json file must using below syntax for finding text and replace
+        # sed -i '' -e 's|\.\./\.\./tsconfig-|../../../tsconfig-|g' 
+    else
+        find ./ -type f -not -path "*/\.*" -exec file {} \; | 
+        grep -i -E '(text| JSON data)' | 
+        cut -d: -f1 | 
+        xargs sed -i -e "s/'..\/..\/root-eslint/'..\/..\/..\/root-eslint/g"  -e 's|\.\./\.\./tsconfig-|../../../tsconfig-|g' -e "s/'..\/..\/jest.config/'..\/..\/..\/jest.config/g"  
+        # xargs sed -i '' "s/@feature-exm/@$PROJECT_NAME/g"
+
+    fi
 fi
 
 
 
 
 
+
+
+
+       
+        
