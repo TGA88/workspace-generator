@@ -255,7 +255,7 @@ bash workspace-generator/script-generator/new-functions.sh gu-example-system
 bash script-generator/new-basetypes.sh gu-example-system ui-router
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
-bash workspace-generator/script-generator/new-functions.sh gu-example-system ui-router
+bash workspace-generator/script-generator/new-basetypes.sh gu-example-system ui-router
 
 ```
 > หลังสร้าง BaseType Project แล้ว ให้ลบ คำสั่ง test ใน package.json ออกให้หมด
