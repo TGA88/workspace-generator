@@ -96,6 +96,26 @@ bash workspace-generator/script-generator/new-feature.sh gu-example-system
 
 ```
 
+### ui-state-redux
+ตัวอย่างการ generate project type ui-state
+**param1=ชื่อ workspace** เช่น gu-example-system
+**param2=ชื่อ ui-state** เช่น ui-state-redux หรือ ui-state-zudstand ตามprovider ที่ใช้
+**param3=ชื่อ scope  เช่น demo-funny-web แต่ถ้าไม่ใส่ จะ default เป็น shared-web**
+```bash
+# pwd is folder workspace-template
+bash script-generator/new-feature.sh gu-example-system ui-state-redux
+
+# สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
+bash workspace-generator/script-generator/new-feature.sh gu-example-system ui-state-redux
+
+```
+หลังจากได้ Projectแล้ว ที่ package.json ให้ลบ package ที่ไม่ได้ใช้ออก และ ติดตั้ง peerDependcies ที่จะใช้ตามต้อง 
+**ให้ลบ Code example ออกด้วย**
+และ Project นี้ควรเก็บ แต่ actions,reducer,slice เท่านั้น ส่วน createStore ให้ไปสร้างที่ consumer-project(Project ที่นำlibไปใช้งาน) อย่างเช่น web หรือ storybook
+
+<br/>
+
+
 ### web-config
 
 เป็น project ที่ config สำหรับ webproject และ เอาไว้ share ให้ feature project ใช้งานด้วย
