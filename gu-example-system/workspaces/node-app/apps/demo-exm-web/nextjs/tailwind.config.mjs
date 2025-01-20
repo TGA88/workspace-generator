@@ -6,11 +6,12 @@ import { createBase4Spacing } from './base4-spacing.mjs'
 export default {
   ...baseConfig,
   // important: '#storybook-root',
-  prefix: "fos-",
+  // prefix: "fos-",
   content: [
     ...baseConfig.content,
     "../../libs/**/feature-*/**/*.{js,jsx,ts,tsx}",
     './node_modules/**/feature-*/**/*.js',
+    "./app/**/*.{js,jsx,ts,tsx}",
     // "./src/**/*.{js,jsx,ts,tsx}",
     // "./stories/**/*.{js,jsx,ts,tsx}"
   ],

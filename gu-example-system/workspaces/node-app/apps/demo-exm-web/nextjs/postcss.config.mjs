@@ -6,7 +6,7 @@ const __dirname = dirname(__filename);
 const config = {
   plugins: {
     tailwindcss: {
-      config: join(__dirname, 'tailwind.config.ts'),
+      config: join(__dirname, 'tailwind.config.mjs'),
     },
     autoprefixer: {},
   },
