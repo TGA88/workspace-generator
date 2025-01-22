@@ -17,13 +17,14 @@ const webConfig: Config = {
   testMatch: ['**/*.spec.*', '**/*.test.*'],
 
   collectCoverageFrom: [
-    '**/*.{ts,js}',
+    'app/**/*.{ts,js}',
     '!**/*.config.*',
     '!**/*.d.ts',
     '!**/*.stories.{ts,tsx}',
     '!**/index.{ts,tsx}',
     '!**/*.test.{ts,tsx}',
-    '!**/*.spec.{ts,tsx}'
+    '!**/*.spec.{ts,tsx}',
+      '!**/*test*/**'
   ],
   moduleNameMapper: {
     '^@/(.*)$': path.resolve(__dirname, './$1'), // refs to node-app folder

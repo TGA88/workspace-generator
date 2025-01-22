@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import '@testing-library/jest-dom/extend-expect';
+// import '@testing-library/jest-dom/extend-expect';
 import { JSX, ClassAttributes, ImgHTMLAttributes } from 'react';
 
 
@@ -26,13 +26,13 @@ jest.mock('next/router', () => ({
   },
 }));
 
-// Mock next/image
-jest.mock('next/image', () => ({
-  __esModule: true,
-  default: (props: JSX.IntrinsicAttributes & ClassAttributes<HTMLImageElement> & ImgHTMLAttributes<HTMLImageElement>) => {
-    return <img {...props} alt={props.alt} />;
-  },
-}));
+// // Mock next/image
+// jest.mock('next/image', () => ({
+//   __esModule: true,
+//   default: (props: JSX.IntrinsicAttributes & ClassAttributes<HTMLImageElement> & ImgHTMLAttributes<HTMLImageElement>) => {
+//     return <img {...props} alt={props.alt} />;
+//   },
+// }));
 
 
 
