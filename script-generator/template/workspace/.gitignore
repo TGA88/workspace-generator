@@ -59,12 +59,20 @@ nx-cache
 .pnpm-store
 .pnpm-store/**
 
-coverage
+# env
+.env
+.env.local
+.env.*
+!.env.example
 
+# custom build
+coverage
 deploy
 
+# npm
 .npmrc
 
+# etc
 data
 
 # Infrastructure
