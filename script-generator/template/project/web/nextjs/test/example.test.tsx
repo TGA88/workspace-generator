@@ -1,7 +1,7 @@
-import { render } from '@testing-library/react';
+// import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { useRouter } from 'next/router';
-import Image from 'next/image';
+// import Image from 'next/image';
 
 jest.mock('next/router', () => ({
     useRouter() {

@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 // import '@testing-library/jest-dom/extend-expect';
-import { JSX, ClassAttributes, ImgHTMLAttributes } from 'react';
+// import { JSX, ClassAttributes, ImgHTMLAttributes } from 'react';
 
 
 // Mock Next.js router

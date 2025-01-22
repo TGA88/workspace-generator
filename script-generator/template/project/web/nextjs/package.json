@@ -11,7 +11,12 @@
     "fix:lcov": "bash ../../../tools/fix_lcov_paths.sh ../../../coverage/apps/demo-exm-web/nextjs",
     "test": "pnpm run test:gen ; pnpm run fix:lcov",
     "test:gen": "jest --runInBand --coverage --no-cache",
-    "test:show": "jest --runInBand --coverage --showConfig"
+    "test:show": "jest --runInBand --coverage --showConfig",
+    "docker:build": "docker image prune -f && cd ../../../release && docker build -f container-apps/demo-exm-web/nextjs/Dockerfile -t demo-exm-web-nextjs .",
+    "docker:run": "docker rm -f demo-exm-web-nextjs  && cd ../../../release && docker run -p 4001:3000 --env-file container-apps/demo-exm-web/nextjs/.env --name demo-exm-web-nextjs demo-exm-web-nextjs:latest  ",
+    "docker:start": "docker start demo-exm-web-nextjs",
+    "docker:stop": "docker stop demo-exm-web-nextjs",
+    "docker:remove": "docker rm  -f -v demo-exm-web-nextjs && docker rmi demo-exm-web-nextjs "
   },
   "dependencies": {
     
