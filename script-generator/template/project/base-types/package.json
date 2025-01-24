@@ -8,6 +8,8 @@
   "scripts": {
     "lint": "tsc -p tsconfig.json && eslint ./src",
     "build": "tsup",
+    "test": "pnpm run test:gen ; pnpm run fix:lcov",
+    "test:gen": "jest --runInBand --coverage --no-cache",
     "test:show": "jest --runInBand --coverage --showConfig",
     "gen:exports": "bash ../../tools/generate-exports.sh src "
   },
@@ -25,5 +27,10 @@
       "import": "./dist/hello/index.mjs",
       "require": "./dist/hello/index.js"
     }
+  },
+  "peerDependencies": {
+    "@inh-lib/common": "^1.5.5",
+    "@inh-lib/ddd": "^1.0.1",
+    "tslib": "^2.3.0"
   }
 }
