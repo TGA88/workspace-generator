@@ -114,6 +114,10 @@ cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 #install @types/node
 pnpm add -Dw @types/node
 
+
+# install npm-run-all สำหรับ run script หลายๆ script พร้อมๆกัน เอาไว้แก้ปัญหา hotReload ของ project fastify webapi
+pnpm add -Dw npm-run-all@^4.1.5
+
 # install type สำหรับ sub project type  ui-component และ features
 pnpm add -Dw @types/react@^18.3.12 @types/react-dom@^18.3.1
 
