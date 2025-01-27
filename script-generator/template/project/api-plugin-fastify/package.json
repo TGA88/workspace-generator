@@ -8,6 +8,12 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "restricted"
+  },
   "peerDependencies": {
     "dotenv": "^16.4.5",
     "fastify": "^4.28.1",
@@ -21,7 +27,8 @@
     "build": "tsup && tsc --p tsconfig.build.json",
     "build:show": " tsc --p tsconfig.build.json --showConfig",
     "fix:lcov": "bash ../../tools/fix_lcov_paths.sh ../../coverage/libs/api-plugin-fastify ",
-    "gen:exports": "bash ../../tools/generate-exports.sh src "
+    "gen:exports": "bash ../../tools/generate-exports.sh src ",
+    "prepublishOnly": "pnpm build && cp package.json dist/"
   },
   "exports": {
     ".": {

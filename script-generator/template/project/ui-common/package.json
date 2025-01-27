@@ -4,11 +4,11 @@
   "type": "module",
   "main": "dist/main.js",
   "types": "dist/types/main.d.ts",
-  "files": [
-    "dist"
-  ],
   "sideEffects": [
     "**/*.css"
+  ],
+  "files": [
+    "dist"
   ],
   "publishConfig": {
     "access": "restricted"
@@ -44,7 +44,8 @@
     "test": "pnpm run test:gen ; pnpm run fix:lcov",
     "test:gen": "jest --runInBand --coverage --no-cache",
     "fix:lcov": "bash ../../tools/fix_lcov_paths.sh ../../coverage/libs/ui-exm ",
-    "test:show": "jest --runInBand --coverage --showConfig"
+    "test:show": "jest --runInBand --coverage --showConfig",
+    "prepublishOnly": "pnpm build && cp package.json dist/"
   },
   "peerDependencies": {
     "react": "^18.3.1",
