@@ -28,7 +28,7 @@
     "build:show": " tsc --p tsconfig.build.json --showConfig",
     "fix:lcov": "bash ../../tools/fix_lcov_paths.sh ../../coverage/libs/api-plugin-fastify ",
     "gen:exports": "bash ../../tools/generate-exports.sh src ",
-    "prepublishOnly": "pnpm build && cp package.json dist/"
+    "prepublishOnly": "pnpm build "
   },
   "exports": {
     ".": {

@@ -18,7 +18,7 @@
     "test:gen": "jest --runInBand --coverage --no-cache",
     "fix:lcov": "bash ../../tools/fix_lcov_paths.sh ../../coverage/libs/common-functions ",
     "test:show": "jest --runInBand --coverage --showConfig",
-    "prepublishOnly": "pnpm build && cp package.json dist/"
+    "prepublishOnly": "pnpm build "
   },
   "keywords": [],
   "author": "",
