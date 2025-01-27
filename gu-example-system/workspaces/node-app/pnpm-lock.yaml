@@ -275,6 +275,9 @@ importers:
 
   libs/api-plugin-fastify:
     dependencies:
+      '@gu-example-system/exm-data-store-prisma':
+        specifier: workspace:^
+        version: link:../exm-data/store-prisma
       axios:
         specifier: ^1.7.2
         version: 1.7.9
@@ -293,6 +296,8 @@ importers:
   libs/common-functions: {}
 
   libs/demo-exm-web-config: {}
+
+  libs/demo-exm-web/config: {}
 
   libs/exm-api/core: {}
 

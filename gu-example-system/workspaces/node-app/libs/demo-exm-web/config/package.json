@@ -3,8 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "main": "dist/main.js",
-  "types": "dist/types/main.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/types/index.d.ts",
   "files": [
     "dist"
   ],
@@ -18,6 +18,6 @@
     "build": "tsc --p tsconfig.build.json && vite build",
     "build:showConfig": "tsc --p tsconfig.build.json --showconfig",
     "lint": "eslint . && tsc",
-    "fix:lcov": "bash ../../tools/fix_lcov_paths.sh ../../coverage/libs/demo-exm-web-config"
+    "fix:lcov": "bash ../../tools/fix_lcov_paths.sh ../../coverage/libs/demo-exm-web/config"
   }
 }

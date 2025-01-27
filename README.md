@@ -123,13 +123,13 @@ bash workspace-generator/script-generator/new-feature.sh gu-example-system ui-st
 **ใช้ new-feature.sh  แต่ให้ระบุ suffix project name เช่น demo-exm-web-config**
 
 **param1=ชื่อ workspace**
-**param2=ชื่อ webproject**
+**param2=ชื่อ scopename** เช่น demo-exm-web หรือ ถ้าไม่ใส่จะเป็น share-web
 ```bash
 # pwd is folder workspace-template
-bash script-generator/new-webconfig.sh gu-example-system demo-exm-web
+bash script-generator/new-webconfig.sh gu-example-system  demo-exm-web
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
-bash workspace-generator/script-generator/new-webconfig.sh gu-example-system demo-exm-web
+bash workspace-generator/script-generator/new-webconfig.sh gu-example-system  demo-exm-web
 
 ```
 

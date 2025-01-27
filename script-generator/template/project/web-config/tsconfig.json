@@ -4,7 +4,7 @@
 // such as tsconfig.eslint.json,tsconfig.test.json , tsconfig.build.json and tsconfig.json for vscode
 // references artical "https://www.totaltypescript.com/concepts/option-module-must-be-set-to-nodenext-when-option-moduleresolution-is-set-to-nodenext"
 {
-  "extends": "../../tsconfig.features.base.json",
+  "extends": "../../../tsconfig.features.base.json",
   "compilerOptions": {
     // // If you're not bundling with TypeScript with tsc but using esbuild,swc,vite instead.
     // // you should be using moduleResolution: "bundler" and module: "ESNext":
@@ -14,8 +14,8 @@
     // "noEmit": true,
 
     "paths": {
-      "@/*": ["../../*"],         // ชี้ไปที่ pnpm workspace (node-app)
-      "@root/*": ["../../../../*"],  // ชี้ไปที่ root (gu-exmaple-system),
+      "@/*": ["../../../*"],         // ชี้ไปที่ pnpm workspace (node-app)
+      "@root/*": ["../../../../../*"],  // ชี้ไปที่ root (gu-exmaple-system),
       // paths ใช้สำหรับ file .stories
       "@feature-exm/*": ["./lib/*"],         // ชี้ไปที่ root project feature-exm
 
