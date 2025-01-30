@@ -49,6 +49,20 @@ bash script-generator/update-sb.sh gu-example-system example
 bash workspace-generator/script-generator/update-sb.sh gu-example-system example
 
 ```
+
+### การ Trigger Release Storybook Project ใน pipeline
+
+หากต้องการให้ release storybook project เมือ dependency-project changed ใน pipeline
+>dependency-project เช่น  project type เช่น feature-xx,ui-common,ui-components
+
+<br/>
+ให้ add command เพิ่มใน package.json โดยให้เปลี่ยน **storybook-host-shared เป็น ชื่อ storybook project ที่ต้องการ**
+
+```json
+"trigger:release": "echo 'storybook-host-shared' >> ../../release-app/changed_unsort.txt"
+```
+
+
 ---
 
 # System Workspace
@@ -79,6 +93,7 @@ bash script-generator/new-feature.sh gu-example-system feature-funny
 bash workspace-generator/script-generator/new-feature.sh gu-example-system feature-funny
 
 ```
+
 
 ### ui-components
 เป็น project ที่ component ,customhooks ที่เอาไว้แชร์ เฉพาะภายใน scope ของ system worksapce เท่านั้น ซึ่งจะไม่ deploy ขึ้น npm
