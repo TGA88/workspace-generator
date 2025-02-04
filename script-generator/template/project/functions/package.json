@@ -14,7 +14,7 @@
   "scripts": {
     "lint": "tsc -p tsconfig.json && eslint ./src",
     "build": "tsup",
-    "test": "pnpm run test:gen ; pnpm run fix:lcov",
+    "test": "pnpm run test:gen && pnpm run fix:lcov",
     "test:gen": "jest --runInBand --coverage --no-cache",
     "fix:lcov": "bash ../../tools/fix_lcov_paths.sh ../../coverage/libs/common-functions ",
     "test:show": "jest --runInBand --coverage --showConfig",

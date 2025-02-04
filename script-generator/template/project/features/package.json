@@ -42,7 +42,7 @@
     "build:showConfig": "tsc --p tsconfig.build.json --showconfig",
     "lint": "eslint . && tsc",
     "preview": "vite preview",
-    "test": "pnpm run test:gen ; pnpm run fix:lcov",
+    "test": "pnpm run test:gen && pnpm run fix:lcov",
     "test:gen": "jest --runInBand --coverage --no-cache",
     "fix:lcov": "bash ../../../tools/fix_lcov_paths.sh ../../../coverage/libs/feature-exm ",
     "test:show": "jest --runInBand --coverage --showConfig"

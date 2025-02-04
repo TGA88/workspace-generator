@@ -22,7 +22,7 @@
   },
   "scripts": {
     "lint": " eslint ./src && tsc --noEmit",
-    "test": "pnpm run test:gen ; pnpm run fix:lcov",
+    "test": "pnpm run test:gen && pnpm run fix:lcov",
     "test:gen": "jest --runInBand --coverage --no-cache --verbose --testTimeout=180000 --testPathIgnorePatterns='integration'",
     "build": "tsup && tsc --p tsconfig.build.json",
     "build:show": " tsc --p tsconfig.build.json --showConfig",

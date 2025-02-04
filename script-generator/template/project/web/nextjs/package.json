@@ -9,7 +9,7 @@
     "release": "pnpm build && cd ../../../ && bash build-script/container/release-next-app.sh demo-exm-web nextjs demo-exm-web-nextjs",
     "release:local": "pnpm build && cd ../../../ && bash build-script/container/release-next-app.sh demo-exm-web nextjs demo-exm-web-nextjs",
     "fix:lcov": "bash ../../../tools/fix_lcov_paths.sh ../../../coverage/apps/demo-exm-web/nextjs",
-    "test": "pnpm run test:gen ; pnpm run fix:lcov",
+    "test": "pnpm run test:gen && pnpm run fix:lcov",
     "test:gen": "jest --runInBand --coverage --no-cache",
     "test:show": "jest --runInBand --coverage --showConfig",
     "docker:build": "docker image prune -f && cd ../../../release && docker build -f container-apps/demo-exm-web/nextjs/Dockerfile -t demo-exm-web-nextjs .",
