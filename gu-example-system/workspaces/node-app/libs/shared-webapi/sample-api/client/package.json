@@ -1,0 +1,49 @@
+{
+  "name": "@gu-example-system/sample-api-client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "scripts": {
+    "lint": "tsc -p tsconfig.json && eslint ./src",
+    "build": "tsup",
+    "test": "pnpm run test:gen && pnpm run fix:lcov",
+    "test:gen": "jest --runInBand --coverage --no-cache",
+    "fix:lcov": "bash ../../../../tools/fix_lcov_paths.sh ../../../../coverage/libs/shared-webapi/sample-api/client",
+    "test:show": "jest --runInBand --coverage --showConfig",
+    "gen:exports": "bash ../../../../tools/generate-exports.sh src ",
+    "prepublishOnly": "pnpm build "
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./command/send-email": {
+      "types": "./dist/command/send-email/index.d.ts",
+      "import": "./dist/command/send-email/index.mjs",
+      "require": "./dist/command/send-email/index.js"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.mjs",
+      "require": "./dist/types/index.js"
+    }
+  },
+  "peerDependencies": {
+    "@inh-lib/common": "^1.6.1",
+    "@inh-lib/ddd": "^1.0.1",
+    "tslib": "^2.3.0"
+  }
+}

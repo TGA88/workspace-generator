@@ -164,6 +164,7 @@ bash script-generator/new-apicore.sh gu-example-system sample-api
 bash workspace-generator/script-generator/new-apicore.sh gu-example-system sample-api
 
 ```
+
 ### API-Service
 ตัวอย่างการ update project api-service สำหรับ Provide Action ตาม Business Requirement
 
@@ -178,6 +179,24 @@ bash script-generator/new-apiservice.sh gu-example-system sample-api
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/new-service.sh gu-example-system sample-api
+
+```
+
+### API-client
+ตัวอย่างการ project type api-client สำหรับ provide httpClient สำหรับ request api-service สำหรับ front-end และ backend
+
+**param1=ชื่อ workspace**
+**param2=ชื่อ api** ช่วย suffix ด้วย -api ด้วย
+**param3=ชื่อ scope  เช่น demo-funny-webapi แต่ถ้าไม่ใส่ จะ default เป็น shared-webapi**
+
+
+```bash
+
+# pwd is folder workspace-template
+bash script-generator/new-apiclient.sh gu-example-system sample-api
+
+# สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
+bash workspace-generator/script-generator/new-apiclient.sh gu-example-system sample-api
 
 ```
 
