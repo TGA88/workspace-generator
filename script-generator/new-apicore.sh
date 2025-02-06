@@ -66,7 +66,7 @@ else
     find ./ -type f -not -path "*/\.*" -exec file {} \; | 
     grep -i -E '(text| JSON data)' | 
     cut -d: -f1 | 
-    xargs sed -i '' -e "s/exm-api-core/$SCOPE_NAME/$PROJECT_NAME-core/g" -e "s/gu-example-system/$WORKSPACE_DIR/g"
+    xargs sed -i -e "s/exm-api-core/$SCOPE_NAME/$PROJECT_NAME-core/g" -e "s/gu-example-system/$WORKSPACE_DIR/g"
     # xargs sed -i '' "s/@feature-exm/@$SCOPE_NAME/$PROJECT_NAME/g"
 
 fi
