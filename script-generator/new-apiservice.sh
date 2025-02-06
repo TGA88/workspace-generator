@@ -56,7 +56,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     find ./ -type f -not -path "*/\.*" -exec file {} \; | 
     grep -i -E '(text| JSON data)' | 
     cut -d: -f1 | 
-    xargs sed -i '' -e "s/exm-api/$SCOPE_NAME/$PROJECT_NAME/g" -e "s/gu-example-system/$WORKSPACE_DIR/g"
+    xargs sed -i '' -e "s/exm-api/$PROJECT_NAME/g" -e "s/gu-example-system/$WORKSPACE_DIR/g"
     # xargs sed -i '' "s/@feature-exm/@$PROJECT_NAME/g"
 
 else
@@ -64,7 +64,7 @@ else
     find ./ -type f -not -path "*/\.*" -exec file {} \; | 
     grep -i -E '(text| JSON data)' | 
     cut -d: -f1 | 
-     xargs sed -i -e "s/exm-api/$SCOPE_NAME/$PROJECT_NAME/g" -e "s/gu-example-system/$WORKSPACE_DIR/g"
+     xargs sed -i -e "s/exm-api/$PROJECT_NAME/g" -e "s/gu-example-system/$WORKSPACE_DIR/g"
     # xargs sed -i '' "s/@feature-exm/@$PROJECT_NAME/g"
 
 fi
