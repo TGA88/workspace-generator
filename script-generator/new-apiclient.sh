@@ -56,7 +56,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     find ./ -type f -not -path "*/\.*" -exec file {} \; | 
     grep -i -E '(text| JSON data)' | 
     cut -d: -f1 | 
-    xargs sed -i '' -e "s/exm-api/$SCOPE_NAME/$PROJECT_NAME/g" -e "s/gu-example-system/$WORKSPACE_DIR/g"
+    xargs sed -i '' -e "s/exm-api/$PROJECT_NAME/g" -e "s/gu-example-system/$WORKSPACE_DIR/g"
     # xargs sed -i '' "s/@feature-exm/@$PROJECT_NAME/g"
 
 else
@@ -64,7 +64,7 @@ else
     find ./ -type f -not -path "*/\.*" -exec file {} \; | 
     grep -i -E '(text| JSON data)' | 
     cut -d: -f1 | 
-     xargs sed -i -e "s/exm-api/$SCOPE_NAME/$PROJECT_NAME/g" -e "s/gu-example-system/$WORKSPACE_DIR/g"
+     xargs sed -i -e "s/exm-api/$PROJECT_NAME/g" -e "s/gu-example-system/$WORKSPACE_DIR/g"
     # xargs sed -i '' "s/@feature-exm/@$PROJECT_NAME/g"
 
 fi
@@ -73,11 +73,11 @@ echo "Replaced 'exm-api' with '$PROJECT_NAME' in all files under $WORKSPACE_DIR/
 
 
 npm pkg set name=@$WORKSPACE_DIR/$PROJECT_NAME-client
-npm pkg set scripts.fix:lcov="bash ../../../../tools/fix_lcov_paths.sh ../../../../coverage/libs/$SCOPE_NAME/$PROJECT_NAME/client"
+# npm pkg set scripts.fix:lcov="bash ../../../../tools/fix_lcov_paths.sh ../../../../coverage/libs/$SCOPE_NAME/$PROJECT_NAME/client"
 
 # add inh-lib/common , inh-lib/ddd
-pnpm add -w @inh-lib/common @inh-lib/ddd
-pnpm add -w zod
+# pnpm add -w @inh-lib/common @inh-lib/ddd
+# pnpm add -w zod
 
 pnpm install
 pnpm update -i
