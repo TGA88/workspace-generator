@@ -10,7 +10,7 @@ interface Headers {
 }
 
 /**
- * middleware for get userPermission and role outside of FOS-PSC-WEBAPI
+ * middleware for get userPermission and role outside of GU-PSC-WEBAPI
  * @param fastify 
  * @returns 
  */
@@ -68,7 +68,7 @@ type GetMeResult = {
 }
 async function getMePscWebapi(headers: Headers): Promise<GetMeResult> {
     console.log('headers', headers)
-    const url = process.env.FOS_PSC_WEBAPI_URL
+    const url = process.env.GU_PSC_WEBAPI_URL
     const fetch = await axios
         .get(
             `${url}/prescription/get-me`,

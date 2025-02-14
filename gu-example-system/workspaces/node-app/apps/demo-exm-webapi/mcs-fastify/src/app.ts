@@ -49,7 +49,7 @@ const app: FastifyPluginAsync<AppOptions> = async (
     dir: join(__dirname, 'routes'),
     options: opts,
     ignoreFilter: /endpoint\.ts/,
-    prefix: process.env.API_PREFIX ? process.env.API_PREFIX : '/psc-webapi',
+    prefix: process.env.API_PREFIX ? process.env.API_PREFIX : '/mine-webapi',
   });
 };
 

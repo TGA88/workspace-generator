@@ -46,7 +46,7 @@ echo "$result_string"
 
 # ขึ้นตอนใช้ script 
 # run test ทุกตัว ใน workspace
-#  cd fos-psc-system
+#  cd fos-mine-system
 #  run pnpm test:all
 # bash ../build-script/gen_lcov_path.sh coverage
 # ได้ผลลัพใน terminal แล้ว ลบ , ตัวสุดท้ายออกด้วย

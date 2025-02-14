@@ -68,7 +68,7 @@ export function getPscAccount(fastify: FastifyInstance): preValidationHookHandle
             console.log('req.accountUsername', req.accountUsername)
         } catch (error) {
             req.log.error(`error in getPscAccount: ${error}`)
-            reply.status(401).send({ success: false, message: `Unauthorize while get psc account` })
+            reply.status(401).send({ success: false, message: `Unauthorize while get mine account` })
         }
     })
     return (_req, _reply, done) => {

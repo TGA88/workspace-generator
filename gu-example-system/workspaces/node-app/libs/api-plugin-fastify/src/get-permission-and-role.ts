@@ -2,7 +2,7 @@ import { FastifyInstance, preValidationHookHandler } from "fastify";
 import { PrismaClient, getPrismaInstance } from '@gu-example-system/exm-data-store-prisma'
 
 /**
- * must use after get-psc-account
+ * must use after get-mine-account
  * @param fastify 
  * @returns 
  */

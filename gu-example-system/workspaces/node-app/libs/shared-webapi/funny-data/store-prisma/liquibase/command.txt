@@ -6,20 +6,20 @@ docker build -f ./Liquibase.Dockerfile . -t test-lqb
 #command to run the container
 #migrate table only
 docker run --network infrastructure_default \
-   -e DATABASE_URL=jdbc:postgresql://postgres_psc_system_infrastructure:5432/postgres \
+   -e DATABASE_URL=jdbc:postgresql://postgres_mine_system_infrastructure:5432/postgres \
    -e DATABASE_USER=postgres\
    -e DATABASE_PASSWORD=postgres\
-   -e DATABASE_SCHEMA=FOS_PSC\
+   -e DATABASE_SCHEMA=GU_PSC\
    -e LQB_CONTEXT="table"\
    -e LQB_COMMAND="update"\
    test-lqb
 
 #init master data
 docker run --network infrastructure_default \
-   -e DATABASE_URL=jdbc:postgresql://postgres_psc_system_infrastructure:5432/postgres \
+   -e DATABASE_URL=jdbc:postgresql://postgres_mine_system_infrastructure:5432/postgres \
    -e DATABASE_USER=postgres\
    -e DATABASE_PASSWORD=postgres\
-   -e DATABASE_SCHEMA=FOS_PSC\
+   -e DATABASE_SCHEMA=GU_PSC\
    -e LQB_CONTEXT="DATABASE_PASSWORD"\
    -e LQB_CONTEXT="data"\
    -e LQB_COMMAND="update"\

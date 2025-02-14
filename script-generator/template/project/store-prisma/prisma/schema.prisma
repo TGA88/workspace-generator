@@ -68,8 +68,8 @@ model PRESCRIPTION_DETAIL {
   BRANDE_CODE                    String
   MED_CODE                       String
   DOCUMENT_NO                    String?
-  FEED_PERIOD                    Int?
-  FEED_PERIOD_UNIT               String?
+  ELT_PERIOD                    Int?
+  ELT_PERIOD_UNIT               String?
   STOP_PERIOD                    Int?
   STOP_PERIOD_UNIT               String?
   WARNING                        String?
@@ -189,7 +189,7 @@ model MAS_ORG {
   MATCHING_EMAIL_MAPPING_MAS_ORG MATCHING_EMAIL_MAPPING_MAS_ORG[]
 }
 
-model MAS_FEED_INFO {
+model MAS_ELT_INFO {
   ID                String    @id @default(uuid())
   COUNTRY_CODE      String?
   ORG_CODE          String?

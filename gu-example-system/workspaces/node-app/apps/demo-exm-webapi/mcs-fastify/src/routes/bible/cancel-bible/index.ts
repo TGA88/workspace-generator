@@ -2,7 +2,7 @@ import { FastifyInstance, FastifyPluginAsync, preValidationHookHandler } from 'f
 import { cancelBibleEndpoint } from './endpoint';
 // import { jwtAuth } from '@gu-portalshared-system/api-utils';
 // import { checkRole, getPermissionAndRole, getPscAccount } from '@api-utils/fastify-custom-hook';
-// import { UserRole } from '@fos-psc-webapi/prescription-core';
+// import { UserRole } from '@fos-mine-webapi/prescription-core';
 import { getPermissionAndRole, getPscAccount } from '@gu-example-system/api-plugin-fastify';
 import { InhPublishCommandItf } from '@inh-lib/common';
 

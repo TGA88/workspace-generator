@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/exm-data-client';
 
-export async function pscAccountSeed(prisma: PrismaClient):Promise<void> {
+export async function mineAccountSeed(prisma: PrismaClient):Promise<void> {
     await prisma.$transaction([
         prisma.vETERINARIAN.upsert({
             where: {
@@ -73,7 +73,7 @@ export async function pscAccountSeed(prisma: PrismaClient):Promise<void> {
     ]);
 }
 
-export async function pscAccountClearData(prisma: PrismaClient):Promise<void> {
+export async function mineAccountClearData(prisma: PrismaClient):Promise<void> {
     await prisma.$transaction([
         prisma.aCCOUNT.deleteMany({
             where: {

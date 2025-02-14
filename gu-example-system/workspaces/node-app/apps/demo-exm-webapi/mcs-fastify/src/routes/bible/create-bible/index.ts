@@ -2,7 +2,7 @@ import { FastifyPluginAsync } from 'fastify';
 import { createBibleEndpoint } from './endpoint';
 // import { jwtAuth } from '@gu-portalshared-system/api-utils';
 import {  getPermissionAndRole, getPscAccount } from '@gu-example-system/api-plugin-fastify';
-// import { UserRole } from '@fos-psc-webapi/prescription-core';
+// import { UserRole } from '@fos-mine-webapi/prescription-core';
 
 
 const createBibleRoute: FastifyPluginAsync = async (fastify): Promise<void> => {

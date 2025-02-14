@@ -6,7 +6,7 @@ import {
     seedData,
     clearData
 } from './init-data/create.seed.data';
-import { pscAccountSeed, pscAccountClearData } from '../../../master-data/get-psc-account.hook.data';
+import { mineAccountSeed, mineAccountClearData } from '../../../master-data/get-mine-account.hook.data';
 import { getPermissionAndRoleSeed, getPermissionAndRoleClear } from '../../../master-data/getPermissionAndRole.hook.data';
 
 
@@ -14,20 +14,20 @@ import * as dotenv from 'dotenv';
 dotenv.config({ path: __dirname + '/../../../../.env' })
 
 const app = build(createBible);
-process.env.DATABASE_URL = 'postgresql://postgres:postgres@localhost:5432/postgres?schema=fos_psc';
+process.env.DATABASE_URL = 'postgresql://postgres:postgres@localhost:5432/postgres?schema=fos_mine';
 describe('create bible', () => {
 
     const prismaInstance = getPrismaInstance();
 
     beforeEach(async () => {
         await seedData(prismaInstance);
-        await pscAccountSeed(prismaInstance);
+        await mineAccountSeed(prismaInstance);
         await getPermissionAndRoleSeed(prismaInstance);
     });
 
     afterEach(async () => {
         await getPermissionAndRoleClear(prismaInstance);
-        await pscAccountClearData(prismaInstance)
+        await mineAccountClearData(prismaInstance)
         await clearData(prismaInstance);
     });
 

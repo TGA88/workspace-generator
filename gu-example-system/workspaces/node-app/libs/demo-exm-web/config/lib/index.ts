@@ -6,8 +6,8 @@ interface TypeConfig {
     PORTAL_WEB: string;
     PORTAL_RENEW_TOKEN: string;
     INTERVAL: string;
-    FOS_WEB: string;
-    FOS_REPORT_STATIC_WEB: string;
+    GU_WEB: string;
+    GU_REPORT_STATIC_WEB: string;
     PSC_REPORT_API: string;
     PORTAL_API: string;
     PORTAL_VERIFY: string;
@@ -26,8 +26,8 @@ interface TypeConfig {
     PORTAL_WEB: '',
     PORTAL_RENEW_TOKEN: '',
     INTERVAL: '',
-    FOS_WEB: '',
-    FOS_REPORT_STATIC_WEB: '',
+    GU_WEB: '',
+    GU_REPORT_STATIC_WEB: '',
     PSC_REPORT_API: '',
     PORTAL_API: '',
     PORTAL_VERIFY: '',
@@ -48,8 +48,8 @@ interface TypeConfig {
       PORTAL_WEB: `$NEXT_PUBLIC_PORTAL_WEB`,
       PORTAL_RENEW_TOKEN: `$NEXT_PUBLIC_PORTAL_RENEW_TOKEN`,
       INTERVAL: `$NEXT_PUBLIC_INTERVAL`,
-      FOS_WEB: `$NEXT_PUBLIC_FOS_WEB`,
-      FOS_REPORT_STATIC_WEB: `$NEXT_PUBLIC_FOS_REPORT_STATIC_WEB`,
+      GU_WEB: `$NEXT_PUBLIC_GU_WEB`,
+      GU_REPORT_STATIC_WEB: `$NEXT_PUBLIC_GU_REPORT_STATIC_WEB`,
       PSC_REPORT_API: `$NEXT_PUBLIC_PSC_REPORT_API`,
       PORTAL_API: `$NEXT_PUBLIC_PORTAL_API`,
       PORTAL_VERIFY: `$NEXT_PUBLIC_PORTAL_VERIFY`,
@@ -68,8 +68,8 @@ interface TypeConfig {
       PORTAL_WEB: `${process.env.NEXT_PUBLIC_PORTAL_WEB}`,
       PORTAL_RENEW_TOKEN: `${process.env.NEXT_PUBLIC_PORTAL_RENEW_TOKEN}`,
       INTERVAL: `${process.env.NEXT_PUBLIC_INTERVAL}`,
-      FOS_WEB: `${process.env.NEXT_PUBLIC_FOS_WEB}`,
-      FOS_REPORT_STATIC_WEB: `${process.env.NEXT_PUBLIC_FOS_REPORT_STATIC_WEB}`,
+      GU_WEB: `${process.env.NEXT_PUBLIC_GU_WEB}`,
+      GU_REPORT_STATIC_WEB: `${process.env.NEXT_PUBLIC_GU_REPORT_STATIC_WEB}`,
       PSC_REPORT_API: `${process.env.NEXT_PUBLIC_PSC_REPORT_API}`,
       PORTAL_API: `${process.env.NEXT_PUBLIC_PORTAL_API}`,
       PORTAL_VERIFY: `${process.env.NEXT_PUBLIC_PORTAL_VERIFY}`,

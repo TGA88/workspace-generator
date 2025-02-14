@@ -10,5 +10,5 @@ test('default root route', async () => {
   })
 
   expect(res.statusCode).toBe(200)
-  expect(res.json()).toEqual({ root: true, message: 'Welcome to the FOS PSC Web API' })
+  expect(res.json()).toEqual({ root: true, message: 'Welcome to the GU MINE Web API' })
 })

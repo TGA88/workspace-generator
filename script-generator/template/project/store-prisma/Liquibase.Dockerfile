@@ -26,6 +26,6 @@ ENTRYPOINT [ "/liquibase/generate_properties.sh" ]
 #   -e DATABASE_URL=jdbc:postgresql://<replace-with-docker-container-name>:5432/postgres \
 #   -e DATABASE_USER=postgres\
 #   -e DATABASE_PASSWORD=postgres\
-#   -e DATABASE_SCHEMA=FOS_PSC\
+#   -e DATABASE_SCHEMA=GU_MINE\
 #   -e LQB_COMMAND="update"\
 #   test-lqb

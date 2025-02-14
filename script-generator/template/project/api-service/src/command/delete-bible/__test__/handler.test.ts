@@ -11,9 +11,9 @@ const mockLogger: InhLogger = jest.createMockFromModule("@inh-lib/common")
 let mockDTO: InputDTO = jest.genMockFromModule('../dto')
 let mockSuccessDTO: OutputDTO = jest.genMockFromModule('../dto')
 let mockCheckPrescriptionStatus: CheckBbibleStatusOutput = jest.genMockFromModule('@gu-example-system/exm-api-core/command/delete-bible')
-// let mockdeletePrescriptionDetail: DeletePrescriptionOutput = jest.genMockFromModule('@fos-psc-webapi/prescription-core/delete-prescription')
+// let mockdeletePrescriptionDetail: DeletePrescriptionOutput = jest.genMockFromModule('@fos-mine-webapi/prescription-core/delete-prescription')
 let mockdeletePrescription: DeleteBibleOutput = jest.genMockFromModule('@gu-example-system/exm-api-core/command/delete-bible')
-// let mockHasPrescriptionDetail: HasPrescriptionDetailOutput = jest.genMockFromModule('@fos-psc-webapi/prescription-core/delete-prescription')
+// let mockHasPrescriptionDetail: HasPrescriptionDetailOutput = jest.genMockFromModule('@fos-mine-webapi/prescription-core/delete-prescription')
 
 const mockHandler = new Handler(mockRepository, mockMapper, mockMapperSuccess, mockLogger)
 

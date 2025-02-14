@@ -1,7 +1,7 @@
 import { Config } from 'tailwindcss';
 import { createBase4Spacing } from './base4-spacing.mjs'
 
-// import { axonsPreset } from '@axons-ui/react/tailwind';
+// import { sillyPreset } from '@silly-ui/react/tailwind';
 const config: Config = {
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -9,23 +9,23 @@ const config: Config = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './node_modules/@fos-psc-web/feature-prescription/dist/**/*.js',
-    './node_modules/@fos-psc-web/feature-bible/dist/**/*.js',
-    './node_modules/@fos-psc-web/feature-prescription-report/dist/**/*.js',
-    './node_modules/@fos-psc-web/feature-ingredient/dist/**/*.js',
-    './node_modules/@fos-psc-web/feature-medicine/dist/**/*.js',
-    './node_modules/@fos-psc-web/feature-user-management/dist/**/*.js',
-    './node_modules/@fos-psc-web/feature-matching-email/dist/**/*.js',
-    './node_modules/@fos-psc-web/feature-veterinarian/dist/**/*.js',
-    './node_modules/@fos-psc-web/feature-home/dist/**/*.js',
-    './node_modules/@fos-psc-web/feature-farm-info/dist/**/*.js',
+    './node_modules/@fos-mine-web/feature-prescription/dist/**/*.js',
+    './node_modules/@fos-mine-web/feature-bible/dist/**/*.js',
+    './node_modules/@fos-mine-web/feature-prescription-report/dist/**/*.js',
+    './node_modules/@fos-mine-web/feature-ingredient/dist/**/*.js',
+    './node_modules/@fos-mine-web/feature-medicine/dist/**/*.js',
+    './node_modules/@fos-mine-web/feature-user-management/dist/**/*.js',
+    './node_modules/@fos-mine-web/feature-matching-email/dist/**/*.js',
+    './node_modules/@fos-mine-web/feature-veterinarian/dist/**/*.js',
+    './node_modules/@fos-mine-web/feature-home/dist/**/*.js',
+    './node_modules/@fos-mine-web/feature-farm-info/dist/**/*.js',
 
     './src/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{html,js}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
-    '../../../node_modules/@axons-ui/react/dist/**/*.js',
+    '../../../node_modules/@silly-ui/react/dist/**/*.js',
   ],
-  // presets: [axonsPreset],
+  // presets: [sillyPreset],
   theme: {
     extend: {
       spacing: createBase4Spacing(),
