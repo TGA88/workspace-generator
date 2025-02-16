@@ -81,7 +81,7 @@ cp $GENERATOR_DIR/script-generator/template/workspace/tsconfig.base.json $WORKSP
 cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 
 # install tailwind
-pnpm add -Dw tailwindcss postcss autoprefixer
+pnpm add -Dw tailwindcss@^3.4.17 postcss@^8.5.1 autoprefixer@10.4.20
 
 # ===========
 
