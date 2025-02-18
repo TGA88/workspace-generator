@@ -19,6 +19,7 @@ const apiServiceConfig: Config = {
     '**/*.logic*.{ts,tsx}',
     '**/*logic*/*.{ts,tsx}',
     '**/handler.{js,ts}',
+    '**/*handler*.{js,ts}',
     '!**/__test__/**',
     '!**/dist/**',
     '!**/node_modules/**',
