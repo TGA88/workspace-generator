@@ -22,6 +22,7 @@
     },
     "lint": {
       "dependsOn": [
+        "^build",
         "^lint"
       ],
       "inputs": ["default"],
