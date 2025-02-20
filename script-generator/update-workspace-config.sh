@@ -29,6 +29,7 @@ CUR_PATH=$(pwd)
 echo "cur => $CUR_PATH"
 
 # move to workspace
+echo "cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR"
 cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 
 
