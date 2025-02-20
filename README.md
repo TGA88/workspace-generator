@@ -2,6 +2,8 @@
 script to create pnpm workspace boilerplate
 
 ## workspace
+คือ location ในการจัดเก็บ source code แบ่งตาม programming language เข่น node-app, python-app, springboot-app และ infrastructure สำหรับ เตรียม environment ในการรัน app
+### create workspace
 ตัวอย่างการ สร้าง workspace
 ```bash
 # pwd is folder workspace-template
@@ -10,6 +12,18 @@ bash script-generator/create-workspace.sh gu-example-system node-app
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/create-workspace.sh gu-example-system node-app
+
+```
+### update workspace config
+คือ การupdate command script ใน root package.json และ update base confg ต่างๆ เช่น tsconfig,jest,lint เป็นต้น
+
+```bash
+# pwd is folder workspace-template
+# bash script-generator/template/create-workspace.sh [parameter1:workspace-folder] [programing-type]
+bash script-generator/update-workspace-config.sh gu-example-system node-app
+
+# สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
+bash workspace-generator/script-generator/update-workspace-config.sh gu-example-system node-app
 
 ```
 
@@ -29,6 +43,7 @@ bash workspace-generator/script-generator/init-system.sh gu-example-system node-
 ## Storybook host
 
 ### Create
+**หลังจาก สร้างมาแล้วก่อน สั่ง run ให้สั่ง build ก่อน 1ครั้ง เพื่อติดตั้ง libs ที่เกี่ยวข้อง**
 ตัวอย่างการ generate project type storybook-host
 ```bash
 # pwd is folder workspace-template

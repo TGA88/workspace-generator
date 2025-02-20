@@ -5,9 +5,10 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "show": "tsc --showconfig",
-    "build": "storybook build",
+    "build": "pnpm build:libs && pnpm build-storybook",
+    "build:libs": "cd ../../ && pnpm build:frontend-libs",
     "release": "cd ../../ && bash build-script/container/release-storybook-app.sh example",
-    "release-storybook": "pnpm build-storybook && cd ../../ && bash build-script/container/release-storybook-app.sh example"
+    "release-storybook": "pnpm build && cd ../../ && bash build-script/container/release-storybook-app.sh example"
   },
   "dependencies": {
     "react": "^18.3.1",
