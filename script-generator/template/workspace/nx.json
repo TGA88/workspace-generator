@@ -22,17 +22,16 @@
     },
     "lint": {
       "dependsOn": [
-        "^build",
-        "^lint"
+        "^build"
       ],
-      "inputs": ["default"],
+      "inputs": ["default","{workspaceRoot}/*eslint*"],
       "cache": true
     },
     "test": {
       "dependsOn": [
         "^build"
       ],
-      "inputs": ["default"],
+      "inputs": ["default","{workspaceRoot}/jest.*"],
       "cache": true,
       "outputs": [
         "{workspaceRoot}/coverage/{projectRoot}/"
@@ -42,7 +41,7 @@
       "dependsOn": [
         "^build"
       ],
-      "inputs": ["production","^production"],
+      "inputs": ["production","^production","{workspaceRoot}/*tsconfig*"],
       "outputs": [
         "{projectRoot}/dist/", 
         "{projectRoot}/storybook-static/"
@@ -62,12 +61,10 @@
       "default",
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
       "!{projectRoot}/tsconfig.spec.json",
-      "!{projectRoot}/jest.config.[jt]s",
+      "!{projectRoot}/*jest*",
       "!{projectRoot}/src/test-setup.[jt]s",
       "!{projectRoot}/test-setup.[jt]s",
-      "!{projectRoot}/.eslintrc.json",
-      "!{projectRoot}/eslint.config.js"
-
+      "!{projectRoot}/*eslint*"
     ],
     "sharedGlobals": [
     "!{projectRoot}/node_modules/",
