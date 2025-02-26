@@ -6,6 +6,7 @@ import tseslint from '@typescript-eslint/eslint-plugin';
 import * as tsParser from '@typescript-eslint/parser';
 import prettier from 'eslint-config-prettier';
 import globals from 'globals';
+import comments from '@eslint-community/eslint-plugin-eslint-comments';
 
 export function createBaseConfig({ tsConfigPath = './tsconfig.json' } = {}) {
   return [
@@ -110,6 +111,8 @@ export function createBaseConfig({ tsConfigPath = './tsconfig.json' } = {}) {
         '@typescript-eslint/no-explicit-any': 'error',
         '@typescript-eslint/explicit-module-boundary-types': 'error',
         '@typescript-eslint/no-non-null-assertion': 'error',
+        ...comments.configs.recommended.rules,
+        "@eslint-community/eslint-comments/no-use": ["error", {"allow": []}]
       },
     },
 

@@ -163,7 +163,7 @@ npm pkg set scripts.format:all="nx run-many --target=format --all"
 npm pkg set scripts.format-check:all="nx run-many --target=format-check --all"
 
 # install eslint
-pnpm add -Dw eslint
+pnpm add -Dw eslint@^9.18.0 , @eslint-community/eslint-plugin-eslint-comments@^4.4.1
 
 # globals เอาไว้ใช้ set environment ใน eslint เพื่อให้รู้ว่า จะต้อง ignore keyword document,localstorage เมื่อ set environment เป็น globals.browser เป็นต้น
 pnpm add -Dw globals
