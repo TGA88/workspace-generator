@@ -57,13 +57,13 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     find ./ -type f -exec file {} \; | 
     grep -i -E '(text| JSON data)' | 
     cut -d: -f1 | 
-    xargs sed -i '' -e "s/gu-example-system/$WORKSPACE_DIR/g"
+    xargs sed -i '' -e "s/gu-example-system/$WORKSPACE_DIR/g"  -e "s/example/$PROJECT_NAME/g"
 
 else
     find ./ -type f -exec file {} \; | 
     grep -i -E '(text| JSON data)' | 
     cut -d: -f1 | 
-    xargs sed -i -e "s/gu-example-system/$WORKSPACE_DIR/g"
+    xargs sed -i -e "s/gu-example-system/$WORKSPACE_DIR/g" -e "s/example/$PROJECT_NAME/g"
     # xargs sed -i '' "s/@feature-exm/@$PROJECT_NAME/g"
 
 fi
