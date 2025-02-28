@@ -16,7 +16,26 @@ export function createBaseConfig({ tsConfigPath = './tsconfig.json' } = {}) {
     },
     // JavaScript base config
     js.configs.recommended,
-
+    {
+      // กำหนดว่าจะใช้กับไฟล์อะไรบ้าง
+      files: ['**/*.js'],
+      // กำหนด TypeScript parser และ options
+      languageOptions: {
+        // parserOptions: {
+        //   ecmaVersion: 2022,
+        //   sourceType: 'module',
+        //   ecmaFeatures: {
+        //     jsx: true,
+        //   },
+        // },
+        // เพิ่ม globals สำหรับ browser environment
+        globals: {
+          ...globals.browser, // จะได้ window, document, localStorage, etc. ทำให้ eslint ไม่ฟ้อง error
+          ...globals.node,
+          ...globals.jest, // Config สำหรับ jest (สำหรับ test ใน nodejs จะได้รู้จัก describe,it,test,beforeAll,beforeEach,afterAll,afterEach)
+        },
+      },
+    },
     // TypeScript base config
     {
       // กำหนดว่าจะใช้กับไฟล์อะไรบ้าง
@@ -112,7 +131,7 @@ export function createBaseConfig({ tsConfigPath = './tsconfig.json' } = {}) {
         '@typescript-eslint/explicit-module-boundary-types': 'error',
         '@typescript-eslint/no-non-null-assertion': 'error',
         ...comments.configs.recommended.rules,
-        "@eslint-community/eslint-comments/no-use": ["error", {"allow": []}]
+        '@eslint-community/eslint-comments/no-use': ['error', { allow: [] }],
       },
     },
 
