@@ -123,6 +123,7 @@ export function createBaseConfig({ tsConfigPath = './tsconfig.json' } = {}) {
       // กำหนด plugins
       plugins: {
         '@typescript-eslint': tseslint,
+        '@eslint-community/eslint-comments': comments,
       },
       // กำหนด rules
       rules: {
