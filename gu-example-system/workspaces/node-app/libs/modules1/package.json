@@ -1,5 +1,5 @@
 {
-  "name": "@gu-example-system/feature-exm",
+  "name": "@gu-example-system/modules1",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -44,18 +44,18 @@
     "preview": "vite preview",
     "test": "pnpm run test:gen && pnpm run fix:lcov",
     "test:gen": "jest --runInBand --coverage --no-cache",
-    "fix:lcov": "bash ../../../tools/fix_lcov_paths.sh ../../../coverage/libs/feature-exm ",
+    "fix:lcov": "bash ../../../tools/fix_lcov_paths.sh ../../../coverage/libs/modules1/",
     "test:show": "jest --runInBand --coverage --showConfig",
-    "gen:tspaths": "bash ../../tools/gen_ts_path.sh feature-exm",
+    "gen:tspaths": "bash ../../tools/gen_ts_path.sh modules1",
     "update:config": "bash ../../tools/update_config_path.sh"
   },
   "peerDependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^6.1.7",
     "@mui/material": "^6.1.7",
-    "@mui/x-data-grid": "^7.22.2"
+    "@mui/x-data-grid": "^7.22.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   }
 }

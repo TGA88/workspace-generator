@@ -95,18 +95,6 @@ bash script-generator/new-web.sh gu-example-system demo-exm-web
 bash workspace-generator/script-generator/new-web.sh gu-example-system demo-exm-web
 
 ```
-### frontend-lib
-คือ lib ของ frontend-app โดยชื่อ module จะต้องชื่อเดีนวกับ app
-โดยประกอบไปด้วย feature กับ ui
-- ui คือ share component,customhook,theme ให้กับ feature ต่างๆภายใน module เดียวกัน
-- feature คือ program ของ module
-
-**param1=ชื่อworkspace**
-**param2=ชื่อappname**
-```bash
-bash workspace-generator/script-generator/new-feature.sh gu-example-system demo-exm-web
-```
-
 ### Feature-Lib
 ตัวอย่างการ generate project type feature
 **param1=ชื่อ workspace** เช่น gu-example-system
