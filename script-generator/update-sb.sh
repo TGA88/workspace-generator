@@ -130,4 +130,5 @@ if [ ! -f "$TSCONFIG_PATH" ]; then
     exit 1
 fi
 
+npx prettier --write  $TSCONFIG_PATH
 update_config_files
