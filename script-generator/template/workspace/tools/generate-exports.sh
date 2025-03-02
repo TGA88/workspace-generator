@@ -1,6 +1,16 @@
 #!/bin/bash
 SOURCE_PATH=$1
-PACKAGE_PATH=$2
+# PACKAGE_PATH=$2
+
+ESM_EXT=$2
+COMMONJS_EXT=$3
+
+# Set default value for ESM_EXT if not provided
+ESM_EXT=${ESM_EXT:-mjs}
+echo "ESM_EXT=> $ESM_EXT"
+# Set default value for COMMONJS_EXT if not provided
+COMMONJS_EXT=${COMMONJS_EXT:-js}
+echo "COMMONJS_EXT=> $COMMONJS_EXT"
 
 # Function to check if command exists
 command_exists() {
@@ -60,8 +70,8 @@ generate_export_entry() {
 
     # Generate paths
     local types_path=$(clean_dist_path "./dist/${clean_path}/index.d.ts")
-    local import_path=$(clean_dist_path "./dist/${clean_path}/index.mjs")
-    local require_path=$(clean_dist_path "./dist/${clean_path}/index.js")
+    local import_path=$(clean_dist_path "./dist/${clean_path}/index.${ESM_EXT}")
+    local require_path=$(clean_dist_path "./dist/${clean_path}/index.${COMMONJS_EXT}")
 
     # Generate the export entry
     cat << EOF

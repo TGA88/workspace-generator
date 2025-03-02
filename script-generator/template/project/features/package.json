@@ -45,7 +45,11 @@
     "test": "pnpm run test:gen && pnpm run fix:lcov",
     "test:gen": "jest --runInBand --coverage --no-cache",
     "fix:lcov": "bash ../../../tools/fix_lcov_paths.sh ../../../coverage/libs/feature-exm ",
-    "test:show": "jest --runInBand --coverage --showConfig"
+    "test:show": "jest --runInBand --coverage --showConfig",
+    "add:front-skelton": "bash ../../tools/gen_front_skelton.sh lib",
+    "update:alias-paths": "bash ../../tools/update_alias_path.sh feature-exm",
+    "update:config": "bash ../../tools/update_config_path.sh",
+    "gen:exports": "bash ../../tools/generate-exports.sh lib js cjs "
   },
   "peerDependencies": {
     "react": "^18.3.1",

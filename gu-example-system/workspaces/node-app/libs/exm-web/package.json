@@ -1,0 +1,78 @@
+{
+  "name": "@gu-example-system/exm-web",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "dist/main.js",
+  "types": "dist/types/main.d.ts",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "exports": {
+    "./feature-demo1/constainers/sample": {
+      "types": "./dist/feature-demo1/constainers/sample/index.d.ts",
+      "import": "./dist/feature-demo1/constainers/sample/index.js",
+      "require": "./dist/feature-demo1/constainers/sample/index.cjs"
+    },
+    "./feature-demo1/hooks/sample": {
+      "types": "./dist/feature-demo1/hooks/sample/index.d.ts",
+      "import": "./dist/feature-demo1/hooks/sample/index.js",
+      "require": "./dist/feature-demo1/hooks/sample/index.cjs"
+    },
+    "./feature-demo1/types": {
+      "types": "./dist/feature-demo1/types/index.d.ts",
+      "import": "./dist/feature-demo1/types/index.js",
+      "require": "./dist/feature-demo1/types/index.cjs"
+    },
+    "./ui-exm-web/components/sample": {
+      "types": "./dist/ui-exm-web/components/sample/index.d.ts",
+      "import": "./dist/ui-exm-web/components/sample/index.js",
+      "require": "./dist/ui-exm-web/components/sample/index.cjs"
+    },
+    "./ui-exm-web/constainers/sample": {
+      "types": "./dist/ui-exm-web/constainers/sample/index.d.ts",
+      "import": "./dist/ui-exm-web/constainers/sample/index.js",
+      "require": "./dist/ui-exm-web/constainers/sample/index.cjs"
+    },
+    "./ui-exm-web/mocks": {
+      "types": "./dist/ui-exm-web/mocks/index.d.ts",
+      "import": "./dist/ui-exm-web/mocks/index.js",
+      "require": "./dist/ui-exm-web/mocks/index.cjs"
+    },
+    "./ui-exm-web/types": {
+      "types": "./dist/ui-exm-web/types/index.d.ts",
+      "import": "./dist/ui-exm-web/types/index.js",
+      "require": "./dist/ui-exm-web/types/index.cjs"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --p tsconfig.build.json && vite build",
+    "build:showConfig": "tsc --p tsconfig.build.json --showconfig",
+    "lint": "eslint . && tsc",
+    "preview": "vite preview",
+    "test": "pnpm run test:gen && pnpm run fix:lcov",
+    "test:gen": "jest --runInBand --coverage --no-cache",
+    "fix:lcov": "bash ../../tools/fix_lcov_paths.sh ../../coverage/libs/exm-web/",
+    "test:show": "jest --runInBand --coverage --showConfig",
+    "add:front-skelton": "bash ../../tools/gen_front_skelton.sh lib",
+    "update:alias-paths": "bash ../../tools/update_alias_path.sh exm-web",
+    "update:config": "bash ../../tools/update_config_path.sh",
+    "gen:exports": "bash ../../tools/generate-exports.sh lib js cjs "
+  },
+  "peerDependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^6.1.7",
+    "@mui/material": "^6.1.7",
+    "@mui/x-data-grid": "^7.22.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}
