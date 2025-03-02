@@ -109,11 +109,21 @@ bash workspace-generator/script-generator/new-web.sh gu-example-system demo-exm-
 #### สร้าง project frontend-lib-module
 **param1=ชื่อworkspace**
 **param2=ชื่อappname**
+
 ```bash
-bash workspace-generator/script-generator/new-feature.sh gu-example-system demo-exm-web
+# สำหรับ test
+bash script-generator/new-frontend-lib-modules.sh gu-example-system demo-exm-web
+```
+
+```bash
+bash workspace-generator/script-generator/new-frontend-lib-modules.sh gu-example-system demo-exm-web
 ```
 
 ### Feature-Lib
+<span style="color:red">เอาไว้ใช้ กรณีที่ frontend-lib-modules ม่ีขนาดใหญ่เกินไป หรือ เจอปัญหา heap out of memory ให้นำ feature หรือ ui แยกมาสร้าง เป็นproject</span>
+
+โดย ให้ Feature-lib และ copy subfolder ทั้งหมด ของ feature ใน frontend-lib-modules มาไว้ที่ folder lib ที่เราพึ่งสร้าง **ชื่อ project feature-lib ที่สร้างใหม่ จะต้องตรงกับ folder feature ใน frontend-lib-modules**
+
 ตัวอย่างการ generate project type feature
 **param1=ชื่อ workspace** เช่น gu-example-system
 **param2=ชื่อ fetaure** เช่น feature-funny
