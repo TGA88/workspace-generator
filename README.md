@@ -95,12 +95,18 @@ bash script-generator/new-web.sh gu-example-system demo-exm-web
 bash workspace-generator/script-generator/new-web.sh gu-example-system demo-exm-web
 
 ```
-### frontend-lib
+### frontend-lib-modules
 คือ lib ของ frontend-app โดยชื่อ module จะต้องชื่อเดีนวกับ app
 โดยประกอบไปด้วย feature กับ ui
 - ui คือ share component,customhook,theme ให้กับ feature ต่างๆภายใน module เดียวกัน
 - feature คือ program ของ module
 
+**วิธีการใช้งาน**
+- สร้าง project frontend-lib-module
+- สร้าง sub-module ประเภท feature หรือ ui ด้วย script ใน package.json
+- update path alias ของ sub-modules ด้วย script ใน package.json
+
+#### สร้าง project frontend-lib-module
 **param1=ชื่อworkspace**
 **param2=ชื่อappname**
 ```bash

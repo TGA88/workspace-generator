@@ -68,3 +68,12 @@ if [[  -f "jest.config.ts" ]]; then
 
     echo "Updated all paths to jest.config.ts with relative_path in jest.config.ts"
 fi
+
+# package.json
+if [[  -f "package.json" ]]; then
+    # แทนที่เส้นทางไฟล์ที่อ้างอิงถึง jest.config.ts
+    sed -i.bak "s|\(\.\./\)*tools*|${relative_path}tools|g" package.json
+    sed -i.bak "s|\(\.\./\)*coverage/|${relative_path}coverage/|g" package.json
+
+    echo "Updated all paths to package.json with relative_path in package.json"
+fi
