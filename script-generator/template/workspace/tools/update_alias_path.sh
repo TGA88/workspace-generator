@@ -12,6 +12,7 @@ fi
 # สร้าง paths JSON
 paths_json="{ \"@$PACKAGE_NAME/*\": [\"./lib/*\"]"
 jest_paths_json=" '^@$PACKAGE_NAME/(.*)$': '<rootDir>/lib/\$1'"
+vite_paths_json=" '@$PACKAGE_NAME':  resolve(__dirname, './lib') "
 first=false
 
 
@@ -26,11 +27,13 @@ for folder in "$lib_folder"/*; do
     else
       paths_json="$paths_json,"
       jest_paths_json="$jest_paths_json,"
+      vite_paths_json="$vite_paths_json,"
     fi
     
     # เพิ่ม alias path (single line)
     paths_json="$paths_json \"@$folder_name/*\": [\"./lib/$folder_name/*\"]"
     jest_paths_json="$jest_paths_json '^@$folder_name/(.*)$': '<rootDir>/lib/$folder_name/\$1'"
+    vite_paths_json="$vite_paths_json '@$folder_name': resolve(__dirname, './lib/$folder_name') "
   fi
 done
 
@@ -119,3 +122,48 @@ rm sed_jest_replace.txt
 
  npx prettier --write jest.config.ts
 echo "Updated paths in jest.config.ts with only lib folder moduleNameMapper"
+
+# ==========
+
+# vite
+
+echo $vite_paths_json
+
+# สร้าง backup file
+cp vite.config.ts vite.config.ts.bak
+
+
+# สร้าง sed script แยกและบันทึกลงไฟล์
+cat > sed_vite_remove.txt << EOF
+/[[:space:]]*['"]@[^'"]*['"]:[[:space:]]*/  {
+  c\\
+
+}
+EOF
+
+cat > sed_vite_replace.txt << EOF
+/[[:space:]]*alias:*/ {
+  c\\
+  alias: {\\
+   $vite_paths_json,
+}
+EOF
+
+
+
+
+
+# รัน sed ด้วย script ไฟล์ (ซึ่งสามารถรองรับ multi-line ได้)
+npx prettier --write vite.config.ts
+sed -f sed_vite_remove.txt vite.config.ts > vite.config.temp.ts.bak
+sed -f sed_vite_replace.txt vite.config.temp.ts.bak > vite.config.temp2.ts.bak
+mv vite.config.temp2.ts.bak vite.config.ts
+rm vite.config.temp2.ts.bak
+rm vite.config.temp.ts.bak
+
+
+rm sed_vite_remove.txt
+rm sed_vite_replace.txt
+
+ npx prettier --write vite.config.ts
+echo "Updated paths in vite.config.ts with only lib folder alias"

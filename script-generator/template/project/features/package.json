@@ -48,7 +48,8 @@
     "test:show": "jest --runInBand --coverage --showConfig",
     "add:front-skelton": "bash ../../tools/gen_front_skelton.sh lib",
     "update:alias-paths": "bash ../../tools/update_alias_path.sh feature-exm",
-    "update:config": "bash ../../tools/update_config_path.sh"
+    "update:config": "bash ../../tools/update_config_path.sh",
+    "gen:exports": "bash ../../tools/generate-exports.sh lib js cjs "
   },
   "peerDependencies": {
     "react": "^18.3.1",
