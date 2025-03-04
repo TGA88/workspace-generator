@@ -1,4 +1,4 @@
-# workspace-generator
+# workspace-generator (Support Node V20)
 script to create pnpm workspace boilerplate
 
 ## workspace
@@ -409,3 +409,26 @@ bash workspace-generator/script-generator/new-plugin-fastify.sh gu-example-syste
 
 ```
 
+***
+
+## Other
+### วิธีเคลีย package ทั้งหมด เพื่อติดตั้งใหม่
+
+#### บน ubuntu ให้ เปิด globstar ก่อน (บน mac เปิด defaultอยู่แล้ว)
+```bash
+# วิธีที่ 1: เปิดใช้งาน globstar ก่อนใช้คำสั่ง
+shopt -s globstar
+rm -rf **/node_modules
+
+# วิธีที่ 2: ใช้ find แทน (แนะนำวิธีนี้มากกว่า)
+find . -name "node_modules" -type d -prune -exec rm -rf {} +
+```
+
+สั่งลบ package ทั้งหมด
+```bash
+# ที่ folder node-app
+rm -rf **/node_modules
+rm -rf **/dist
+
+pnpm store prune
+```
