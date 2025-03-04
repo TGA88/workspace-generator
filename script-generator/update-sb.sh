@@ -49,7 +49,7 @@ update_config_files() {
         paths_config+="      \"@${feature_name}/*\": [\"../../libs/${feature_path}*\"],"
         # alias_config+="    '@${feature_name}': path.resolve(__dirname, '../../../libs/${feature_name}/${suffix_path}'),"
         # paths_config+="      \"@${feature_name}/*\": [\"../../libs/${feature_name}/${suffix_path}*\"],"
-    done < <(find "$LIBS_PATH" -maxdepth 3 -type d  \( -name "feature-*"  -o -name "ui-*-web" -o -name "ui-components" -o -name "ui-common" \) -not -path "*/dist/*" -not -path "*/node_modules/*")
+    done < <(find "$LIBS_PATH" -maxdepth 3 -type d  \( -name "feature-*"  -o -name "ui-*-lib" -o -name "ui-components" -o -name "ui-common" \) -not -path "*/dist/*" -not -path "*/node_modules/*")
   
 
   # check dup tsconfig paths with existing paths
