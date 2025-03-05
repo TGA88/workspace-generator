@@ -4,10 +4,11 @@
   "scripts": {
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "show": "tsc --showconfig",
-    "build": "pnpm build:libs && pnpm build-storybook",
+    "build": "pnpm build:libs && storybook build",
     "build:libs": "cd ../../ && pnpm build:frontend-libs",
-    "release": "cd ../../ && bash build-script/container/release-storybook-app.sh example",
+    "show": "tsc --showconfig",
+    "release": "pnpm release-storybook",
+    "release:only": "cd ../../ && bash build-script/container/release-storybook-app.sh example",
     "release-storybook": "pnpm build && cd ../../ && bash build-script/container/release-storybook-app.sh example"
   },
   "dependencies": {
