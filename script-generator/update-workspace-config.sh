@@ -32,6 +32,8 @@ echo "cur => $CUR_PATH"
 echo "cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR"
 cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 
+
+
 # Get package information from package.json
 PACKAGE_NAME=$(node -p "require('./package.json').name")
 PACKAGE_VERSION=$(node -p "require('./package.json').version")
@@ -79,8 +81,6 @@ echo "Description: $PACKAGE_DESC"
 # npm pkg set scripts.show:graph="nx graph"
 
 cd $CUR_PATH
-TEMPLATE_PACKAGE_VERSION=$(node -p "require('$GENERATOR_DIR/script-generator/template/workspace/package.json').version")
-echo "Template version: $TEMPLATE_PACKAGE_VERSION"
 
 #update package.json at workspace
 echo "update package.json at workspace"
@@ -90,6 +90,10 @@ cp $GENERATOR_DIR/script-generator/template/workspace/package.json $WORKSPACE_DI
 
 # Update package name, version, and description
 cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
+
+TEMPLATE_PACKAGE_VERSION=$(node -p "require('./package.json').version")
+echo "Template version: $TEMPLATE_PACKAGE_VERSION"
+
 echo npm pkg set name="${PACKAGE_NAME}"
 npm pkg set name="${PACKAGE_NAME}"
 
