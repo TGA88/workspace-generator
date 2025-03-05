@@ -82,24 +82,25 @@ cd $CUR_PATH
 
 #update package.json at workspace
 echo "update package.json at workspace"
-echo "$GENERATOR_DIR/script-generator/template/workspace/package.json $WORKSPACE_DIR/workspaces/$SYSTEM_DIR"
-cp $GENERATOR_DIR/script-generator/template/workspace/package.json $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
+echo "cp $GENERATOR_DIR/script-generator/template/workspace/package.json $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/"
+cp $GENERATOR_DIR/script-generator/template/workspace/package.json $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/
 
 # Update package name, version, and description
+cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 npm pkg set name="$PACKAGE_NAME"
 npm pkg set version="$PACKAGE_VERSION"
 npm pkg set description="$PACKAGE_DESC"
-
+cd $CUR_PATH
 
 # overwrite nx config
 echo "update nx config"
-echo "$GENERATOR_DIR/cp script-generator/template/workspace/nx.json $WORKSPACE_DIR/workspaces/$SYSTEM_DIR"
+echo "cp $GENERATOR_DIR/script-generator/template/workspace/nx.json $WORKSPACE_DIR/workspaces/$SYSTEM_DIR"
 cp $GENERATOR_DIR/script-generator/template/workspace/nx.json $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 
 # overwrite nxignore config
 echo "update nxignore config"
 cd $CUR_PATH
-echo "$GENERATOR_DIR/cp script-generator/template/workspace/.nxignore $WORKSPACE_DIR/workspaces/$SYSTEM_DIR"
+echo "cp $GENERATOR_DIR/script-generator/template/workspace/.nxignore $WORKSPACE_DIR/workspaces/$SYSTEM_DIR"
 cp $GENERATOR_DIR/script-generator/template/workspace/.nxignore $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 
 # update git-cz config
