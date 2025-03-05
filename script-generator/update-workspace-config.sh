@@ -87,14 +87,14 @@ cp $GENERATOR_DIR/script-generator/template/workspace/package.json $WORKSPACE_DI
 
 # Update package name, version, and description
 cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
-echo 'npm pkg set name="$PACKAGE_NAME"'
-npm pkg set name="$PACKAGE_NAME"
+echo 'npm pkg set name="${PACKAGE_NAME}"'
+npm pkg set name="${PACKAGE_NAME}"
 
-echo 'npm pkg set version="$PACKAGE_VERSION"'
-npm pkg set version="$PACKAGE_VERSION"
+echo 'npm pkg set version="${PACKAGE_VERSION}"'
+npm pkg set version="${PACKAGE_VERSION}"
 
-echo 'npm pkg set description="$PACKAGE_DESC"'
-npm pkg set description="$PACKAGE_DESC"
+echo 'npm pkg set description="${PACKAGE_DESC}"'
+npm pkg set description="${PACKAGE_DESC}"
 cd $CUR_PATH
 
 # overwrite nx config
