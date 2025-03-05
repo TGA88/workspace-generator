@@ -79,22 +79,28 @@ echo "Description: $PACKAGE_DESC"
 # npm pkg set scripts.show:graph="nx graph"
 
 cd $CUR_PATH
+TEMPLATE_PACKAGE_VERSION=$(node -p "require('$GENERATOR_DIR/script-generator/template/workspace/package.json').version")
+echo "Template version: $TEMPLATE_PACKAGE_VERSION"
 
 #update package.json at workspace
 echo "update package.json at workspace"
 echo "cp $GENERATOR_DIR/script-generator/template/workspace/package.json $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/"
 cp $GENERATOR_DIR/script-generator/template/workspace/package.json $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/
 
+
 # Update package name, version, and description
 cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 echo npm pkg set name="${PACKAGE_NAME}"
 npm pkg set name="${PACKAGE_NAME}"
 
-echo echo npm pkg set version="${PACKAGE_VERSION}"
+echo npm pkg set version="${PACKAGE_VERSION}"
 npm pkg set version="${PACKAGE_VERSION}"
 
-echo npm pkg set description="${PACKAGE_DESC}"
-npm pkg set description="${PACKAGE_DESC}"
+# echo npm pkg set description="${PACKAGE_DESC}"
+# npm pkg set description="${PACKAGE_DESC}"
+
+echo "Creating template version file..."
+echo "${TEMPLATE_PACKAGE_VERSION}" > template-version
 cd $CUR_PATH
 
 # overwrite nx config
