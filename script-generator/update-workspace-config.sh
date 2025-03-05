@@ -82,7 +82,7 @@ cd $CUR_PATH
 
 #update package.json at workspace
 echo "update package.json at workspace"
-echo "$GENERATOR_DIR/cp script-generator/template/workspace/package.json $WORKSPACE_DIR/workspaces/$SYSTEM_DIR"
+echo "$GENERATOR_DIR/script-generator/template/workspace/package.json $WORKSPACE_DIR/workspaces/$SYSTEM_DIR"
 cp $GENERATOR_DIR/script-generator/template/workspace/package.json $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 
 # Update package name, version, and description
