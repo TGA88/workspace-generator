@@ -9,7 +9,8 @@
     "show": "tsc --showconfig",
     "release": "pnpm release-storybook",
     "release:only": "cd ../../ && bash build-script/container/release-storybook-app.sh example",
-    "release-storybook": "pnpm build && cd ../../ && bash build-script/container/release-storybook-app.sh example"
+    "release-storybook": "pnpm build && cd ../../ && bash build-script/container/release-storybook-app.sh example",
+    "update:storybook_alias": "cd ../../../../../gu-example-system && bash workspaces/node-app/tools/update_storybookhost_alias.sh . example "
   },
   "dependencies": {
     "react": "^18.3.1",

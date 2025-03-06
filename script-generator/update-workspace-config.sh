@@ -100,6 +100,14 @@ npm pkg set name="${PACKAGE_NAME}"
 echo npm pkg set version="${PACKAGE_VERSION}"
 npm pkg set version="${PACKAGE_VERSION}"
 
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS
+    sed -i '' "s/@inh-demo-system/@${PACKAGE_NAME}/g" package.json
+else
+    # Linux
+    sed -i "s/@inh-demo-system/@${PACKAGE_NAME}/g" package.json
+fi
+
 # echo npm pkg set description="${PACKAGE_DESC}"
 # npm pkg set description="${PACKAGE_DESC}"
 
