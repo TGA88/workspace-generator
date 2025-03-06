@@ -71,11 +71,11 @@ touch "$base_folder/components/sample/sample.types.ts"
 touch "$base_folder/components/sample/sample.stories.tsx"
 
 # create container structure
-mkdir -p "$base_folder/constainers/sample"
-touch "$base_folder/constainers/sample/index.ts"
-touch "$base_folder/constainers/sample/sample.tsx"
-touch "$base_folder/constainers/sample/sample.types.ts"
-touch "$base_folder/constainers/sample/sample.stories.tsx"
+mkdir -p "$base_folder/containers/sample"
+touch "$base_folder/containers/sample/index.ts"
+touch "$base_folder/containers/sample/sample.tsx"
+touch "$base_folder/containers/sample/sample.types.ts"
+touch "$base_folder/containers/sample/sample.stories.tsx"
 
 # create hooks structure
 mkdir -p "$base_folder/hooks/sample"
