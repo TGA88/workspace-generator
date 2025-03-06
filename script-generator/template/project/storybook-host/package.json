@@ -1,5 +1,5 @@
 {
-  "name": "@gu-example-system/storybook-host-example",
+  "name": "storybook-host-example",
   "version": "1.0.0",
   "scripts": {
     "storybook": "storybook dev -p 6006",
