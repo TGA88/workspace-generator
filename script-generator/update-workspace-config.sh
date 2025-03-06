@@ -170,4 +170,52 @@ echo "cp -r $GENERATOR_DIR/script-generator/template/workspace/tools $WORKSPACE_
 cp -r $GENERATOR_DIR/script-generator/template/workspace/tools $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 #================================================================================================
 
+# update storybookhost project
+echo "update storybookhost project"
+# Get all subfolders from storybook-host-backup
+SUBFOLDERS=$(ls $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/storybook-host)
+echo "Found subfolders: $SUBFOLDERS"
+
+# Loop through each subfolder
+for SUBFOLDER in $SUBFOLDERS; do
+    echo "Backup storybook package.json for subfolder: $SUBFOLDER"
+    cp $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/storybook-host/$SUBFOLDER/package.json $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/storybook-host/$SUBFOLDER/package.json.bak
+
+    echo "create package.json for subfolder: $SUBFOLDER"
+    cp  $GENERATOR_DIR/script-generator/template/project/storybook-host/package.json $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/storybook-host/$SUBFOLDER/package.json
+
+
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        find $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/storybook-host/$SUBFOLDER -name "package.json" -type f -not -path "*/\.*" -exec file {} \; |
+        grep -i -E '(text| JSON data)' | 
+        cut -d: -f1 | 
+        xargs sed -i '' -e "s/gu-example-system/TEMP_MARKER/g" -e "s/example/$SUBFOLDER/g" -e "s/TEMP_MARKER/$WORKSPACE_DIR/g"
+        # xargs sed -i '' "s/@feature-exm/@$PROJECT_NAME/g"
+
+    else
+        # find ./ -type f -not -path "*/\.*" -exec file {} \; | 
+         find $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/storybook-host/$SUBFOLDER -name "package.json" -type f -not -path "*/\.*" -exec file {} \; |
+        grep -i -E '(text| JSON data)' | 
+        cut -d: -f1 | 
+        # xargs sed -i -e "s/example/$SUBFOLDER/g" -e "s/gu-example-system/$WORKSPACE_DIR/g"
+        xargs sed -i -e "s/gu-example-system/TEMP_MARKER/g" -e "s/example/$SUBFOLDER/g" -e "s/TEMP_MARKER/$WORKSPACE_DIR/g"
+        # xargs sed -i '' "s/@feature-exm/@$PROJECT_NAME/g"
+    fi
+done
+
+echo "update storybookhost success"
+
+# Ask user if they want to update packages
+read -p "Do you want to update packages? (y/n) " answer
+
+if [[ $answer == "y" || $answer == "Y" ]]; then
+    echo "Running pnpm install..."
+    cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
+    pnpm install
+else
+    echo "Skipping package update"
+fi
+
+
+
     
