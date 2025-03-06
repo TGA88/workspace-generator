@@ -24,7 +24,6 @@ const apiServiceConfig: Config = {
     '!**/*.stories.*',
     '!**/__test__/**',
     '!**/dist/**',
-    '!**/mocks/**',
     '!**/node_modules/**',
     '!**/*.d.ts',
   ],

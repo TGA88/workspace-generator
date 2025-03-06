@@ -1,71 +1,12 @@
-// // Falt config  System for eslint version 8.x above
-// // root-eslint.config.mjs
-
-// import js from '@eslint/js';
-// import tseslint from '@typescript-eslint/eslint-plugin';
-// import * as tsParser from '@typescript-eslint/parser';
-// import prettier from 'eslint-config-prettier';
-
-// // // วิธีที่ 1: แยก prettier config เป็น object สุดท้าย
-// // export const prettierConfig = {
-// //   files: ['**/*.{js,jsx,ts,tsx,mjs,cjs}'],
-// //   rules: {
-// //     ...prettier.rules
-// //   }
-// // };
-
-// // วิธีที่ 2: สร้าง function สำหรับ base config
-// export function createBaseConfig({ tsConfigPath = './tsconfig.json' } = {}) {
-//   return [
-//     // ESLint recommended config
-//     js.configs.recommended,
-
-//     // TypeScript config
-//     {
-//       files: ['**/*.{ts,tsx}'],
-//       plugins: {
-//         '@typescript-eslint': tseslint,
-//       },
-//       languageOptions: {
-//         parser: tsParser,
-//         parserOptions: {
-//           project: tsConfigPath,
-//           ecmaVersion: 'latest',
-//           sourceType: 'module',
-//           ecmaFeatures: {
-//             jsx: true,
-//           },
-//         },
-//       },
-//       rules: {
-//         '@typescript-eslint/no-unused-vars': [
-//           'error',
-//           {
-//             argsIgnorePattern: '^_',
-//             varsIgnorePattern: '^_',
-//           },
-//         ],
-//         '@typescript-eslint/no-explicit-any': 'warn',
-//         'no-console': 'warn',
-//       },
-//     },
-
-//     // Prettier config (ต้องอยู่ท้ายสุดเสมอ)
-//     {
-//       files: ['**/*.{js,jsx,ts,tsx,mjs,cjs}'],
-//       rules: {
-//         ...prettier.rules,
-//       },
-//     },
-//   ];
-// }
-
+// Falt config  System for eslint version 8.x above
 // root-eslint.config.mjs
+
 import js from '@eslint/js';
 import tseslint from '@typescript-eslint/eslint-plugin';
 import * as tsParser from '@typescript-eslint/parser';
 import prettier from 'eslint-config-prettier';
 import globals from 'globals';
+import comments from '@eslint-community/eslint-plugin-eslint-comments';
 
 export function createBaseConfig({ tsConfigPath = './tsconfig.json' } = {}) {
   return [
@@ -75,7 +16,26 @@ export function createBaseConfig({ tsConfigPath = './tsconfig.json' } = {}) {
     },
     // JavaScript base config
     js.configs.recommended,
-
+    {
+      // กำหนดว่าจะใช้กับไฟล์อะไรบ้าง
+      files: ['**/*.js'],
+      // กำหนด TypeScript parser และ options
+      languageOptions: {
+        // parserOptions: {
+        //   ecmaVersion: 2022,
+        //   sourceType: 'module',
+        //   ecmaFeatures: {
+        //     jsx: true,
+        //   },
+        // },
+        // เพิ่ม globals สำหรับ browser environment
+        globals: {
+          ...globals.browser, // จะได้ window, document, localStorage, etc. ทำให้ eslint ไม่ฟ้อง error
+          ...globals.node,
+          ...globals.jest, // Config สำหรับ jest (สำหรับ test ใน nodejs จะได้รู้จัก describe,it,test,beforeAll,beforeEach,afterAll,afterEach)
+        },
+      },
+    },
     // TypeScript base config
     {
       // กำหนดว่าจะใช้กับไฟล์อะไรบ้าง
@@ -123,9 +83,56 @@ export function createBaseConfig({ tsConfigPath = './tsconfig.json' } = {}) {
           {
             argsIgnorePattern: '^_',
             varsIgnorePattern: '^_',
-            caughtErrorsIgnorePattern: '^_'
+            caughtErrorsIgnorePattern: '^_',
           },
         ],
+      },
+    },
+
+    // TypeScript both backend and frontend layer without test and config file
+    {
+      // กำหนดว่าจะใช้กับไฟล์อะไรบ้าง
+      files: ['**/*.{ts,tsx,mts,cts}'],
+      ignores: ['**/*.test.*', '**/*.spec.*', '**/*.config.*'],
+      // กำหนด TypeScript parser และ options
+      languageOptions: {
+        parser: tsParser,
+        parserOptions: {
+          // project => รองรับการใช้ References และถ้ารู้ที่อยู่ tsconfig ที่ชัดเจนใช้วิธีนี้ดีกว่า เพราะ set ง่าย
+          project: tsConfigPath,
+          // // projectService มีคว่มยืดหยุ่นในการ scan หา tsconfig จาก cwd path และยังสามารถ optimization memoryได้ (สามารถใช้ร่วมกับ projectได้ โดย ปิด cwd เมื่อใช้ project ระุบุ tsconfig path)
+          projectService: {
+            // cwd: process.cwd(),
+            skipLoadingLibrary: true, // optimize performance เร็วขึ้นเพราะไม่ต้องโหลด .d.ts files เหมาะกับการใช้ ESLint ที่ไม่ต้องการ type checking เต็มรูปแบบ
+            matchingStrategy: 'recursive', // fallback strategy  ค้นหาขึ้นไปเรื่อยๆ จนเจอไฟล์
+            // references: true  // เพิ่ม option นี้ ถ้าต้องการใช้ references path ใน tsconfig ด้วย
+          },
+          ecmaVersion: 2022,
+          sourceType: 'module',
+          ecmaFeatures: {
+            jsx: true,
+          },
+        },
+        // เพิ่ม globals สำหรับ browser environment
+        globals: {
+          ...globals.browser, // จะได้ window, document, localStorage, etc. ทำให้ eslint ไม่ฟ้อง error
+          ...globals.node,
+          ...globals.jest, // Config สำหรับ jest (สำหรับ test ใน nodejs จะได้รู้จัก describe,it,test,beforeAll,beforeEach,afterAll,afterEach)
+        },
+      },
+      // กำหนด plugins
+      plugins: {
+        '@typescript-eslint': tseslint,
+        '@eslint-community/eslint-comments': comments,
+      },
+      // กำหนด rules
+      rules: {
+        '@typescript-eslint/explicit-function-return-type': 'error',
+        '@typescript-eslint/no-explicit-any': 'error',
+        '@typescript-eslint/explicit-module-boundary-types': 'error',
+        '@typescript-eslint/no-non-null-assertion': 'error',
+        ...comments.configs.recommended.rules,
+        '@eslint-community/eslint-comments/no-use': ['error', { allow: [] }],
       },
     },
 

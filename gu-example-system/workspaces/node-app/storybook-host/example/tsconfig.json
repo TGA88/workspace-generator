@@ -14,10 +14,13 @@
     // "noEmit": true,
 
     "paths": {
-      "@/*": ["../../*"], // ชี้ไปที่ pnpm workspace (node-app)
-      "@root/*": ["../../../../*"], // ชี้ไปที่ root (gu-exmaple-system),,
-      "@feature-exm/*": ["../../libs/feature-exm/lib/*"],
+      "@/*": ["../../*"],
+      // ชี้ไปที่ pnpm workspace (node-app),
+      "@root/*": ["../../../../*"],
+      // ชี้ไปที่ root (gu-exmaple-system),
       "@ui-components/*": ["../../libs/shared-web/ui-components/*"],
+      "@feature-exm/*": ["../../libs/feature-exm/lib/*"],
+      "@feature-demo1/*": ["../../libs/exm-web/lib/feature-demo1/*"],
       "@feature-funny/*": ["../../libs/exm-modules/lib/feature-funny/*"]
     },
 

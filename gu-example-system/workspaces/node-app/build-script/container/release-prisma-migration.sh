@@ -1,4 +1,4 @@
-# ex. gu-portal-webapi
+# ex. guportal-webapi
 APP_NAME=$1   
 # ex. store-prisma
 APP_TYPE=$2

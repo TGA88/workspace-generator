@@ -23,8 +23,9 @@ const config: StorybookConfig = {
         alias: {
           '@': path.resolve(__dirname, '../../../'),
           '@root': path.resolve(__dirname, '../../../../../'),
-          '@feature-exm': path.resolve(__dirname, '../../../libs/feature-exm/lib/'),
           '@ui-components': path.resolve(__dirname, '../../../libs/shared-web/ui-components/'),
+          '@feature-exm': path.resolve(__dirname, '../../../libs/feature-exm/lib/'),
+          '@feature-demo1': path.resolve(__dirname, '../../../libs/exm-web/lib/feature-demo1/'),
           '@feature-funny': path.resolve(__dirname, '../../../libs/exm-modules/lib/feature-funny/'),
         },
       },

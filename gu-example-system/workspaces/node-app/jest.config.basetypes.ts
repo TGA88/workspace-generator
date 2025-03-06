@@ -8,7 +8,7 @@ import path from 'path'
 import baseConfig from './jest.config.base';
 
 // const  rd= path.join(__dirname, 'coverage',path.relative(__dirname, process.cwd())),
-const apiClientConfig: Config = {
+const apiCoreConfig: Config = {
   ...baseConfig,
   // rootDir: process.cwd(),
   testEnvironment: 'node',
@@ -16,13 +16,12 @@ const apiClientConfig: Config = {
   testMatch: ['**/*.spec.*', '**/*.test.*'],
 
   collectCoverageFrom: [
-    '**/*.logic*.{ts,tsx}',
-    '**/*logic*/*.{ts,tsx}',
-    '**/*command*/**/*.{ts,tsx}',
-    '**/*query*/**/*.{ts,tsx}',
-    '!**/mocks/**',
-    '!**/types/**',
-    '!**/*.types.*',
+    'src/**/*.{ts,tsx}',
+    '!**/*.config.*',
+    '!**/*index.*',
+    '!**/setupTest.*',
+    '!**/*.test.*',
+    '!**/*.spec.*',
     '!**/*.d.ts',
   ],
   moduleNameMapper: {
@@ -32,6 +31,7 @@ const apiClientConfig: Config = {
 
   // setupFilesAfterEnv: ['<rootDir>/src/test/setup.ts'],
   setupFilesAfterEnv: ['<rootDir>/src/setupTest.ts'],
+  
   testPathIgnorePatterns: [
     '<rootDir>/node_modules/',
     '<rootDir>/dist/'
@@ -72,4 +72,4 @@ const apiClientConfig: Config = {
   }
 }
 
-export default apiClientConfig;
+export default apiCoreConfig;

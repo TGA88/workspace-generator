@@ -4,7 +4,8 @@
   "scripts": {
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "show": "tsc --showconfig"
+    "show": "tsc --showconfig",
+    "update:storybook_alias": "cd ../../../../../gu-example-system && bash workspaces/node-app/tools/update_storybookhost_alias.sh . example "
   },
   "dependencies": {
     "react": "^18.0.0",

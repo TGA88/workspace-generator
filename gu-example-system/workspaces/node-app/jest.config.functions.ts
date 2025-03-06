@@ -26,7 +26,7 @@ const apiCoreConfig: Config = {
   },
 
   // setupFilesAfterEnv: ['<rootDir>/src/test/setup.ts'],
-  // setupFilesAfterEnv: ['<rootDir>/src/setupTest.ts'],
+  setupFilesAfterEnv: ['<rootDir>/src/setupTest.ts'],
   testPathIgnorePatterns: [
     '<rootDir>/node_modules/',
     '<rootDir>/dist/'

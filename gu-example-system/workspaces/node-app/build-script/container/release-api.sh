@@ -15,7 +15,7 @@ echo "current workspace: $WORKSPACE"
 
 # run pnpm deploy
 rm -rf deploy/$APP_NAME/$APP_TYPE
-pnpm -F $PACKAGE_NAME --prod deploy deploy/$APP_NAME/$APP_TYPE
+pnpm -F $PACKAGE_NAME --prod deploy deploy/$APP_NAME/$APP_TYPE --legacy
 
 
 
@@ -49,5 +49,6 @@ cp -r libs/$STORE_MAME/store-prisma/prisma/schema.prisma release/dist/apps/$APP_
 
 # Copy Source code for release
 cp -r deploy/$APP_NAME/$APP_TYPE/dist/* release/dist/apps/$APP_NAME/$APP_TYPE
+echo "copy node_modules"
 cp -rP deploy/$APP_NAME/$APP_TYPE/node_modules release/dist/apps/$APP_NAME/$APP_TYPE/
 cp deploy/$APP_NAME/$APP_TYPE/package.json release/dist/apps/$APP_NAME/$APP_TYPE/
