@@ -15,7 +15,7 @@ echo "current workspace: $WORKSPACE"
 
 # run pnpm deploy
 rm -rf deploy/$APP_NAME/$APP_TYPE
-pnpm -F $PACKAGE_NAME --prod deploy deploy/$APP_NAME/$APP_TYPE
+pnpm -F $PACKAGE_NAME --prod deploy deploy/$APP_NAME/$APP_TYPE --legacy
 
 
 

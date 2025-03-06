@@ -13,7 +13,7 @@ mkdir -p dist/apps/$APP_NAME/$APP_TYPE
 
 # run pnpm deploy
 rm -rf deploy/$APP_NAME/$APP_TYPE
-pnpm -F $PACKAGE_NAME --prod deploy deploy/$APP_NAME/$APP_TYPE
+pnpm -F $PACKAGE_NAME --prod deploy deploy/$APP_NAME/$APP_TYPE --legacy
 
 cp -rP apps/$APP_NAME/$APP_TYPE/.next dist/apps/$APP_NAME/$APP_TYPE
 cp -r apps/$APP_NAME/$APP_TYPE/public dist/apps/$APP_NAME/$APP_TYPE/.next/standalone/apps/$APP_NAME/$APP_TYPE/
