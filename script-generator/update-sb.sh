@@ -181,7 +181,12 @@ EOF
         }" "$TSCONFIG_PATH"
     else
         # Linux
-        sed -i -e "/alias: {/,/}/{ /alias: {/r $temp_main; /alias: {/,/}/d; }" "$STORYBOOK_MAIN_PATH"
+        echo "execute on Linux"
+        # sed -i -e "/alias: {/,/}/{ /alias: {/r $temp_main; /alias: {/,/}/d; }" "$STORYBOOK_MAIN_PATH"
+        sed -i -e "/alias: {/,/}/{
+            /alias: {/r $temp_main
+            /alias: {/,/})/d
+        }" "$STORYBOOK_MAIN_PATH"
        
         sed -i -e "/\"paths\": {/,/}/{
             /\"paths\": {/r $temp_tsconfig
