@@ -2,7 +2,8 @@
   "name": "@gu-example-system/ui-exm",
   "version": "0.0.0",
   "type": "module",
-  "main": "dist/main.js",
+  "main": "dist/main.cjs",
+  "module": "dist/main.js",
   "types": "dist/types/main.d.ts",
   "sideEffects": [
     "**/*.css"

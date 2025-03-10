@@ -69,8 +69,8 @@ export default defineConfig({
     // lib mode กับ format: 'es' การ minify จะไม่ minify whitespaces เพราะจะทำให้ pure annotations หายและส่งผลต่อ tree-shaking
     lib: {
       entry: resolve(__dirname, 'lib/main.ts'),
-      // formats: ['es','cjs'],
-      formats: ['es'], //เราจะใช้ เฉพาะ es อย่างเดียว เพราะ react component ของเราจะนำไปใช้กับ รูปแบบ esm อย่างเดียวจึงไม่ต้อง compile format cjs
+      formats: ['es','cjs'],
+      // formats: ['es'], //เราจะใช้ เฉพาะ es อย่างเดียว เพราะ react component ของเราจะนำไปใช้กับ รูปแบบ esm อย่างเดียวจึงไม่ต้อง compile format cjs
       // fileName: (format) => `main.${format}.js`
       fileName: (format) => `[name].${format === 'es' ? 'js' : 'cjs'}`
     },
