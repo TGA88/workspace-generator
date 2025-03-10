@@ -1,6 +1,7 @@
 import type { StorybookConfig } from '@storybook/react-vite'
 import { mergeConfig } from 'vite';
 import path from 'path';
+import EnvironmentPlugin from 'vite-plugin-environment';
 
 const config: StorybookConfig = {
   framework: '@storybook/react-vite',
@@ -18,6 +19,9 @@ const config: StorybookConfig = {
   ],
   viteFinal: async (config) => {
     return mergeConfig(config, {
+      plugins: [
+        EnvironmentPlugin('all'),
+      ],  
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '../../../'),

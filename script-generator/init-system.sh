@@ -194,7 +194,7 @@ cd $CUR_PATH
 # install vite และ plugin  สำหรับ sub project type ui,features
 cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 
-pnpm add -Dw vite@^6.0.7 @vitejs/plugin-react@^4.3.4 vite-plugin-dts@^4.5.0 vite-plugin-lib-inject-css@^2.2.1 vite-plugin-sass-dts@^1.3.30
+pnpm add -Dw vite@^6.0.7 @vitejs/plugin-react@^4.3.4 vite-plugin-dts@^4.5.0 vite-plugin-lib-inject-css@^2.2.1 vite-plugin-sass-dts@^1.3.30 vite-plugin-environment@ ^1.1.3
 
 # install Rollup Plugin 
 # rollup-plugin-node-externals  สำหรับ unbundle dependency ใน package.json
