@@ -412,7 +412,7 @@ bash workspace-generator/script-generator/new-plugin-fastify.sh gu-example-syste
 ***
 
 ## Other
-### วิธีเคลีย package ทั้งหมด เพื่อติดตั้งใหม่
+- ### วิธีเคลีย package ทั้งหมด เพื่อติดตั้งใหม่
 
 #### บน ubuntu ให้ เปิด globstar ก่อน (บน mac เปิด defaultอยู่แล้ว)
 ```bash
@@ -431,4 +431,20 @@ rm -rf **/node_modules
 rm -rf **/dist
 
 pnpm store prune
+```
+
+<br/>
+
+- ### การแก้ไข nx console error และ มี error ดั้งนี้
+![image](assets/Screenshot%202568-04-10%20at%2011.01.51.png)
+
+แก้ไขโดย
+``` bash
+#ที่ workspace/node-app
+npx nx reset 
+
+# ทำการ clear node package ถ้าเป็น linux ให้ เปิด globstar ก่อน
+rm -rf **/node_modules
+
+#และทำการ reload window ของ vs-code หรือ ปิดแล้วเปิดใหม่ก็ได้
 ```
