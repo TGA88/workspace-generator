@@ -448,3 +448,6 @@ rm -rf **/node_modules
 
 #และทำการ reload window ของ vs-code หรือ ปิดแล้วเปิดใหม่ก็ได้
 ```
+
+- ### ปัญหา react-pdf-veiewer installation
+https://stackoverflow.com/questions/76934122/canvas-node-error-during-installation-of-react-pdf-viewer-package-with-next-js
