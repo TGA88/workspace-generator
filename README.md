@@ -226,7 +226,7 @@ bash workspace-generator/script-generator/new-apicore.sh gu-example-system sampl
 bash script-generator/new-apiservice.sh gu-example-system sample-api
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
-bash workspace-generator/script-generator/new-service.sh gu-example-system sample-api
+bash workspace-generator/script-generator/new-apiservice.sh gu-example-system sample-api
 
 ```
 
