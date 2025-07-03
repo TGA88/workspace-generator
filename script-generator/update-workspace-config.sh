@@ -169,6 +169,11 @@ echo "update tools"
 echo "cp -r $GENERATOR_DIR/script-generator/template/workspace/tools $WORKSPACE_DIR/workspaces/$SYSTEM_DIR"
 cp -r $GENERATOR_DIR/script-generator/template/workspace/tools $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 #================================================================================================
+# update build-script
+echo "update build-script"
+echo "cp -r $GENERATOR_DIR/script-generator/template/workspace/system-workspace/build-scripts $WORKSPACE_DIR/workspaces/$SYSTEM_DIR"
+cp -r $GENERATOR_DIR/script-generator/template/workspace/system-workspace/build-scripts $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
+#================================================================================================
 
 # update storybookhost project
 echo "update storybookhost project"

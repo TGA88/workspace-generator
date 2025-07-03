@@ -15,9 +15,7 @@
   "targetDefaults": {
     "serve": {
       "dependsOn": [
-        "build",
-        "^build",
-        "^serve"
+        "^build"
       ]
     },
     "lint": {
@@ -45,15 +43,15 @@
       "outputs": [
         "{projectRoot}/dist/", 
         "{projectRoot}/storybook-static/",
-        "!{projectRoot}/.next/cache"
-
+        "{projectRoot}/.next/"
       ],
       "cache": true
     },
     "release": {
       "dependsOn": [
         "^build"
-      ]
+      ],
+      "cache": false
     }
   },
   "namedInputs": {
@@ -72,7 +70,8 @@
     "!{projectRoot}/coverage/",
     "!{projectRoot}/.next/",
     "!{projectRoot}/storybook-static/",
-    "!{projectRoot}/next-env.d.ts"
+    "!{projectRoot}/next-env.d.ts",
+    "!{projectRoot}/**/*.{md,mdx}"
 
   ]
   },

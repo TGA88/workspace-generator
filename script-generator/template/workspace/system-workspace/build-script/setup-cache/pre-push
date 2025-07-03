@@ -1,0 +1,99 @@
+#!/bin/bash
+# Pre-push hook for NX cache management
+# This file is tracked in git and copied to .git/hooks/
+
+set -e
+
+# Check if we're in the right repository structure
+if [ ! -d "workspaces/node-app" ]; then
+    echo "❌ Not in repository root! Please run git push from repository root."
+    exit 1
+fi
+
+cd workspaces/node-app
+
+# Colors
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+info() { echo -e "${BLUE}$1${NC}"; }
+success() { echo -e "${GREEN}$1${NC}"; }
+warning() { echo -e "${YELLOW}$1${NC}"; }
+
+echo ""
+info "🚀 Pre-push Hook (Smart Cache)"
+info "=============================="
+
+COMMIT=$(git rev-parse --short HEAD)
+BRANCH=$(git branch --show-current)
+
+info "Branch: $BRANCH"
+info "Commit: $COMMIT"
+
+# Check cache first
+if [ -f .env ]; then
+    info "Checking existing cache..."
+    
+    if bash tools/remote-cache/backup.sh download $COMMIT tmp/check 2>/dev/null; then
+        success "✅ Cache exists! Skipping build."
+        rm -rf tmp/check
+        success "📦 PR pipeline will use: backup-$COMMIT.tar.gz"
+        echo ""
+        exit 0
+    else
+        info "No cache found for $COMMIT, building..."
+        rm -rf tmp/check 2>/dev/null || true
+    fi
+else
+    warning "⚠️ .env not found, building without cache"
+fi
+
+# Build process
+info "Building: install → build → lint → test"
+start_time=$(date +%s)
+
+pnpm install --frozen-lockfile --silent || {
+    echo "❌ pnpm install failed"
+    exit 1
+}
+
+pnpm build:all || {
+    echo "❌ Build failed"
+    exit 1
+}
+
+pnpm lint:all || {
+    echo "❌ Lint failed"  
+    exit 1
+}
+
+pnpm test:all || {
+    echo "❌ Tests failed"
+    exit 1
+}
+
+end_time=$(date +%s)
+duration=$((end_time - start_time))
+
+success "✅ Build completed in ${duration}s"
+
+# Create cache
+if [ -f .env ]; then
+    info "Creating cache..."
+    export CACHE_COMMIT_ID="$COMMIT"
+    
+    if npm run cache:full:backup --silent; then
+        success "✅ Cache created: backup-$COMMIT.tar.gz"
+        success "📦 Team can now use this cache!"
+    else
+        warning "⚠️ Cache creation failed (build still successful)"
+    fi
+else
+    warning "⚠️ No .env, skipping cache creation"
+fi
+
+echo ""
+success "🎉 Push ready! Total time: ${duration}s"
+echo ""

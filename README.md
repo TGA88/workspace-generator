@@ -1,6 +1,11 @@
-# workspace-generator (Support Node V20)
+# workspace-generator (Support Node V22.x above)
 script to create pnpm workspace boilerplate
 
+## workspace-generator version compatibility
+```
+- >= 1.2.0 compatible with nodejs >= 22.x
+- < 1.2.0 compatible with nodejs <= 20.x
+```
 ## workspace
 คือ location ในการจัดเก็บ source code แบ่งตาม programming language เข่น node-app, python-app, springboot-app และ infrastructure สำหรับ เตรียม environment ในการรัน app
 ### create workspace

@@ -84,6 +84,11 @@ export default defineConfig({
           .filter((file) => !file.endsWith('.test.ts'))
           .filter((file) => !file.endsWith('.test.tsx'))
           .filter((file) => !file.endsWith('.stories.tsx'))
+          // ✅ เพิ่ม: กรอง pure type files
+          .filter((file) => !file.includes('/types/'))
+          .filter((file) => !file.endsWith('.type.ts'))
+          .filter((file) => !file.endsWith('.types.ts'))
+          .filter((file) => !file.endsWith('.d.ts'))
           .map((file) => [
             // The name of the entry point
             // lib/nested/foo.ts becomes nested/foo
