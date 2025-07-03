@@ -5,10 +5,11 @@ import baseConfig from '../../root-tailwind.config.mjs'
 export default {
   ...baseConfig,
   // important: '#storybook-root',
-  prefix: "fos-",
+  // prefix: "fos-",
   content: [
     ...baseConfig.content,
-    "../../libs/feature-*/lib/**/*.{js,jsx,ts,tsx}",
+     "../../libs/**/feature-*/**/*.{js,jsx,ts,tsx}",
+     "../../libs/**/ui-*/**/*.{js,jsx,ts,tsx}"
   ]
 }
 

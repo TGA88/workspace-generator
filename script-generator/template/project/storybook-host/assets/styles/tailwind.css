@@ -1,3 +1,53 @@
-@tailwind base;
+@font-face {
+  font-family: "IBM Plex Sans Thai";
+  src: url("../assets/font/IBMPlexSansThai-Thin.ttf") format('truetype');
+  font-weight: 100;
+}
+
+@font-face {
+  font-family: "IBM Plex Sans Thai";
+  src: url("../assets/font/IBMPlexSansThai-ExtraLight.ttf") format('truetype');
+  font-weight: 200;
+}
+
+@font-face {
+  font-family: "IBM Plex Sans Thai";
+  src: url("../assets/font/IBMPlexSansThai-Light.ttf") format('truetype');
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "IBM Plex Sans Thai";
+  src: url("../assets/font/IBMPlexSansThai-Regular.ttf") format('truetype');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "IBM Plex Sans Thai";
+  src: url("../assets/font/IBMPlexSansThai-Medium.ttf") format('truetype');
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "IBM Plex Sans Thai";
+  src: url("../assets/font/IBMPlexSansThai-SemiBold.ttf") format('truetype');
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "IBM Plex Sans Thai";
+  src: url("../assets/font/IBMPlexSansThai-Bold.ttf") format('truetype');
+  font-weight: 700;
+}
+
+
+
+
+
+/* for tailwindcss version 3 */
+/* @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; */
+
+@import 'tailwindcss';
+@config '../../tailwind.config.mjs';

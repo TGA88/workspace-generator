@@ -5,7 +5,11 @@ const __filename = fileURLToPath(import.meta.url); // get the resolved path to t
 const __dirname = dirname(__filename);
 const config = {
   plugins: {
-    tailwindcss: {
+    // for tailwindcss version 3  
+    // tailwindcss: {
+    //   config: join(__dirname, 'tailwind.config.mjs'),
+    // },
+    '@tailwindcss/postcss': {
       config: join(__dirname, 'tailwind.config.mjs'),
     },
     autoprefixer: {},
