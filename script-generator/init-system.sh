@@ -32,10 +32,10 @@ echo "cur => $CUR_PATH"
 cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 
 # ติดตั้ง NX ที่ระดับ Project
-pnpm add nx@^20.4.6 -D -w
+pnpm add nx@~20.8.2 -D -w
 
 # initial nx เพื่อ สร้าง config file nx.json
-pnpx nx@^20.4.6 init
+pnpx nx@~20.8.2 init
 
 
 # set nx command
