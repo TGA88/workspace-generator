@@ -1,0 +1,7 @@
+FROM scratch
+COPY static-apps/demo-exm-web-nextjs /artifacts
+CMD ["/artifacts"]
+# COPY website.tar.gz /
+# หรือ
+# COPY dist/ /artifacts/
+# RUN tar -czf /artifacts.tar.gz /artifacts

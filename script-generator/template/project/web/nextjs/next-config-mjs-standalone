@@ -1,5 +1,3 @@
-// if you need to build nextjs as static, you can copy next-config-mjs-static to next.config.mjs
-// or you can copy next-config-mjs-standalone to next.config.mjs if you need standalone mode
 import createNextIntlPlugin from 'next-intl/plugin';
 const withNextIntl = createNextIntlPlugin();
 
@@ -18,6 +16,7 @@ const nextConfig = {
         loaderFile: './ImageLoader.js',
     },
     output: 'standalone',
+    
     async headers() {
         return [
             {

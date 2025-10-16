@@ -6,17 +6,26 @@
     "serve": "next dev",   
     "lint": "eslint . && tsc",
     "build": "next build",
-    "release": "pnpm build && cd ../../../ && bash build-script/container/release-next-app.sh demo-exm-web nextjs demo-exm-web-nextjs",
+    "// === run static at local ===": "",
+    "dev-static": "next build && cp .env.development static-apps/demo-exm-web-nextjs && cp ../../../tools/next-start-static.sh static-apps/demo-exm-web-nextjs && cd static-apps/demo-exm-web-nextjs && bash next-start-static.sh && npx serve -l 3000",
+    "// === release useing release:static when building for static ===": "",
+    "release": "pnpm run release:containers",
     "release:local": "pnpm build && cd ../../../ && bash build-script/container/release-next-app.sh demo-exm-web nextjs demo-exm-web-nextjs",
+    "release:static": "pnpm build && cd ../../../ && bash build-script/static-site/release-next-static.sh demo-exm-web nextjs demo-exm-web-nextjs",
+    "release:containers": "pnpm build && cd ../../../ && bash build-script/container/release-next-app.sh demo-exm-web nextjs demo-exm-web-nextjs",
     "fix:lcov": "bash ../../../tools/fix_lcov_paths.sh ../../../coverage/apps/demo-exm-web/nextjs",
     "test": "pnpm run test:gen && pnpm run fix:lcov",
     "test:gen": "jest --runInBand --coverage --no-cache",
     "test:show": "jest --runInBand --coverage --showConfig",
+    "// === 🔧 Build Docker when Build nextjs as standalone mode ===": "",
     "docker:build": "docker image prune -f && cd ../../../release && docker build -f container-apps/demo-exm-web/nextjs/Dockerfile -t demo-exm-web-nextjs .",
     "docker:run": "docker rm -f demo-exm-web-nextjs  && cd ../../../release && docker run -p 4001:3000 --env-file container-apps/demo-exm-web/nextjs/.env --name demo-exm-web-nextjs demo-exm-web-nextjs:latest  ",
     "docker:start": "docker start demo-exm-web-nextjs",
     "docker:stop": "docker stop demo-exm-web-nextjs",
-    "docker:remove": "docker rm  -f -v demo-exm-web-nextjs && docker rmi demo-exm-web-nextjs "
+    "docker:remove": "docker rm  -f -v demo-exm-web-nextjs && docker rmi demo-exm-web-nextjs ",
+    "// === 🔧 Build Docker when Build nextjs as Static mode for artifact website ===": "",
+    "docker:artifact:build": "docker image prune -f && cd ../../../release && docker build -f static-apps/Dockerfile.artifact-demo-exm-web-nextjs -t demo-exm-web-nextjs:$(git rev-parse HEAD) .",
+    "docker:artifact:restore": "cd ../../../release && docker create --name artifact-demo-exm-web-nextjs demo-exm-web-nextjs:$(git rev-parse HEAD) && docker cp artifact-demo-exm-web-nextjs:/artifacts ./static-apps/demo-exm-web-nextjs && docker rm -f artifact-demo-exm-web-nextjs"
   },
   "dependencies": {
     

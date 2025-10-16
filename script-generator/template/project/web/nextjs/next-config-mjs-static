@@ -1,0 +1,32 @@
+// config for static export
+import createNextIntlPlugin from 'next-intl/plugin';
+const withNextIntl = createNextIntlPlugin();
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+    modularizeImports: {
+        '@mui/material': {
+          transform: '@mui/material/{{member}}',
+        },
+        '@mui/icons-material': {
+          transform: '@mui/icons-material/{{member}}',
+        },
+      },
+    output: 'export',
+    distDir: 'static-apps/demo-exm-web-nextjs',
+    
+    trailingSlash: true,
+   
+    webpack: (
+        config
+      ) => {
+        // Important: return the modified config
+        config.module.rules.push({
+          test: /\.node/,
+          use: 'raw-loader',
+        });
+        return config;
+    }
+};
+
+export default withNextIntl(nextConfig);

@@ -20,7 +20,10 @@
     "gen:up-script": "prisma migrate dev --create-only --schema prisma/schema.prisma",
     "gen:down-script": "prisma migrate diff --from-schema-datamodel prisma/schema.prisma --to-schema-datasource prisma/schema.prisma --script > down.sql",
     "prisma:generate": "prisma generate",
-    "build": "pnpm run prisma:generate && bash ../../../../build-script/container/build-prisma.sh && tsup --config ../../../../tsup.lib.config.ts",
+    "Build script should be set to build:prisma:v6 when using prisma version >=6 or using build:prisma for version <6": "",
+    "build": "pnpm run build:prisma:v6",
+    "build:prisma": "pnpm run prisma:generate && bash ../../../../build-script/container/build-prisma.sh && tsup --config ../../../../tsup.lib.config.ts",
+    "build:prisma:v6": "pnpm run prisma:generate && bash ../../../../build-script/container/build-prisma.sh && tsup --config ../../../../tsup.lib.config.ts && bash ../../../../build-script/container/build-prisma-v6.sh",
     "release": "pnpm run build && cd ../../../../ && bash build-script/container/release-prisma-liquibase-migration.sh scope-webapi exm-data store-prisma",
     "gen:exports": "bash ../../../../tools/generate-exports.sh src"
   },
