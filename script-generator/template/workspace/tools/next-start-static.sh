@@ -8,7 +8,7 @@ set +a
 echo "ENV FOR NEXTJS CLIENT_SIDE"
 printenv | grep NEXT
  
-export EXISTING_VARS=$(printenv | awk -F= '{print $1}' | sed 's/^/\$/g' | grep NEXT | paste -sd, );
+export EXISTING_VARS=$(printenv | awk -F= '{print $1}' | sed 's/^/\$/g' | grep NEXT | paste -sd, - );
  
 for file in $(find ./ -type f -name '*.js');
 do
