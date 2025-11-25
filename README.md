@@ -33,6 +33,7 @@ bash workspace-generator/script-generator/update-workspace-config.sh gu-example-
 ```
 
 ## Initial package for System workspace
+**เมื่อ Initial package แล้วให้ update package ตาม section update workspace configด้วย**
 ตัวอย่างการ init system-workspace เพื่อ intall and config tools 
 ```bash
 # pwd is folder workspace-template
@@ -100,7 +101,7 @@ bash script-generator/new-web.sh gu-example-system demo-exm-web
 bash workspace-generator/script-generator/new-web.sh gu-example-system demo-exm-web
 
 ```
-### frontend-lib-modules
+### frontend-lib-modules(แนะนำให้ใช้ type นี้ก่อน project type feature)
 คือ lib ของ frontend-app โดยชื่อ module จะต้องชื่อเดีนวกับ app
 โดยประกอบไปด้วย feature กับ ui
 - ui คือ share component,customhook,theme ให้กับ feature ต่างๆภายใน module เดียวกัน
@@ -148,16 +149,24 @@ bash workspace-generator/script-generator/new-feature.sh gu-example-system featu
 **ใช้ new-feature.sh แต่ไม่ระบุ project name จะได้ project ui-components**
 
 **param1=ชื่อ workspace** เช่น gu-example-system
-**param2=ชื่อ fetaure** ถ้าต้องการเปลี่ยน scope ให้ระบุ param2=ui-components
-**param3=ชื่อ scope  เช่น demo-funny-web แต่ถ้าไม่ใส่ จะ default เป็น shared-weba**
+<Br/>
+
+**ตัวอย่าง**
 ```bash
 # pwd is folder workspace-template
 bash script-generator/new-feature.sh gu-example-system 
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/new-feature.sh gu-example-system 
-
 ```
+
+**ผลลัพ**
+```
+|-- libs
+    |-- shared-web
+        |-- ui-components # this is project. package name is @<system-name>/ui-components
+```
+
 
 ### ui-state-redux
 ตัวอย่างการ generate project type ui-state
@@ -181,7 +190,7 @@ bash workspace-generator/script-generator/new-feature.sh gu-example-system ui-st
 
 ### web-config
 
-เป็น project ที่ config สำหรับ webproject และ เอาไว้ share ให้ feature project ใช้งานด้วย
+เป็น project ที่ config สำหรับ webproject และ เอาไว้ share ให้ feature project หรือ web,storybook project ใช้งานด้วย
 
 **ใช้ new-feature.sh  แต่ให้ระบุ suffix project name เช่น demo-exm-web-config**
 
@@ -194,6 +203,19 @@ bash script-generator/new-webconfig.sh gu-example-system  demo-exm-web
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/new-webconfig.sh gu-example-system  demo-exm-web
 
+```
+
+**ผลลัพ**
+```
+# แบบ ไม่ระบุ scope (recommend)
+|-- libs
+    |-- shared-web
+        |-- config # this is project. package name is @<system-name>/shared-web-config
+
+# แบบ ระบุ scope (recommend)
+|-- libs
+    |-- demo-exm-web
+        |-- config # this is project. package name is @<system-name>/demo-exm-web-config
 ```
 
 ---
