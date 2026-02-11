@@ -12,7 +12,7 @@ export function createBaseConfig({ tsConfigPath = './tsconfig.json' } = {}) {
   return [
     // เทียบเท่ากับ file .eslintignore เดิม
     {
-      ignores: ['**/node_modules/**', '**/dist/**', '**/.next/**'],
+      ignores: ['**/node_modules/**', '**/dist/**', '**/.next/**', '**/static-apps/**'],
     },
     // JavaScript base config
     js.configs.recommended,
@@ -45,7 +45,7 @@ export function createBaseConfig({ tsConfigPath = './tsconfig.json' } = {}) {
         parser: tsParser,
         parserOptions: {
           // project => รองรับการใช้ References และถ้ารู้ที่อยู่ tsconfig ที่ชัดเจนใช้วิธีนี้ดีกว่า เพราะ set ง่าย
-          project: tsConfigPath,
+          // project: tsConfigPath,
           // // projectService มีคว่มยืดหยุ่นในการ scan หา tsconfig จาก cwd path และยังสามารถ optimization memoryได้ (สามารถใช้ร่วมกับ projectได้ โดย ปิด cwd เมื่อใช้ project ระุบุ tsconfig path)
           projectService: {
             // cwd: process.cwd(),
@@ -99,7 +99,7 @@ export function createBaseConfig({ tsConfigPath = './tsconfig.json' } = {}) {
         parser: tsParser,
         parserOptions: {
           // project => รองรับการใช้ References และถ้ารู้ที่อยู่ tsconfig ที่ชัดเจนใช้วิธีนี้ดีกว่า เพราะ set ง่าย
-          project: tsConfigPath,
+          // project: tsConfigPath,
           // // projectService มีคว่มยืดหยุ่นในการ scan หา tsconfig จาก cwd path และยังสามารถ optimization memoryได้ (สามารถใช้ร่วมกับ projectได้ โดย ปิด cwd เมื่อใช้ project ระุบุ tsconfig path)
           projectService: {
             // cwd: process.cwd(),
@@ -143,7 +143,7 @@ export function createBaseConfig({ tsConfigPath = './tsconfig.json' } = {}) {
         parser: tsParser,
         parserOptions: {
           // project => รองรับการใช้ References และถ้ารู้ที่อยู่ tsconfig ที่ชัดเจนใช้วิธีนี้ดีกว่า เพราะ set ง่าย
-          project: tsConfigPath,
+          // project: tsConfigPath,
           // // projectService มีคว่มยืดหยุ่นในการ scan หา tsconfig จาก cwd path และยังสามารถ optimization memoryได้ (สามารถใช้ร่วมกับ projectได้ โดย ปิด cwd เมื่อใช้ project ระุบุ tsconfig path)
           projectService: {
             // cwd: process.cwd(),

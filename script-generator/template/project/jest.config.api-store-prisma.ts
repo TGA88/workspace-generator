@@ -16,9 +16,25 @@ const apiStoreConfig: Config = {
   testMatch: ['**/*.spec.*', '**/*.test.*'],
 
   collectCoverageFrom: [
-    '**/*.logic*.{ts,tsx}',
-    '**/*logic*/*.{ts,tsx}',
+    '**/*.{ts,tsx}',
+    '!**/main.ts',
+    '!**/index.ts',
+    '!**/dto.ts',
+    '!**/model.ts',
+    '!**/entry.ts',
+    '!**/*.config.ts',
+    '!**/*.const.ts',
+    '!**/*.constants.ts',
+    '!**/constants.ts',
+    '!**/const.ts',
+    '!**/*.mock.ts',
+    '!**/mock*.ts',
+    '!**/dbclient.ts',
+    '!**/example/**',
+    '!**/generated/**',
     '!**/*.d.ts',
+    '!**/*.type.ts',
+    '!**/*.types.ts',
   ],
   moduleNameMapper: {
     '^@/(.*)$': path.resolve(__dirname, './$1'), // refs to node-app folder

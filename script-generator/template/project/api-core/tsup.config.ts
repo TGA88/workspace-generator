@@ -9,6 +9,7 @@ export default defineConfig({
   minify: true,
   dts: true,
   outDir: 'dist',
+  keepNames: true,
   outExtension({ format }) {
     return {
       js: format === 'cjs' ? '.js' : '.mjs' // กำหนดนามสกุลไฟล์ตาม format

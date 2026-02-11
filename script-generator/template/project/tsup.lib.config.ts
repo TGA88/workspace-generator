@@ -9,5 +9,6 @@ export default defineConfig({
   clean: true,
   minify: true,
   dts: true,
+  keepNames: true,
   outDir: 'dist',
 });

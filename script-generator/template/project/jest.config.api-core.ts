@@ -15,10 +15,29 @@ const apiCoreConfig: Config = {
 
   testMatch: ['**/*.spec.*', '**/*.test.*'],
 
-  collectCoverageFrom: [
-    '**/*.logic*.{ts,tsx}',
-    '**/*logic*/*.{ts,tsx}',
+   collectCoverageFrom: [
+    '**/*.ts',
+    '!**/main.ts',
+    '!**/index.ts',
+    '!**/dto.ts',
+    '!**/model.ts',
+    '!**/models.ts',
+    '!**/failures.ts',
+    '!**/repository.ts',
+    '!**/entry.ts',
+    '!**/*.config.ts',
+    '!**/*.const.ts',
+    '!**/*.constants.ts',
+    '!**/constants.ts',
+    '!**/const.ts',
+    '!**/*.mock.ts',
+    '!**/mock*.ts',
+    '!**/example/**',
+    '!**/generated/**',
     '!**/*.d.ts',
+    '!**/type*.ts',
+    '!**/*.type.ts',
+    '!**/*.types.ts'
   ],
   moduleNameMapper: {
     '^@/(.*)$': path.resolve(__dirname, './$1'), // refs to node-app folder
