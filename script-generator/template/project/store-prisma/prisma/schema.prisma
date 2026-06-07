@@ -5,9 +5,18 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider      = "prisma-client-js"
-  output        = "../../../../../node_modules/@prisma/exm-data-client"
-  binaryTargets = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x", "linux-musl", "linux-musl-openssl-3.0.x", "rhel-openssl-1.0.x", "linux-musl-arm64-openssl-3.0.x","linux-musl-arm64-openssl-1.1.x"]
+  // for  prisma v6 or above
+  provider      = "prisma-client"
+  output        = "../generated/client"
+  moduleFormat  = "cjs"
+  generatedFileExtension = "ts"
+  importFileExtension = "ts"
+  binaryTargets = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x", "linux-musl", "linux-musl-openssl-3.0.x", "rhel-openssl-1.0.x", "linux-musl-arm64-openssl-3.0.x", "linux-musl-arm64-openssl-1.1.x"]
+  
+  // // for prisma v5
+  //provider      = "prisma-client-js"
+  //output        = "../../../../../node_modules/@prisma/exm-data-client"
+  //binaryTargets = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x", "linux-musl", "linux-musl-openssl-3.0.x", "rhel-openssl-1.0.x", "linux-musl-arm64-openssl-3.0.x","linux-musl-arm64-openssl-1.1.x"]
 }
 
 datasource db {

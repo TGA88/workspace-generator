@@ -167,6 +167,20 @@ export function createBaseConfig({ tsConfigPath = './tsconfig.json' } = {}) {
           ...globals.jest, // เพิ่ม jest globals
         },
       },
+          // กำหนด plugins
+      plugins: {
+        '@typescript-eslint': tseslint,
+        '@eslint-community/eslint-comments': comments,
+      },
+      // กำหนด rules (override จาก config base ts เพิ่มเติมสำหรับ test files)
+      rules: {
+        '@typescript-eslint/explicit-function-return-type': 'error',
+        '@typescript-eslint/no-explicit-any': 'error',
+        '@typescript-eslint/explicit-module-boundary-types': 'error',
+        '@typescript-eslint/no-non-null-assertion': 'error',
+        ...comments.configs.recommended.rules,
+        '@eslint-community/eslint-comments/no-use': ['error', { allow: [] }],
+      },
     },
     // Prettier config (ต้องอยู่ท้ายสุด)
     {
