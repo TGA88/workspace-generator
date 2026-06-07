@@ -158,7 +158,7 @@ pnpm update:config
 
 
 
-pnpm install
+pnpm install --no-frozen-lockfile
 pnpm update -i
 
 

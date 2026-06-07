@@ -76,7 +76,7 @@ npm pkg set scripts.fix:lcov="bash ../../../tools/fix_lcov_paths.sh ../../../cov
 
 
 
-pnpm install
+pnpm install --no-frozen-lockfile
 pnpm update -i
 
 

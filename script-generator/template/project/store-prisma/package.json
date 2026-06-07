@@ -562,5 +562,8 @@
     "tslib": "^2.3.0",
     "@prisma/client": "^5.6.0",
     "prisma": "^5.6.0"
+  },
+  "dependencies": {
+    "@gu-example-system/exm-api-core": "workspace:^"
   }
 }

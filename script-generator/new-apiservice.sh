@@ -79,7 +79,7 @@ npm pkg set scripts.fix:lcov="bash ../../../../tools/fix_lcov_paths.sh ../../../
 pnpm add -w @inh-lib/common @inh-lib/ddd
 pnpm add -w zod
 
-pnpm install
+pnpm install --no-frozen-lockfile
 pnpm update -i
 
 

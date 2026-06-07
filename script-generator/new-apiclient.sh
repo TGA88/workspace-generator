@@ -79,7 +79,7 @@ npm pkg set name=@$WORKSPACE_DIR/$PROJECT_NAME-client
 # pnpm add -w @inh-lib/common @inh-lib/ddd
 # pnpm add -w zod
 
-pnpm install
+pnpm install --no-frozen-lockfile
 pnpm update -i
 
 

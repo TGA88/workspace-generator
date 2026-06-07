@@ -194,7 +194,7 @@ cd $CUR_PATH
 # install vite และ plugin  สำหรับ sub project type ui,features
 cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 
-pnpm add -Dw vite@^6.0.7 @vitejs/plugin-react@^4.3.4 vite-plugin-dts@^4.5.0 vite-plugin-lib-inject-css@^2.2.1 vite-plugin-sass-dts@^1.3.30 vite-plugin-environment@ ^1.1.3
+pnpm add -Dw vite@^6.0.7 @vitejs/plugin-react@^4.3.4 vite-plugin-dts@^4.5.0 vite-plugin-lib-inject-css@^2.2.1 vite-plugin-sass-dts@^1.3.30 vite-plugin-environment@^1.1.3
 
 # install Rollup Plugin 
 # rollup-plugin-node-externals  สำหรับ unbundle dependency ใน package.json
@@ -206,7 +206,7 @@ pnpm add -Dw glob@^11.0.1
 #=====
 
 # install msw สำหรับ ใช้ mock httpClient ของ project type featues ,web หรือ service
-pnpm add -Dw msw@^2.7.0 
+pnpm add -Dw msw@~2.7.0 # pin minor: msw >=2.8 ดึง ESM-only deps (rettime) ที่ jest CJS ใช้ไม่ได้
 # ใช้ jest-fixed-jsdom แทน jest-environment-jsdom เพื่อ แก้ปัญหา msw v2 Error Request/Response/TextEncoder is not defined (Jest)
 pnpm add -Dw jest-fixed-jsdom@^0.0.9
 #======
@@ -232,7 +232,7 @@ pnpm add -Dw storybook@^8.0.0 @storybook/addon-essentials@^8.5.0 @storybook/addo
 pnpm add -Dw raw-loader@^4.0.2
 
 # ============
-pnpm update -i
+# pnpm update -i  # ตัดออกจาก flow อัตโนมัติ: เป็นคำสั่ง interactive ใช้ใน CI ไม่ได้ ให้รันเองเมื่อต้องการ update version
 
 # # ติดตั้ง dependencies เพิ่มเติมสำหรับ development
 # pnpm add -D vite @vitejs/plugin-react autoprefixer postcss tailwindcss storybook-dark-mode @storybook/addon-styling @storybook/addon-a11y chromatic

@@ -70,7 +70,7 @@ npm pkg set name=@$WORKSPACE_DIR/$PROJECT_NAME
 npm pkg set scripts.fix:lcov="bash ../../tools/fix_lcov_paths.sh ../../coverage/libs/"$PROJECT_NAME
 
 
-pnpm install
+pnpm install --no-frozen-lockfile
 pnpm update -i
 
 

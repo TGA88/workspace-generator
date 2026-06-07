@@ -70,7 +70,7 @@ npm pkg set scripts.fix:lcov="bash ../../tools/fix_lcov_paths.sh ../../coverage/
 
 
 
-pnpm install
+pnpm install --no-frozen-lockfile
 pnpm update -i
 
 

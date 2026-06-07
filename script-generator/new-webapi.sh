@@ -5,6 +5,7 @@
 WORKSPACE_DIR=$1
 PROJECT_NAME=$2
 GENERATOR_DIR=$3
+DATA_STORE=${4:-exm-data}  # ชื่อ folder ของ store-prisma (optional) ใช้แทน exm-data ใน release script
 SYSTEM_DIR='node-app'
 
 
@@ -50,7 +51,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     find ./ -type f -not -path "*/\.*" -exec file {} \; | 
     grep -i -E '(text| JSON data)' | 
     cut -d: -f1 | 
-    xargs sed -i '' -e "s/demo-exm-webapi/$PROJECT_NAME/g" -e "s/gu-example-system/$WORKSPACE_DIR/g"
+    xargs sed -i '' -e "s/demo-exm-webapi/$PROJECT_NAME/g" -e "s/gu-example-system/$WORKSPACE_DIR/g" -e "s/exm-data/$DATA_STORE/g"
     # xargs sed -i '' "s/@feature-exm/@$PROJECT_NAME/g"
 
 else
@@ -58,7 +59,7 @@ else
     find ./ -type f -not -path "*/\.*" -exec file {} \; | 
     grep -i -E '(text| JSON data)' | 
     cut -d: -f1 | 
-     xargs sed -i -e "s/demo-exm-webapi/$PROJECT_NAME/g" -e "s/gu-example-system/$WORKSPACE_DIR/g"
+     xargs sed -i -e "s/demo-exm-webapi/$PROJECT_NAME/g" -e "s/gu-example-system/$WORKSPACE_DIR/g" -e "s/exm-data/$DATA_STORE/g"
     # xargs sed -i '' "s/@feature-exm/@$PROJECT_NAME/g"
 
 fi
@@ -72,7 +73,7 @@ npm pkg set scripts.fix:lcov="bash ../../../tools/fix_lcov_paths.sh ../../../cov
 # add inh-lib/common , inh-lib/ddd
 pnpm add -w @inh-lib/common @inh-lib/ddd
 
-pnpm install
+pnpm install --no-frozen-lockfile
 pnpm update -i
 
 

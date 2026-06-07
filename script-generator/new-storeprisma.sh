@@ -97,7 +97,7 @@ npm pkg set scripts.fix:lcov="bash ../../../../tools/fix_lcov_paths.sh ../../../
 
 
 pnpm add -w @prisma/client@^5.6.0 prisma@^5.6.0
-pnpm install
+pnpm install --no-frozen-lockfile
 pnpm update -i
 
 

@@ -73,7 +73,7 @@ npm pkg set scripts.gen:exports="bash ../../tools/generate-exports.sh src "
 
 
 
-pnpm install
+pnpm install --no-frozen-lockfile
 pnpm update -i
 
 # Check if SCOPE_NAME isnot null
