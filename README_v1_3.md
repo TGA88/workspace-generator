@@ -3,47 +3,9 @@ script to create pnpm workspace boilerplate
 
 ## workspace-generator version compatibility
 ```
-- >= 1.4.0 dev-condition export strategy: lint/test/build ไม่ต้อง build local dependency ก่อน (ดู section ถัดไป)
 - >= 1.2.0 compatible with nodejs >= 22.x
 - < 1.2.0 compatible with nodejs <= 20.x
 ```
-
-## Export Strategy & Build System (v1.4)
-
-> README ฉบับก่อนหน้า: [README_v1_3.md](./README_v1_3.md)
-
-ตั้งแต่ v1.4 ทุก lib template ใช้ **dual-condition exports**: เพิ่ม custom condition `development` ชี้ไปที่ source ไว้บนสุดของทุก exports entry แล้วเปิด condition นี้เฉพาะ dev tooling (tsc ผ่าน `customConditions` ใน tsconfig base, jest ผ่าน `customExportConditions`) ส่วน Node runtime / release ยังใช้ `dist` ตามเดิมทุกประการ
-
-```jsonc
-"exports": {
-  "./command/*": {
-    "development": "./src/command/*/index.ts",   // dev tooling เห็น src ตรงๆ (ต้องอยู่บนสุดเสมอ)
-    "import": "./dist/command/*/index.mjs",      // runtime/release ใช้ dist เหมือนเดิม
-    "require": "./dist/command/*/index.js",
-    "types": "./dist/command/*/index.d.ts"
-  }
-}
-```
-
-**ผลที่ได้**
-- `lint` / `test` ของทุก project รันได้ทันทีโดยไม่ต้อง build dependency ก่อน (nx.json เอา `^build` ออกจาก lint/test/build แล้ว)
-- `build` ของ lib ไม่พึ่ง dist ของกัน (tsup externalize workspace deps + dts อ่าน type จาก src) จึง build ขนานกันได้เต็มที่
-- `build` ของ **app** ยังมี `dependsOn: ["^build"]` (override ใน package.json ของ app) เพราะ runtime artifact ต้องใช้ dist ของ lib — `serve`/`release` ก็เช่นกัน
-- lib เพิ่ม `"sideEffects": false` และปิด `minify` (consumer จะ bundle+minify เองตอน release) → build เร็วขึ้นและ consumer tree-shake ได้
-
-**กติกาที่ต้องรักษา**
-1. `development` ต้องเป็น key แรกของทุก exports entry (condition แรกที่ match ชนะ)
-2. เพิ่ม action ใหม่ต้องใส่ exports entry ให้ครบทั้ง development/import/require/types
-3. dependency ระหว่าง lib ต้องประกาศใน `dependencies` แบบ `workspace:^` เสมอ
-4. jest config ฝั่ง jsdom ห้ามลบ `''` ออกจาก `customExportConditions` (msw/node ต้องใช้ default condition)
-5. dist จากการ build มือทีละ project ห้ามนำไป deploy/publish — ใช้ `nx release` หรือ `build:all` เท่านั้น
-
-**Migrate workspace เดิม (สร้างด้วย version < 1.4)**
-```bash
-node workspace-generator/script-generator/migrate/apply-export-strategy.mjs <path>/workspaces/node-app
-# จากนั้นตรวจ diff, ลบ dist ทั้งหมด แล้วลอง lint/test ของ project ที่มี local dependency เพื่อยืนยัน
-```
-
 ## workspace
 คือ location ในการจัดเก็บ source code แบ่งตาม programming language เข่น node-app, python-app, springboot-app และ infrastructure สำหรับ เตรียม environment ในการรัน app
 ### create workspace
@@ -333,8 +295,6 @@ bash workspace-generator/script-generator/new-storeprisma.sh gu-example-system d
 
 # pwd is folder workspace-template
 bash script-generator/new-webapi.sh gu-example-system demo-exm-webapi
-# v1.4+: ระบุชื่อ store-prisma เป็น param4 ได้เลย (ไม่ต้องตามแก้ exm-data ใน package.json เอง)
-# bash script-generator/new-webapi.sh gu-example-system demo-exm-webapi "" exm-data
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/new-webapi.sh gu-example-system demo-exm-webapi
@@ -343,7 +303,7 @@ bash workspace-generator/script-generator/new-webapi.sh gu-example-system demo-e
 หลังจาก สร้างแล้วให้แก้ไข file package.json 
 
 ```json
-// (v1.4+ ถ้าระบุ param4 ตอนรัน script แล้ว ข้ามขั้นนี้ได้) ให้แก้ไข exm-data เป็น ชื่อ Folder ของ store-prisma ตัวที่ต้องการ
+// ให้แก้ไข exm-data เป็น ชื่อ Folder ของ store-prisma ตัวที่้จต้องการ
 "release": "cd ../../../ && bash ../build-script/container/release-api.sh demo-exm-webapi mcs-fastify demo-exm-webapi-mcs-fastify exm-data"
 
 ```
