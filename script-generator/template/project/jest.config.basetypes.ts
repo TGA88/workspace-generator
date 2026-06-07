@@ -12,6 +12,8 @@ const apiCoreConfig: Config = {
   ...baseConfig,
   // rootDir: process.cwd(),
   testEnvironment: 'node',
+  // เปิด condition "development" ให้ jest resolve src ของ workspace package ตรงๆ ไม่ต้อง build ก่อน
+  testEnvironmentOptions: { customExportConditions: ['development', 'node', 'node-addons'] },
 
   testMatch: ['**/*.spec.*', '**/*.test.*'],
 

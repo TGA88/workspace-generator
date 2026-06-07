@@ -14,6 +14,8 @@ const webConfig: Config = {
 
   // use jest-fixed-jsdom to fix msw v2 error Request/Response/TextEncoder is not defined (Jest)
   testEnvironment: 'jest-fixed-jsdom',
+  // 'development' = resolve src ของ workspace package / '' = คง default condition ไว้ (จำเป็นกับ msw/node)
+  testEnvironmentOptions: { customExportConditions: ['development', ''] },
   testMatch: ['**/*.spec.*', '**/*.test.*'],
 
   collectCoverageFrom: [
