@@ -25,11 +25,13 @@
   "license": "ISC",
   "exports": {
     ".": {
+      "development": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
     },
     "./logics/*": {
+      "development": "./src/logics/*.ts",
       "types": "./dist/logics/*.d.ts",
       "import": "./dist/logics/*.mjs",
       "require": "./dist/logics/*.js"
@@ -39,5 +41,6 @@
     "@inh-lib/common": "^1.0.7",
     "@inh-lib/ddd": "^1.0.1",
     "tslib": "^2.3.0"
-  }
+  },
+  "sideEffects": false
 }

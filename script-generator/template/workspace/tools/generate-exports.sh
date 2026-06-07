@@ -76,6 +76,7 @@ generate_export_entry() {
     # Generate the export entry
     cat << EOF
     "${clean_path}": {
+      "development": "${types_path}",
       "types": "${types_path}",
       "import": "${import_path}",
       "require": "${require_path}"

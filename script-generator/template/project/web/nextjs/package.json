@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "next dev",   
+    "serve": "next dev",
     "lint": "eslint . && tsc",
     "build": "next build",
     "// === run static at local ===": "",
@@ -28,10 +28,8 @@
     "docker:artifact:restore": "cd ../../../release && docker create --name artifact-demo-exm-web-nextjs demo-exm-web-nextjs:$(git rev-parse HEAD) && docker cp artifact-demo-exm-web-nextjs:/artifacts ./static-apps/demo-exm-web-nextjs && docker rm -f artifact-demo-exm-web-nextjs"
   },
   "dependencies": {
-    
     "next": "^14.2.20",
     "next-intl": "^3.23.5",
-    
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@inh-lib/common": "^1.1.0",
@@ -42,5 +40,14 @@
   },
   "devDependencies": {
     "eslint-config-next": "14.2.3"
+  },
+  "nx": {
+    "targets": {
+      "build": {
+        "dependsOn": [
+          "^build"
+        ]
+      }
+    }
   }
 }

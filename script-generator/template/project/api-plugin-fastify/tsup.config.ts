@@ -6,7 +6,7 @@ export default defineConfig({
   splitting: true,
   sourcemap: true,
   clean: true,
-  minify: true,
+  minify: false, // lib ไม่ต้อง minify: build เร็วขึ้น debug ง่าย consumer จะ bundle+minify เองตอน release
   dts: false,
   outDir: 'dist',
   outExtension({ format }) {

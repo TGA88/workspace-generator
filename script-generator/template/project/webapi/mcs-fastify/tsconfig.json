@@ -1,6 +1,7 @@
 {
   "extends": "fastify-tsconfig",
   "compilerOptions": {
+    "customConditions": ["development"],
     "target": "ESNext",
     "outDir": "./dist",
     "noEmit": true,

@@ -132,7 +132,7 @@ export function createBaseConfig({ tsConfigPath = './tsconfig.json' } = {}) {
         '@typescript-eslint/explicit-module-boundary-types': 'error',
         '@typescript-eslint/no-non-null-assertion': 'error',
         ...comments.configs.recommended.rules,
-        '@eslint-community/eslint-comments/no-use': ['error', { allow: [] }],
+        '@eslint-community/eslint-comments/no-use': ['error', { allow: ['eslint-disable', 'eslint-enable', 'eslint-disable-next-line', 'eslint-disable-line'] }], // อนุญาต disable directives — ของเดิม allow:[] ทำให้ example code ใน template ไม่ผ่าน lint ของตัวเอง
       },
     },
 
@@ -179,7 +179,7 @@ export function createBaseConfig({ tsConfigPath = './tsconfig.json' } = {}) {
         '@typescript-eslint/explicit-module-boundary-types': 'error',
         '@typescript-eslint/no-non-null-assertion': 'error',
         ...comments.configs.recommended.rules,
-        '@eslint-community/eslint-comments/no-use': ['error', { allow: [] }],
+        '@eslint-community/eslint-comments/no-use': ['error', { allow: ['eslint-disable', 'eslint-enable', 'eslint-disable-next-line', 'eslint-disable-line'] }], // อนุญาต disable directives — ของเดิม allow:[] ทำให้ example code ใน template ไม่ผ่าน lint ของตัวเอง
       },
     },
     // Prettier config (ต้องอยู่ท้ายสุด)

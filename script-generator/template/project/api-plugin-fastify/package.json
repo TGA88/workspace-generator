@@ -32,14 +32,17 @@
   },
   "exports": {
     ".": {
+      "development": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
     },
     "./plugins/support": {
+      "development": "./src/plugins/support/index.ts",
       "types": "./dist/plugins/support/index.d.ts",
       "import": "./dist/plugins/support/index.mjs",
       "require": "./dist/plugins/support/index.js"
     }
-  }
+  },
+  "sideEffects": false
 }

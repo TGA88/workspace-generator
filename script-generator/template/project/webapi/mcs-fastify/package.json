@@ -47,5 +47,14 @@
   },
   "devDependencies": {
     "tsc-watch": "^6.2.0"
+  },
+  "nx": {
+    "targets": {
+      "build": {
+        "dependsOn": [
+          "^build"
+        ]
+      }
+    }
   }
 }

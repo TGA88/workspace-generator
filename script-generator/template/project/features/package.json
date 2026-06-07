@@ -9,29 +9,43 @@
   "files": [
     "dist"
   ],
-  "sideEffects": [
-    "**/*.css"
-  ],
+  "sideEffects": false,
   "publishConfig": {
     "access": "restricted"
   },
   "exports": {
     ".": {
+      "development": [
+        "./lib/main.tsx",
+        "./lib/main.ts"
+      ],
       "types": "./dist/types/main.d.ts",
       "import": "./dist/main.js",
       "require": "./dist/main.cjs"
     },
     "./components/*": {
+      "development": [
+        "./lib/components/*/*.tsx",
+        "./lib/components/*/*.ts"
+      ],
       "types": "./dist/types/components/*/*.d.ts",
       "import": "./dist/components/*/*.js",
       "require": "./dist/components/*/*.cjs"
     },
     "./containers/*": {
+      "development": [
+        "./lib/containers/*/*.tsx",
+        "./lib/containers/*/*.ts"
+      ],
       "types": "./dist/types/containers/*/*.d.ts",
       "import": "./dist/containers/*/*.js",
       "require": "./dist/containers/*/*.cjs"
     },
     "./hooks/*": {
+      "development": [
+        "./lib/hooks/*/*.tsx",
+        "./lib/hooks/*/*.ts"
+      ],
       "types": "./dist/types/hooks/*/*.d.ts",
       "import": "./dist/hooks/*/*.js",
       "require": "./dist/hooks/*/*.cjs"

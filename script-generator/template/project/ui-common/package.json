@@ -5,9 +5,7 @@
   "main": "dist/main.cjs",
   "module": "dist/main.js",
   "types": "dist/types/main.d.ts",
-  "sideEffects": [
-    "**/*.css"
-  ],
+  "sideEffects": false,
   "files": [
     "dist"
   ],
@@ -16,21 +14,37 @@
   },
   "exports": {
     ".": {
+      "development": [
+        "./lib/main.tsx",
+        "./lib/main.ts"
+      ],
       "types": "./dist/types/main.d.ts",
       "import": "./dist/main.js",
       "require": "./dist/main.cjs"
     },
     "./components/*": {
+      "development": [
+        "./lib/components/*/*.tsx",
+        "./lib/components/*/*.ts"
+      ],
       "types": "./dist/types/components/*/*.d.ts",
       "import": "./dist/components/*/*.js",
       "require": "./dist/components/*/*.cjs"
     },
     "./hooks/*": {
+      "development": [
+        "./lib/hooks/*/*.tsx",
+        "./lib/hooks/*/*.ts"
+      ],
       "types": "./dist/types/hooks/*/*.d.ts",
       "import": "./dist/hooks/*/*.js",
       "require": "./dist/hooks/*/*.cjs"
     },
     "./theme/*": {
+      "development": [
+        "./lib/theme/*.tsx",
+        "./lib/theme/*.ts"
+      ],
       "types": "./dist/types/theme/*.d.ts",
       "import": "./dist/theme/*.js",
       "require": "./dist/theme/*.cjs"
