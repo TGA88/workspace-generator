@@ -12,6 +12,7 @@ script to create pnpm workspace boilerplate
 
 > README ฉบับก่อนหน้า: [README_v1_3.md](./README_v1_3.md)
 > 📖 **เอกสารฉบับเต็ม (กลไก + config ครบทุกจุด + troubleshooting): [docs/export-strategy.md](./docs/export-strategy.md)**
+> 🤔 **ทำไม template ถึง "ดูเยอะ" — เหตุผลเบื้องหลังสำหรับทีม: [docs/why-this-architecture.md](./docs/why-this-architecture.md)**
 
 ตั้งแต่ v1.4 ทุก lib template ใช้ **dual-condition exports** เพื่อให้ **lint / test / build รันได้ทันทีโดยไม่ต้อง build local dependency ก่อน** แต่ production ยังใช้ `dist` ตามเดิมทุกประการ — ทำได้โดยเพิ่ม custom condition `development` ชี้ไปที่ source ไว้บนสุดของทุก exports entry แล้วเปิด condition นี้เฉพาะ dev tooling
 
