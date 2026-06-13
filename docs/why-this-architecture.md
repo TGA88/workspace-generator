@@ -16,7 +16,9 @@
 
 ## ตอบทีละข้อที่ "ดูเยอะ"
 
-### 1. ทำไมแบ่ง layer เยอะ (core / data / client / service / app)
+> section 1-7 เป็นฝั่ง **backend libs** / section 8-10 เป็นฝั่ง **frontend libs**
+
+### 1. ทำไมแบ่ง layer เยอะ (core / data / client / service / app) — backend
 
 **ดูเหมือน:** แค่ดึงข้อมูลมาแสดง ทำไมต้องผ่านตั้ง 5 ชั้น
 
@@ -78,6 +80,42 @@
 
 ---
 
+## Frontend libs
+
+section 1-7 ข้างบนเป็นเหตุผลของฝั่ง **backend** (core/data/client/service/app) — ฝั่ง **frontend** มีปรัชญาเดียวกันแต่หน้าตาต่างกัน หัวข้อนี้ตอบ "ทำไม" ส่วน "อย่างไร" (กฎละเอียด, naming, promotion, import, Nx tags) อยู่ใน [frontend-structure.md](./frontend-structure.md)
+
+### 8. ทำไมแบ่ง frontend เป็น feature / ui-components / ui-functions / ui-state-&lt;vendor&gt;
+
+**ดูเหมือน:** ก็แค่หน้าเว็บ ทำไมต้องซอยเป็นหลายประเภท lib
+
+**กันอะไร:** เป็น layer เดียวกับ backend แต่คนละมิติ — แยก **business** (`feature-*`) ออกจาก **reusable** (`ui-components`, `ui-functions`) และ **state** (`ui-state-<vendor>`) ผลคือ component/function ที่ reusable ทดสอบและ reuse ได้โดยไม่ลาก business มาด้วย, slice/reducer test ได้โดยไม่ต้อง mount UI, และแต่ละชิ้นยกไปเป็น project แยก/publish ได้เมื่อโตขึ้น
+
+**ถ้าไม่มี:** ทุกอย่างกองใน feature เดียว — component ที่ควร reuse ถูก copy-paste ข้าม feature, pure function ปนกับ component จน test ต้อง render, และพอจะแยกของ shared ออกก็ทำไม่ได้เพราะมันผูกกับ business ของ feature นั้นไปแล้ว
+
+**naming ที่ถูก:** shared component = `ui-components` (ไม่ใช่ `ui`), shared state = `ui-state-<vendor>` เสมอ เช่น `ui-state-redux` (ไม่มี `ui-state` เฉยๆ — vendor ต่อท้ายเสมอ เพราะ redux/zustand swap กันไม่ได้จริง รวมไว้ตัวเดียวจะพัง affected/release)
+
+**เมื่อไหร่ไม่คุ้ม:** หน้าเดียวง่ายๆ ไม่มี component reuse ไม่มี state ซับซ้อน — เก็บใน feature ตัวเดียวพอ อย่าซอยล่วงหน้า
+
+### 9. ทำไม feature ห้าม import feature อื่น
+
+**ดูเหมือน:** ก็แค่ import มาใช้ ทำไมต้องห้าม
+
+**กันอะไร:** กัน "distributed monolith ระดับ folder" — ถ้า `feature-cart` อ้าง `feature-checkout` ได้ ทั้งสองก็ผูกกันจนลบ/แยก/ย้ายไม่ได้ทีละตัว กฎนี้บังคับว่า **ถ้าของถูกใช้ 2 feature = มันไม่ใช่ของ feature ใดเลย ต้องยกขึ้น shared** ทำให้ shared code ไปอยู่ที่ถูกที่โดยอัตโนมัติ
+
+**ถ้าไม่มี:** feature ค่อยๆ อ้างกันไปมาจนกลายเป็นก้อนเดียว — แก้ feature หนึ่งกระทบอีกหลายตัว, เขียน test ต้อง setup feature อื่นด้วย, และเป้าหมาย "feature แยกขาด deploy/promote ได้" หายไป
+
+**enforce ยังไง:** กฎนี้เผลอละเมิดง่ายสุดตอนรีบ จึงต้องบังคับด้วย `@nx/enforce-module-boundaries` (tag `type:feature` ห้าม depend `type:feature`) ไม่ใช่พึ่งวินัยคน — รายละเอียดใน [frontend-structure.md §10](./frontend-structure.md#10-enforce-ด้วยเครื่อง)
+
+### 10. ทำไมเริ่มเป็น folder ใน lib ก่อน แล้วค่อยแตกเป็น project
+
+**ดูเหมือน:** ในเมื่อ template มี project type ui-components/ui-state ให้ ทำไมไม่สร้างแยกตั้งแต่แรก
+
+**กันอะไร:** กัน over-engineering — แยก project มีต้นทุน (build/test/export/version แยก) ที่ไม่คุ้มถ้าของข้างในใช้ที่เดียว เริ่มเป็น folder ใน lib ของ web ที่ใช้ก่อน แล้วยกเป็น project เมื่อมี **consumer ตัวที่ 2** จริง เพราะตั้งชื่อ folder = ชื่อ project type ตั้งแต่แรก การ promote จึงเป็นแค่ "ย้าย" ไม่ใช่ "rewrite"
+
+**ถ้าไม่มี:** ได้ project เปล่าๆ เต็มไปหมดที่มีของตัวเดียวข้างใน — จ่ายค่าความซับซ้อนโดยไม่ได้ประโยชน์ ตรงกับนิยาม over-engineering ที่เอกสารนี้พยายามกัน
+
+---
+
 ## หลักการตัดสินใจ (ใช้เวลาเจอของที่ "ดูเยอะ")
 
 เวลาเจอความซับซ้อนในนี้แล้วสงสัยว่าจำเป็นไหม ถามตัวเอง 3 ข้อ:
@@ -88,13 +126,15 @@
 
 ## เส้นที่ห้ามข้าม (ถ้าข้าม โครงสร้างพังเงียบ)
 
-แม้จะรู้สึกว่าเยอะ แต่ 5 ข้อนี้คือสิ่งที่ทำให้ทุกอย่างข้างบนทำงาน ห้าม bypass:
+แม้จะรู้สึกว่าเยอะ แต่ข้อเหล่านี้คือสิ่งที่ทำให้ทุกอย่างข้างบนทำงาน ห้าม bypass:
 
 1. dependency ไหลทางเดียวเสมอ — ห้าม import ย้อนหรือข้าม layer (รับผ่าน DI ที่ app)
 2. ห้ามมี logic ใน share-core / ห้าม core มี dependencies
 3. `development` ต้องเป็น key แรกของทุก exports entry
-4. `react`/`react-dom` เป็น `peerDependencies` ใน UI lib เสมอ (ไม่งั้น dual-React)
+4. `react`/`react-dom` (และ vendor ของ state เช่น `react-redux`) เป็น `peerDependencies` ใน UI lib เสมอ (ไม่งั้น dual-React/redux)
 5. dist จาก build มือ ห้ามเอาไป deploy/publish — ใช้ `nx release` / `build:all`
+6. **feature ห้าม import feature อื่น** — ของที่ใช้ร่วมต้องยกขึ้น shared (enforce ด้วย Nx tags)
+7. **`createStore`/`configureStore` ห้ามอยู่ใน lib** — lib เก็บแค่ slice/reducer/action, store สร้างที่ consumer
 
 ## สรุปให้ทีม
 
