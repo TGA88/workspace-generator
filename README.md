@@ -11,32 +11,22 @@ script to create pnpm workspace boilerplate
 ## Export Strategy & Build System (v1.4)
 
 > README ฉบับก่อนหน้า: [README_v1_3.md](./README_v1_3.md)
+> 📖 **เอกสารฉบับเต็ม (กลไก + config ครบทุกจุด + troubleshooting): [docs/export-strategy.md](./docs/export-strategy.md)**
 
-ตั้งแต่ v1.4 ทุก lib template ใช้ **dual-condition exports**: เพิ่ม custom condition `development` ชี้ไปที่ source ไว้บนสุดของทุก exports entry แล้วเปิด condition นี้เฉพาะ dev tooling (tsc ผ่าน `customConditions` ใน tsconfig base, jest ผ่าน `customExportConditions`) ส่วน Node runtime / release ยังใช้ `dist` ตามเดิมทุกประการ
+ตั้งแต่ v1.4 ทุก lib template ใช้ **dual-condition exports** เพื่อให้ **lint / test / build รันได้ทันทีโดยไม่ต้อง build local dependency ก่อน** แต่ production ยังใช้ `dist` ตามเดิมทุกประการ — ทำได้โดยเพิ่ม custom condition `development` ชี้ไปที่ source ไว้บนสุดของทุก exports entry แล้วเปิด condition นี้เฉพาะ dev tooling
 
 ```jsonc
 "exports": {
   "./command/*": {
-    "development": "./src/command/*/index.ts",   // dev tooling เห็น src ตรงๆ (ต้องอยู่บนสุดเสมอ)
-    "import": "./dist/command/*/index.mjs",      // runtime/release ใช้ dist เหมือนเดิม
+    "development": "./src/command/*/index.ts",   // dev tooling (tsc/jest) เห็น src ตรงๆ — ต้องอยู่บนสุดเสมอ
+    "import": "./dist/command/*/index.mjs",      // Node runtime / release ใช้ dist เหมือนเดิม
     "require": "./dist/command/*/index.js",
     "types": "./dist/command/*/index.d.ts"
   }
 }
 ```
 
-**ผลที่ได้**
-- `lint` / `test` ของทุก project รันได้ทันทีโดยไม่ต้อง build dependency ก่อน (nx.json เอา `^build` ออกจาก lint/test/build แล้ว)
-- `build` ของ lib ไม่พึ่ง dist ของกัน (tsup externalize workspace deps + dts อ่าน type จาก src) จึง build ขนานกันได้เต็มที่
-- `build` ของ **app** ยังมี `dependsOn: ["^build"]` (override ใน package.json ของ app) เพราะ runtime artifact ต้องใช้ dist ของ lib — `serve`/`release` ก็เช่นกัน
-- lib เพิ่ม `"sideEffects": false` และปิด `minify` (consumer จะ bundle+minify เองตอน release) → build เร็วขึ้นและ consumer tree-shake ได้
-
-**กติกาที่ต้องรักษา**
-1. `development` ต้องเป็น key แรกของทุก exports entry (condition แรกที่ match ชนะ)
-2. เพิ่ม action ใหม่ต้องใส่ exports entry ให้ครบทั้ง development/import/require/types
-3. dependency ระหว่าง lib ต้องประกาศใน `dependencies` แบบ `workspace:^` เสมอ
-4. jest config ฝั่ง jsdom ห้ามลบ `''` ออกจาก `customExportConditions` (msw/node ต้องใช้ default condition)
-5. dist จากการ build มือทีละ project ห้ามนำไป deploy/publish — ใช้ `nx release` หรือ `build:all` เท่านั้น
+condition `development` ถูกเปิดที่ 3 จุด: tsc ผ่าน `customConditions` (tsconfig base), jest ผ่าน `customExportConditions`, และ nx.json เอา `^build` ออกจาก lint/test/build (คงไว้ที่ serve/release ส่วน app override `^build` กลับใน package.json ของตัวเอง) — รายละเอียดว่าแต่ละจุดทำงานยังไง พร้อมตัวอย่าง config เต็ม, ตาราง nx targets, กฎที่ต้องรักษา และ troubleshooting อยู่ใน [docs/export-strategy.md](./docs/export-strategy.md)
 
 **Migrate workspace เดิม (สร้างด้วย version < 1.4)**
 ```bash
