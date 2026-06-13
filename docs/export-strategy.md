@@ -187,6 +187,8 @@ testEnvironmentOptions: { customExportConditions: ['development', ''] }
 
 resolver จะลองไฟล์ตามลำดับใน array — `.tsx` ก่อน ถ้าไม่เจอค่อย `.ts`
 
+> เรื่องการจัดโครง frontend lib (feature / ui-components / ui-functions / ui-state-&lt;vendor&gt;), กฎ peer dependency ของ UI lib, boundary และ promotion ดู [frontend-structure.md](./frontend-structure.md) — ไฟล์นี้เน้นเฉพาะกลไก export/resolution
+
 ### ตัวอย่าง nx.json (ส่วน targetDefaults)
 
 ```jsonc
