@@ -6,7 +6,7 @@ import { TELEMETRY_CONTEXT_KEYS } from '@inh-lib/unified-telemetry-core';
 import { PrismaClient, getPrismaInstance } from '@__WS__/__DATA__-store-prisma';
 import { Repository } from '@__WS__/__API__-core/__DOMAIN_API__/command/create-__DOMAIN__';
 import { Create__Domain__Repo } from '@__WS__/__DATA__-store-prisma/__DOMAIN_API__/command/create-__DOMAIN__';
-import { __DOMAINUP___API_CONTEXT_KEY } from '@__WS__/__API__-core';
+import { __DOMAINUP___API_CONTEXT_KEY } from '@__WS__/__API__-core/__DOMAIN_API__';
 import { create__Domain__Endpoint } from '@__WS__/__API__-service/__DOMAIN_API__/command/create-__DOMAIN__';
 
 // composition root: inject repository (prisma) เข้า DI registry ก่อนเรียก endpoint

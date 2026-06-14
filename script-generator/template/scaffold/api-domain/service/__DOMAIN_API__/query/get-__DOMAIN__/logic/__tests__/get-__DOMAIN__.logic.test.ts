@@ -1,5 +1,5 @@
 import { ResultV2 as Result, CommonFailures } from '@inh-lib/common';
-import { __DOMAINUP___API_CONTEXT_KEY } from '@__WS__/__API__-core';
+import { __DOMAINUP___API_CONTEXT_KEY } from '@__WS__/__API__-core/__DOMAIN_API__';
 import { setupProcess } from '../routeSteps.logic';
 import { processGet__Domain__InRepoHandler } from '../routeSteps.logic';
 import { buildContext } from '../../../../command/create-__DOMAIN__/logic/__tests__/test-helper';

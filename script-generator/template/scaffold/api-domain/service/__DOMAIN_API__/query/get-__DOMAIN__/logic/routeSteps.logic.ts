@@ -6,7 +6,7 @@ import { ZodType } from 'zod';
 
 import { InputDTO, OutputDTO, inputDTO } from '../dto';
 import { Repository } from '@__WS__/__API__-core/__DOMAIN_API__/query/get-__DOMAIN__';
-import { __DOMAINUP___API_CONTEXT_KEY } from '@__WS__/__API__-core';
+import { __DOMAINUP___API_CONTEXT_KEY } from '@__WS__/__API__-core/__DOMAIN_API__';
 import { createMapReqToInputPreHandler } from '../../../../shared/pre-handler/create-map-req-to-input.pre-handler';
 import { authGuardPreHandler } from '../../../../shared/pre-handler/auth-guard.pre-handler';
 

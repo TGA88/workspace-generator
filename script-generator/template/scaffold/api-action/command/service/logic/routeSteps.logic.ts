@@ -9,7 +9,7 @@ import {
   Repository,
   __Verb____Domain__Input,
 } from '@__WS__/__API__-core/__domain__-api/command/__verb__-__domain__';
-import { __DOMAINUP___API_CONTEXT_KEY } from '@__WS__/__API__-core';
+import { __DOMAINUP___API_CONTEXT_KEY } from '@__WS__/__API__-core/__DOMAIN_API__';
 import { createMapReqToInputPreHandler } from '../../../../shared/pre-handler/create-map-req-to-input.pre-handler';
 import { authGuardPreHandler } from '../../../../shared/pre-handler/auth-guard.pre-handler';
 import { validate__Verb____Domain__Input } from './business.logic';
