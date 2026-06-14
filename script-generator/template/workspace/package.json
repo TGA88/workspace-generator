@@ -7,7 +7,7 @@
   "author": "",
   "license": "ISC",
   "engines": {
-   "node": ">=22.16.0 <25.0.0"
+    "node": ">=22.16.0 <25.0.0"
   },
   "packageManager": "pnpm@10.4.1+sha256.4b702887986995933d4300836b04d6d02a43bc72b52e4f7e93a4ca608b959197",
   "scripts": {
@@ -47,7 +47,7 @@
     "format:all": "nx run-many --target=format --all",
     "format-check:all": "nx run-many --target=format-check --all",
     "test": "nx test",
-        "// ==================== 🗄️ Cache Management (Simplified) ====================": "",
+    "// ==================== 🗄️ Cache Management (Simplified) ====================": "",
     "// === 📊 Daily Use (Main Commands) ===": "",
     "cache:check": "./tools/nx-script/cache-utilities.sh validate-size",
     "cache:stats": "./tools/nx-script/cache-stats-v2.sh",
@@ -107,9 +107,9 @@
     "cache:remote:reset": "./tools/remote-cache/backup.sh reset",
     "cache:full:backup": "bash tools/remote-cache/cache-helper.sh full-backup $(git rev-parse --short HEAD)",
     "cache:full:restore": "bash tools/remote-cache/cache-helper.sh full-restore $(git rev-parse --short HEAD)",
-    "cache:remote:help": "bash tools/remote-cache/cache-helper.sh help"
+    "cache:remote:help": "bash tools/remote-cache/cache-helper.sh help",
+    "gen:api-domain": "bash ./tools/gen-api-domain.sh"
   },
-
   "devDependencies": {
     "@changesets/cli": "^2.27.5",
     "@eslint-community/eslint-plugin-eslint-comments": "^4.4.1",

@@ -425,3 +425,20 @@ rm -rf **/node_modules
 
 - ### ปัญหา react-pdf-veiewer installation
 https://stackoverflow.com/questions/76934122/canvas-node-error-during-installation-of-react-pdf-viewer-package-with-next-js
+### scaffolding: เพิ่ม API domain (unified-route pattern)
+
+สร้าง domain ใหม่ (command `create-<domain>` + query `get-<domain>`) เข้า shared-api package ที่มีอยู่ — ครบ core/service/client + อัปเดต exports ให้อัตโนมัติ
+
+แบบ npm script (แนะนำ — รันจาก `workspaces/node-app`):
+```bash
+pnpm gen:api-domain <scope> <api-pkg> <domain>
+# เช่น
+pnpm gen:api-domain shared-webapi shared-api order
+```
+> ต้อง clone `workspace-generator` ไว้ระดับเดียวกับ workspace (หรือ set `WORKSPACE_GENERATOR_DIR`)
+
+หรือเรียก bash ตรงๆ (จาก dir แม่ที่มี workspace + generator เป็น sibling):
+```bash
+bash workspace-generator/script-generator/new-api-domain.sh <workspace> <scope> <api-pkg> <domain>
+```
+หลัง gen แล้ว: เพิ่ม repo ฝั่ง data-layer (store-prisma) + route ฝั่ง webapi เพื่อ wire ให้ครบ
