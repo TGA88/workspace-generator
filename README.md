@@ -41,10 +41,6 @@ node workspace-generator/script-generator/migrate/apply-export-strategy.mjs <pat
 ### create workspace
 ตัวอย่างการ สร้าง workspace
 ```bash
-# pwd is folder workspace-template
-# bash script-generator/template/create-workspace.sh [parameter1:workspace-folder] [programing-type]
-bash script-generator/create-workspace.sh gu-example-system node-app
-
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/create-workspace.sh gu-example-system node-app
 
@@ -53,10 +49,6 @@ bash workspace-generator/script-generator/create-workspace.sh gu-example-system 
 คือ การupdate command script ใน root package.json และ update base confg ต่างๆ เช่น tsconfig,jest,lint เป็นต้น
 
 ```bash
-# pwd is folder workspace-template
-# bash script-generator/template/create-workspace.sh [parameter1:workspace-folder] [programing-type]
-bash script-generator/update-workspace-config.sh gu-example-system node-app
-
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/update-workspace-config.sh gu-example-system node-app
 
@@ -66,9 +58,6 @@ bash workspace-generator/script-generator/update-workspace-config.sh gu-example-
 **เมื่อ Initial package แล้วให้ update package ตาม section update workspace configด้วย**
 ตัวอย่างการ init system-workspace เพื่อ intall and config tools 
 ```bash
-# pwd is folder workspace-template
-bash script-generator/init-system.sh gu-example-system node-app
-
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/init-system.sh gu-example-system node-app
 
@@ -82,9 +71,6 @@ bash workspace-generator/script-generator/init-system.sh gu-example-system node-
 **หลังจาก สร้างมาแล้วก่อน สั่ง run ให้สั่ง build ก่อน 1ครั้ง เพื่อติดตั้ง libs ที่เกี่ยวข้อง**
 ตัวอย่างการ generate project type storybook-host
 ```bash
-# pwd is folder workspace-template
-bash script-generator/new-storybook.sh gu-example-system example
-
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/new-storybook.sh gu-example-system example
 
@@ -93,9 +79,6 @@ bash workspace-generator/script-generator/new-storybook.sh gu-example-system exa
 ### Update
 ตัวอย่างการ update project storybook-host เพื่อ update reference lib feature
 ```bash
-# pwd is folder workspace-template
-bash script-generator/update-sb.sh gu-example-system example
-
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/update-sb.sh gu-example-system example
 
@@ -113,7 +96,6 @@ bash workspace-generator/script-generator/update-sb.sh gu-example-system example
 "trigger:release": "echo 'storybook-host-shared' >> ../../release-app/changed_unsort.txt"
 ```
 
-
 ---
 
 # System Workspace
@@ -124,9 +106,6 @@ bash workspace-generator/script-generator/update-sb.sh gu-example-system example
 **param2=ชื่อ webproject** เช่น demo-exm-web
 ตัวอย่างการ generate project type web nextjs
 ```bash
-# pwd is folder workspace-template
-bash script-generator/new-web.sh gu-example-system demo-exm-web
-
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/new-web.sh gu-example-system demo-exm-web
 
@@ -147,11 +126,6 @@ bash workspace-generator/script-generator/new-web.sh gu-example-system demo-exm-
 **param2=ชื่อappname**
 
 ```bash
-# สำหรับ test
-bash script-generator/new-frontend-lib-modules.sh gu-example-system demo-exm-web
-```
-
-```bash
 bash workspace-generator/script-generator/new-frontend-lib-modules.sh gu-example-system demo-exm-web
 ```
 
@@ -165,14 +139,10 @@ bash workspace-generator/script-generator/new-frontend-lib-modules.sh gu-example
 **param2=ชื่อ fetaure** เช่น feature-funny
 **param3=ชื่อ scope  เช่น demo-funny-web แต่ถ้าไม่ใส่ จะ default เป็น shared-web**
 ```bash
-# pwd is folder workspace-template
-bash script-generator/new-feature.sh gu-example-system feature-funny
-
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/new-feature.sh gu-example-system feature-funny
 
 ```
-
 
 ### ui-components
 เป็น project ที่ component ,customhooks ที่เอาไว้แชร์ เฉพาะภายใน scope ของ system worksapce เท่านั้น ซึ่งจะไม่ deploy ขึ้น npm
@@ -183,9 +153,6 @@ bash workspace-generator/script-generator/new-feature.sh gu-example-system featu
 
 **ตัวอย่าง**
 ```bash
-# pwd is folder workspace-template
-bash script-generator/new-feature.sh gu-example-system 
-
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/new-feature.sh gu-example-system 
 ```
@@ -197,16 +164,12 @@ bash workspace-generator/script-generator/new-feature.sh gu-example-system
         |-- ui-components # this is project. package name is @<system-name>/ui-components
 ```
 
-
 ### ui-state-redux
 ตัวอย่างการ generate project type ui-state
 **param1=ชื่อ workspace** เช่น gu-example-system
 **param2=ชื่อ ui-state** เช่น ui-state-redux หรือ ui-state-zudstand ตามprovider ที่ใช้
 **param3=ชื่อ scope  เช่น demo-funny-web แต่ถ้าไม่ใส่ จะ default เป็น shared-web**
 ```bash
-# pwd is folder workspace-template
-bash script-generator/new-feature.sh gu-example-system ui-state-redux
-
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/new-feature.sh gu-example-system ui-state-redux
 
@@ -217,7 +180,6 @@ bash workspace-generator/script-generator/new-feature.sh gu-example-system ui-st
 
 <br/>
 
-
 ### web-config
 
 เป็น project ที่ config สำหรับ webproject และ เอาไว้ share ให้ feature project หรือ web,storybook project ใช้งานด้วย
@@ -227,9 +189,6 @@ bash workspace-generator/script-generator/new-feature.sh gu-example-system ui-st
 **param1=ชื่อ workspace**
 **param2=ชื่อ scopename** เช่น demo-exm-web หรือ ถ้าไม่ใส่จะเป็น share-web
 ```bash
-# pwd is folder workspace-template
-bash script-generator/new-webconfig.sh gu-example-system  demo-exm-web
-
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/new-webconfig.sh gu-example-system  demo-exm-web
 
@@ -257,9 +216,6 @@ bash workspace-generator/script-generator/new-webconfig.sh gu-example-system  de
 **param2=ชื่อ api**
 **param3=ชื่อ scope  เช่น demo-funny-webapi แต่ถ้าไม่ใส่ จะ default เป็น shared-webapi**
 ```bash
-# pwd is folder workspace-template
-bash script-generator/new-apicore.sh gu-example-system sample-api
-
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/new-apicore.sh gu-example-system sample-api
 
@@ -273,10 +229,6 @@ bash workspace-generator/script-generator/new-apicore.sh gu-example-system sampl
 **param3=ชื่อ scope  เช่น demo-funny-webapi แต่ถ้าไม่ใส่ จะ default เป็น shared-webapi**
 
 ```bash
-
-# pwd is folder workspace-template
-bash script-generator/new-apiservice.sh gu-example-system sample-api
-
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/new-apiservice.sh gu-example-system sample-api
 
@@ -289,12 +241,7 @@ bash workspace-generator/script-generator/new-apiservice.sh gu-example-system sa
 **param2=ชื่อ api** ช่วย suffix ด้วย -api ด้วย
 **param3=ชื่อ scope  เช่น demo-funny-webapi แต่ถ้าไม่ใส่ จะ default เป็น shared-webapi**
 
-
 ```bash
-
-# pwd is folder workspace-template
-bash script-generator/new-apiclient.sh gu-example-system sample-api
-
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/new-apiclient.sh gu-example-system sample-api
 
@@ -307,10 +254,6 @@ bash workspace-generator/script-generator/new-apiclient.sh gu-example-system sam
 **param2=ชื่อ database schema**
 **param3=ชื่อ scope  เช่น demo-funny-webapi แต่ถ้าไม่ใส่ จะ default เป็น shared-webapi**
 ```bash
-
-# pwd is folder workspace-template
-bash script-generator/new-storeprisma.sh gu-example-system demo
-
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/new-storeprisma.sh gu-example-system demo
 
@@ -323,10 +266,7 @@ bash workspace-generator/script-generator/new-storeprisma.sh gu-example-system d
 # param1=ชื่อ workspace
 # param2=ชื่อ projectname เช่น demo-exm-webapi
 
-# pwd is folder workspace-template
-bash script-generator/new-webapi.sh gu-example-system demo-exm-webapi
 # v1.4+: ระบุชื่อ store-prisma เป็น param4 ได้เลย (ไม่ต้องตามแก้ exm-data ใน package.json เอง)
-# bash script-generator/new-webapi.sh gu-example-system demo-exm-webapi "" exm-data
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/new-webapi.sh gu-example-system demo-exm-webapi
@@ -357,9 +297,6 @@ bash workspace-generator/script-generator/new-webapi.sh gu-example-system demo-e
 # param1=ชื่อ workspace
 # param2=ชื่อ project nameที่ต้องการ ควรจะ prefix ด้วย ui-xxx หากไม่ตั้ง จะDefault เป็น ui-common
 
-# pwd is folder workspace-template
-bash script-generator/new-uicommon.sh gu-example-system 
-
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/new-uicommon.sh gu-example-system 
 
@@ -376,9 +313,6 @@ bash workspace-generator/script-generator/new-uicommon.sh gu-example-system
 # param1=ชื่อ workspace
 # param2=ให้กำนดว่า เป็น api หรือ ui ตามต้องการ
 
-# pwd is folder workspace-template
-bash script-generator/new-functions.sh gu-example-system ui
-
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/new-functions.sh gu-example-system ui
 
@@ -387,9 +321,6 @@ bash workspace-generator/script-generator/new-functions.sh gu-example-system ui
 ตัวอย่าง การสร้าง common-functions
 ```bash
 # param1=ชื่อ workspace
-
-# pwd is folder workspace-template
-bash script-generator/new-functions.sh gu-example-system 
 
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/new-functions.sh gu-example-system 
@@ -407,15 +338,11 @@ bash workspace-generator/script-generator/new-functions.sh gu-example-system
 # param1=ชื่อ workspace
 # param2= ชื่อ base-types  ที่ต้องการ
 
-# pwd is folder workspace-template
-bash script-generator/new-basetypes.sh gu-example-system ui-router
-
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/new-basetypes.sh gu-example-system ui-router
 
 ```
 > หลังสร้าง BaseType Project แล้ว ให้ลบ คำสั่ง test ใน package.json ออกให้หมด
-
 
 #### ส่วน การสร้าง implementation Project
 แนะนำให้ใช้ แบบเดียวกันกับ baseTypes แต่ ให้ Clear โครงสร้าง ใน folder src ก่อน และ สร้าง project ได้ตามต้องการ
@@ -455,14 +382,10 @@ pnpm gen:exports
 ### fastify-plugins
 เป็น project ที่ plugin สำหรับ web framework fastify เพื่อเอาไว้ share ให้ project type webapi ใน system-workspace อื่นๆ
 
-
 **param1=ชื่อ workspace** เช่น gu-example-system
 **param2=ชื่อ scope_name** ถ้าต้องการสร้าง project ภายใน scope folder ให้ใส่ค่าเป็น shared-webapi
 
 ```bash
-# pwd is folder workspace-template
-bash script-generator/new-plugin-fastify.sh gu-example-system 
-
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/new-plugin-fastify.sh gu-example-system 
 
@@ -474,14 +397,6 @@ bash workspace-generator/script-generator/new-plugin-fastify.sh gu-example-syste
 - ### วิธีเคลีย package ทั้งหมด เพื่อติดตั้งใหม่
 
 #### บน ubuntu ให้ เปิด globstar ก่อน (บน mac เปิด defaultอยู่แล้ว)
-```bash
-# วิธีที่ 1: เปิดใช้งาน globstar ก่อนใช้คำสั่ง
-shopt -s globstar
-rm -rf **/node_modules
-
-# วิธีที่ 2: ใช้ find แทน (แนะนำวิธีนี้มากกว่า)
-find . -name "node_modules" -type d -prune -exec rm -rf {} +
-```
 
 สั่งลบ package ทั้งหมด
 ```bash
