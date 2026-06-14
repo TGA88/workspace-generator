@@ -7,8 +7,9 @@
 #   SCOPE       = group folder under libs/ e.g. shared-webapi
 #   API_PKG     = api package folder e.g. shared-api  (-> @<WORKSPACE>/<API_PKG>-{core,service,client})
 #   DOMAIN      = domain base (lowercase, no -api) e.g. order  (-> order-api)
+#   [LAYER]     = core|service|client|all (default all) — gen เฉพาะชั้นได้
 set -e
-WORKSPACE=$1; SCOPE=$2; API_PKG=$3; DOMAIN=$4; GENERATOR_DIR=$5
+WORKSPACE=$1; SCOPE=$2; API_PKG=$3; DOMAIN=$4; GENERATOR_DIR=$5; LAYER=${6:-all}
 SYSTEM_DIR='node-app'
 [ -z "$GENERATOR_DIR" ] && { [ -d "workspace-generator" ] && GENERATOR_DIR="workspace-generator" || GENERATOR_DIR="."; }
 for v in WORKSPACE SCOPE API_PKG DOMAIN; do [ -z "${!v}" ] && { echo "Error: $v is required"; exit 1; }; done
@@ -34,6 +35,7 @@ tokenize_file() {
 }
 
 for layer in core service client; do
+  if [ "$LAYER" != "all" ] && [ "$LAYER" != "$layer" ]; then continue; fi
   SRC="$SC/$layer/__DOMAIN_API__"
   DEST="$BASE/$layer/src/${DOMAIN}-api"
   [ -d "$DEST" ] && { echo "  ! $DEST exists, skip $layer"; continue; }
@@ -51,8 +53,10 @@ for layer in core service client; do
 done
 
 # core: export domain registry from root index
+if [ "$LAYER" = "all" ] || [ "$LAYER" = "core" ]; then
 CIDX="$BASE/core/src/index.ts"
 grep -q "'./${DOMAIN}-api'" "$CIDX" 2>/dev/null || echo "export * from './${DOMAIN}-api';" >> "$CIDX"
+fi
 
 # package.json exports for the domain (core/service/client)
 add_exports() {
@@ -67,8 +71,8 @@ add_exports() {
     fs.writeFileSync(f,JSON.stringify(j,null,2));
   ' "$pkg" "$DOMAIN" "$layer"
 }
-add_exports "$BASE/core/package.json" core
-add_exports "$BASE/service/package.json" service
-add_exports "$BASE/client/package.json" client
+if [ "$LAYER" = "all" ] || [ "$LAYER" = "core" ];    then add_exports "$BASE/core/package.json" core; fi
+if [ "$LAYER" = "all" ] || [ "$LAYER" = "service" ]; then add_exports "$BASE/service/package.json" service; fi
+if [ "$LAYER" = "all" ] || [ "$LAYER" = "client" ];  then add_exports "$BASE/client/package.json" client; fi
 
 echo "done: domain ${DOMAIN}-api scaffolded. add a data-layer repo + webapi route to wire it."
