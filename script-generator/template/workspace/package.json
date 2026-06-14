@@ -108,7 +108,8 @@
     "cache:full:backup": "bash tools/remote-cache/cache-helper.sh full-backup $(git rev-parse --short HEAD)",
     "cache:full:restore": "bash tools/remote-cache/cache-helper.sh full-restore $(git rev-parse --short HEAD)",
     "cache:remote:help": "bash tools/remote-cache/cache-helper.sh help",
-    "gen:api-domain": "bash ./tools/gen-api-domain.sh"
+    "gen:api-domain": "bash ./tools/gen-api-domain.sh",
+    "gen:api-wire": "bash ./tools/gen-api-wire.sh"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.5",

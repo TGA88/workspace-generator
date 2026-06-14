@@ -1,0 +1,12 @@
+
+model __Domain__ {
+  id          String   @id @default(uuid())
+  sku         String   @unique
+  name        String
+  price       Float
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("__domain__")
+}
