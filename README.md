@@ -14,6 +14,9 @@ script to create pnpm workspace boilerplate
 > 📖 **เอกสารฉบับเต็ม (กลไก + config ครบทุกจุด + troubleshooting): [docs/export-strategy.md](./docs/export-strategy.md)**
 > 🤔 **ทำไม template ถึง "ดูเยอะ" — เหตุผลเบื้องหลังสำหรับทีม: [docs/why-this-architecture.md](./docs/why-this-architecture.md)**
 > 🎨 **จัดโครง frontend lib (feature / ui-components / ui-functions / ui-state-&lt;vendor&gt;, boundary, promotion): [docs/frontend-structure.md](./docs/frontend-structure.md)**
+> 🧩 **จัดโครง backend API (unified-route: core/service/client + DI + ResultV2 + telemetry, grouped vs promoted): [docs/backend-structure.md](./docs/backend-structure.md)**
+> 🚀 **เพิ่ม backend API ตั้งแต่ศูนย์ (user guide — scaffolding `gen:api-domain` / `gen:api-wire`): [docs/api-scaffolding.user-guide.md](./docs/api-scaffolding.user-guide.md)**
+> 🛠️ **แก้ template/scaffolding ของ generator (developer guide): [docs/api-scaffolding.developer-guide.md](./docs/api-scaffolding.developer-guide.md)**
 
 ตั้งแต่ v1.4 ทุก lib template ใช้ **dual-condition exports** เพื่อให้ **lint / test / build รันได้ทันทีโดยไม่ต้อง build local dependency ก่อน** แต่ production ยังใช้ `dist` ตามเดิมทุกประการ — ทำได้โดยเพิ่ม custom condition `development` ชี้ไปที่ source ไว้บนสุดของทุก exports entry แล้วเปิด condition นี้เฉพาะ dev tooling
 
@@ -209,6 +212,17 @@ bash workspace-generator/script-generator/new-webconfig.sh gu-example-system  de
 
 ---
 ## API Project
+
+> 🧩 **โครง/แนวคิด pattern ใหม่ (unified-route: core/service/client + DI + ResultV2 + telemetry):** [docs/backend-structure.md](./docs/backend-structure.md)
+> 🚀 **วิธีเพิ่ม API ตั้งแต่ศูนย์ (ใช้งานจริง):** [docs/api-scaffolding.user-guide.md](./docs/api-scaffolding.user-guide.md)
+>
+> **Workflow ใหม่ (v1.4+):** คำสั่ง `new-api*.sh` ด้านล่างสร้าง **base package เปล่า** (สะอาด ไม่มีตัวอย่าง bible) — 1 ชุด `shared-api` (core/service/client) เก็บได้หลาย domain แล้ว **เติม domain/endpoint ด้วย scaffolding** จากใน `workspaces/node-app`:
+> ```bash
+> pnpm gen:api-domain shared-webapi shared-api order                                   # slice core/service/client
+> pnpm gen:api-wire   shared-webapi shared-api demo-shop-data demo-shop-webapi order    # repo + route + prisma model
+> ```
+> (รายละเอียด + การแก้ field/logic/migration/test อยู่ใน user guide)
+
 ### API-CORE
 ตัวอย่างการ update project api-core  สำหรับเก็บ abstract layer เช่น interface,type,repository,และ BusinessLogic ที่ต้องการ Share ระหว่าง DataLayer และ ServiceLayer
 
@@ -427,18 +441,30 @@ rm -rf **/node_modules
 https://stackoverflow.com/questions/76934122/canvas-node-error-during-installation-of-react-pdf-viewer-package-with-next-js
 ### scaffolding: เพิ่ม API domain (unified-route pattern)
 
-สร้าง domain ใหม่ (command `create-<domain>` + query `get-<domain>`) เข้า shared-api package ที่มีอยู่ — ครบ core/service/client + อัปเดต exports ให้อัตโนมัติ
+> 📖 **คู่มือเต็ม (แก้ field/logic/migration/test + ปัญหาที่เจอบ่อย):** [docs/api-scaffolding.user-guide.md](./docs/api-scaffolding.user-guide.md)
 
-แบบ npm script (แนะนำ — รันจาก `workspaces/node-app`):
+มี 3 คำสั่ง (รันจาก `workspaces/node-app`) — **ไม่ใส่ param ก็ได้ จะถามทีละค่า (TUI)**:
+
 ```bash
-pnpm gen:api-domain <scope> <api-pkg> <domain>
-# เช่น
-pnpm gen:api-domain shared-webapi shared-api order
+# 1) slice: core+service+client ของ domain (command create-<domain> + query get-<domain>) + อัปเดต exports/index
+pnpm gen:api-domain <scope> <api-pkg> <domain> [layer]
+#   เช่น: pnpm gen:api-domain shared-webapi shared-api order
+#   [layer] = core|service|client|all (default all) — gen เฉพาะชั้นได้
+
+# 2) wire: data-layer repo (store-prisma) + webapi route + prisma model + deps
+pnpm gen:api-wire <scope> <api-pkg> <data-pkg> <webapi-app> <domain>
+#   เช่น: pnpm gen:api-wire shared-webapi shared-api demo-shop-data demo-shop-webapi order
+
+# 3) action: เพิ่ม action เดี่ยว (เช่น update/list) เข้า domain เดิม + เพิ่ม DI key อัตโนมัติ
+pnpm gen:api-action <scope> <api-pkg> <domain> <command|query> <verb> [layer]
+#   เช่น: pnpm gen:api-action shared-webapi shared-api order command update
 ```
 > ต้อง clone `workspace-generator` ไว้ระดับเดียวกับ workspace (หรือ set `WORKSPACE_GENERATOR_DIR`)
 
 หรือเรียก bash ตรงๆ (จาก dir แม่ที่มี workspace + generator เป็น sibling):
 ```bash
-bash workspace-generator/script-generator/new-api-domain.sh <workspace> <scope> <api-pkg> <domain>
+bash workspace-generator/script-generator/new-api-domain.sh <workspace> <scope> <api-pkg> <domain> [generator-dir] [layer]
+bash workspace-generator/script-generator/new-api-wire.sh   <workspace> <scope> <api-pkg> <data-pkg> <webapi-app> <domain>
+bash workspace-generator/script-generator/new-api-action.sh <workspace> <scope> <api-pkg> <domain> <command|query> <verb>
 ```
-หลัง gen แล้ว: เพิ่ม repo ฝั่ง data-layer (store-prisma) + route ฝั่ง webapi เพื่อ wire ให้ครบ
+หลัง wire แล้ว: `pnpm prisma:generate` + `pnpm gen:up-script` (migration) ที่ store-prisma แล้วทดสอบด้วย `make test` (ดู user guide)
