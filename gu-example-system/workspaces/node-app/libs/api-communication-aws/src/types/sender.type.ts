@@ -1,1 +1,0 @@
-export type AxPublisHealthCheckFn = <R>()=> Promise<R>;

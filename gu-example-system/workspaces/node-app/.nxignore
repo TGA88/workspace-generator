@@ -1,4 +1,0 @@
-# nx will ignore following below. so to solve problem nx confused project.json file
-#  when storybook build 
-**/storybook-static
-**/dist/apps

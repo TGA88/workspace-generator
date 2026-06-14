@@ -160,7 +160,7 @@ model MAS_COUNTRY_FARM {
   PROVINCE                                String?
   POSTAL_CODE                             String?
   DESC                                    String?
-  CPFYN                                   String?
+  FLAG_YN                                   String?
   ZONE                                    String?
   CON1                                    String?
   CON2                                    String?
