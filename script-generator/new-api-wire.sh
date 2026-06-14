@@ -6,6 +6,8 @@
 #   DATA_PKG    = data package folder (contains store-prisma) e.g. demo-shop-data
 #   WEBAPI_APP  = webapi app folder (contains mcs-fastify) e.g. demo-shop-webapi
 set -e
+# portable in-place sed: GNU = 'sed -i', BSD/macOS = 'sed -i \'\''
+sedi() { if sed --version >/dev/null 2>&1; then sed -i "$@"; else sed -i '' "$@"; fi; }
 WORKSPACE=$1; SCOPE=$2; API_PKG=$3; DATA_PKG=$4; WEBAPI_APP=$5; DOMAIN=$6; GENERATOR_DIR=$7
 SYSTEM_DIR='node-app'
 [ -z "$GENERATOR_DIR" ] && { [ -d "workspace-generator" ] && GENERATOR_DIR="workspace-generator" || GENERATOR_DIR="."; }
@@ -18,7 +20,7 @@ if [ -z "${WEBAPI_APP}" ]; then read -rp "webapi app (เช่น demo-shop-web
 if [ -z "${DOMAIN}" ]; then read -rp "domain (เช่น order): " DOMAIN; fi
 for v in WORKSPACE SCOPE API_PKG DATA_PKG WEBAPI_APP DOMAIN; do [ -z "${!v}" ] && { echo "Error: $v is required"; exit 1; }; done
 
-Domain="$(echo "$DOMAIN" | sed -E 's/(^|-)([a-z])/\U\2/g')"
+Domain="$(echo "$DOMAIN" | awk -F- '{r="";for(i=1;i<=NF;i++)r=r toupper(substr($i,1,1)) substr($i,2);print r}')"
 DOMAINUP="$(echo "$DOMAIN" | tr 'a-z-' 'A-Z_')"
 SC="$GENERATOR_DIR/script-generator/template/scaffold/api-wire"
 NA="$WORKSPACE/workspaces/$SYSTEM_DIR"
@@ -26,7 +28,7 @@ STORE="$NA/libs/$SCOPE/$DATA_PKG/store-prisma"
 WEBAPI="$NA/apps/$WEBAPI_APP/mcs-fastify"
 
 tok() {
-  sed -i \
+  sedi \
     -e "s/__DOMAIN_API__/${DOMAIN}-api/g" -e "s/__DOMAINUP__/${DOMAINUP}/g" \
     -e "s/__Domain__/${Domain}/g" -e "s/__domain__/${DOMAIN}/g" -e "s/__DOMAIN__/${DOMAIN}/g" \
     -e "s/@__WS__/@${WORKSPACE}/g" -e "s/__API__/${API_PKG}/g" -e "s/__DATA__/${DATA_PKG}/g" "$1"
@@ -55,7 +57,7 @@ done
 # ---- prisma model (append if absent) ----
 SCHEMA="$STORE/prisma/schema.prisma"
 if grep -q "model ${Domain} " "$SCHEMA" 2>/dev/null; then echo "  ! model ${Domain} exists, skip"; else
-  tmp="$(mktemp)"; cp "$SC/prisma/model.snippet" "$tmp"; tok "$tmp"; cat "$tmp" >> "$SCHEMA"; rm "$tmp"
+  tmp="$(mktemp "${TMPDIR:-/tmp}/apiwire.XXXXXX")"; cp "$SC/prisma/model.snippet" "$tmp"; tok "$tmp"; cat "$tmp" >> "$SCHEMA"; rm "$tmp"
   echo "  + prisma model ${Domain} (run: pnpm prisma:generate && pnpm gen:up-script)"
 fi
 

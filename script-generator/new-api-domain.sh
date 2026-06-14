@@ -9,6 +9,8 @@
 #   DOMAIN      = domain base (lowercase, no -api) e.g. order  (-> order-api)
 #   [LAYER]     = core|service|client|all (default all) — gen เฉพาะชั้นได้
 set -e
+# portable in-place sed: GNU = 'sed -i', BSD/macOS = 'sed -i \'\''
+sedi() { if sed --version >/dev/null 2>&1; then sed -i "$@"; else sed -i '' "$@"; fi; }
 WORKSPACE=$1; SCOPE=$2; API_PKG=$3; DOMAIN=$4; GENERATOR_DIR=$5; LAYER=${6:-all}
 SYSTEM_DIR='node-app'
 [ -z "$GENERATOR_DIR" ] && { [ -d "workspace-generator" ] && GENERATOR_DIR="workspace-generator" || GENERATOR_DIR="."; }
@@ -20,7 +22,7 @@ if [ -z "${DOMAIN}" ]; then read -rp "domain (เช่น order): " DOMAIN; fi
 for v in WORKSPACE SCOPE API_PKG DOMAIN; do [ -z "${!v}" ] && { echo "Error: $v is required"; exit 1; }; done
 
 # derive case variants
-Domain="$(echo "$DOMAIN" | sed -E 's/(^|-)([a-z])/\U\2/g')"   # order -> Order, order-item -> OrderItem
+Domain="$(echo "$DOMAIN" | awk -F- '{r="";for(i=1;i<=NF;i++)r=r toupper(substr($i,1,1)) substr($i,2);print r}')"   # order -> Order, order-item -> OrderItem
 DOMAINUP="$(echo "$DOMAIN" | tr 'a-z-' 'A-Z_')"               # order -> ORDER, order-item -> ORDER_ITEM
 
 SC="$GENERATOR_DIR/script-generator/template/scaffold/api-domain"
@@ -28,7 +30,7 @@ BASE="$WORKSPACE/workspaces/$SYSTEM_DIR/libs/$SCOPE/$API_PKG"
 echo "scaffold domain '$DOMAIN-api' (Domain=$Domain UPPER=$DOMAINUP) into $BASE/{core,service,client}"
 
 tokenize_file() {
-  sed -i \
+  sedi \
     -e "s/__DOMAIN_API__/${DOMAIN}-api/g" \
     -e "s/__DOMAINUP__/${DOMAINUP}/g" \
     -e "s/__Domain__/${Domain}/g" \

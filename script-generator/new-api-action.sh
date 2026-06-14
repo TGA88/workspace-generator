@@ -4,6 +4,8 @@
 #   VERB    = action verb e.g. update, delete, list  (action folder = <verb>-<domain>)
 #   [LAYER] = core|service|client|all (default all)
 set -e
+# portable in-place sed: GNU = 'sed -i', BSD/macOS = 'sed -i \'\''
+sedi() { if sed --version >/dev/null 2>&1; then sed -i "$@"; else sed -i '' "$@"; fi; }
 WORKSPACE=$1; SCOPE=$2; API_PKG=$3; DOMAIN=$4; TYPE=$5; VERB=$6; GENERATOR_DIR=$7; LAYER=${8:-all}
 SYSTEM_DIR='node-app'
 [ -z "$GENERATOR_DIR" ] && { [ -d "workspace-generator" ] && GENERATOR_DIR="workspace-generator" || GENERATOR_DIR="."; }
@@ -17,15 +19,15 @@ if [ -z "${VERB}" ]; then read -rp "verb (เช่น update, delete, list): " 
 for v in WORKSPACE SCOPE API_PKG DOMAIN TYPE VERB; do [ -z "${!v}" ] && { echo "Error: $v is required"; exit 1; }; done
 [ "$TYPE" != "command" ] && [ "$TYPE" != "query" ] && { echo "Error: TYPE ต้องเป็น command หรือ query"; exit 1; }
 
-Domain="$(echo "$DOMAIN" | sed -E 's/(^|-)([a-z])/\U\2/g')"; DOMAINUP="$(echo "$DOMAIN" | tr 'a-z-' 'A-Z_')"
-Verb="$(echo "$VERB" | sed -E 's/(^|-)([a-z])/\U\2/g')"; VERBUP="$(echo "$VERB" | tr 'a-z-' 'A-Z_')"
+Domain="$(echo "$DOMAIN" | awk -F- '{r="";for(i=1;i<=NF;i++)r=r toupper(substr($i,1,1)) substr($i,2);print r}')"; DOMAINUP="$(echo "$DOMAIN" | tr 'a-z-' 'A-Z_')"
+Verb="$(echo "$VERB" | awk -F- '{r="";for(i=1;i<=NF;i++)r=r toupper(substr($i,1,1)) substr($i,2);print r}')"; VERBUP="$(echo "$VERB" | tr 'a-z-' 'A-Z_')"
 SC="$GENERATOR_DIR/script-generator/template/scaffold/api-action/$TYPE"
 BASE="$WORKSPACE/workspaces/$SYSTEM_DIR/libs/$SCOPE/$API_PKG"
 ACTION="${VERB}-${DOMAIN}"
 echo "scaffold action '$ACTION' ($TYPE) into ${DOMAIN}-api  [Verb=$Verb Domain=$Domain]"
 
 tok() {
-  sed -i \
+  sedi \
     -e "s/__VERBUP__/${VERBUP}/g" -e "s/__Verb__/${Verb}/g" -e "s/__verb__/${VERB}/g" \
     -e "s/__DOMAINUP__/${DOMAINUP}/g" -e "s/__Domain__/${Domain}/g" -e "s/__domain__/${DOMAIN}/g" \
     -e "s/__REPO_KEY__/REPO_${VERBUP}_${DOMAINUP}/g" \
