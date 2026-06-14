@@ -15,8 +15,9 @@
 - [6. State management (ui-state-vendor)](#6-state-management-ui-state-vendor)
 - [7. web-config](#7-web-config)
 - [8. Dependency rules (peer ไม่ใช่ optional)](#8-dependency-rules-peer-ไม่ใช่-optional)
-- [9. Promotion: ยก folder → project](#9-promotion-ยก-folder--project)
-- [10. Enforce ด้วยเครื่อง](#10-enforce-ด้วยเครื่อง)
+- [9. sideEffects กับ CSS — กับดักที่ทำ style หาย](#9-sideeffects-กับ-css--กับดักที่ทำ-style-หาย)
+- [10. Promotion: ยก folder → project](#10-promotion-ยก-folder--project)
+- [11. Enforce ด้วยเครื่อง](#11-enforce-ด้วยเครื่อง)
 
 ---
 
@@ -188,7 +189,51 @@ frontend lib ที่ให้คนอื่นใช้ → dependency ขอ
 
 ---
 
-## 9. Promotion: ยก folder → project
+## 9. sideEffects กับ CSS — กับดักที่ทำ style หาย
+
+field `sideEffects` ใน package.json บอก bundler ว่า "ไฟล์ในแพ็กเกจนี้มี side effect ไหม" — side effect = import แล้วเกิดผลข้างเคียงนอกเหนือจากการ export ค่า
+
+**กฎตามประเภท lib:**
+
+| lib | sideEffects | เหตุผล |
+|---|---|---|
+| backend (api-*, store-prisma, functions, base-types) | `false` | ไม่มี CSS — tree-shake ได้เต็มที่ |
+| **frontend (features, ui-components)** | `["**/*.css", "**/*.scss"]` | มี CSS import ที่ห้ามโดน tree-shake |
+
+### ทำไม `false` ทำ CSS หาย
+
+CSS import เป็น **side-effect ล้วนๆ** — ไม่ export อะไร จุดประสงค์เดียวคือ "ฉีด style":
+
+```ts
+import './button.css'   // ไม่มี binding ออกมา — มีไว้เพื่อ side effect (ฉีด style) เท่านั้น
+```
+
+ตั้ง `sideEffects: false` = บอก bundler ว่า "ทุกไฟล์ปลอดภัย ถ้า export ไม่ถูกใช้ก็ลบได้" → bundler เห็น `import './button.css'` ไม่มีใคร import ตัวแปรจากมัน → **มองว่าไร้ประโยชน์แล้ว tree-shake ทิ้ง** → component แสดงผลแต่ **ไม่มี style** ใน production
+
+อาการนี้ร้ายเพราะ **dev mode มักไม่ tree-shake** → ทุกอย่างดูปกติตอน dev ไปโผล่พังตอน production build เท่านั้น
+
+```jsonc
+// ❌ ผิด สำหรับ frontend lib ที่มี CSS — style จะหายตอน build
+"sideEffects": false
+
+// ✅ ถูก — "ทุกไฟล์ปลอด side-effect ยกเว้น .css/.scss" → เก็บ CSS import ไว้ แต่ JS ยัง tree-shake ได้
+"sideEffects": ["**/*.css", "**/*.scss"]
+```
+
+### กรณี CSS / SCSS module
+
+```ts
+import styles from './button.module.css'   // อันนี้ export class map
+<div className={styles.primary} />          // และถูกใช้จริง
+```
+
+CSS module ปลอดภัยกว่า plain import เพราะมัน export ค่าและถูกใช้ bundler จึงไม่ค่อย drop — **แต่ไม่ปลอดภัย 100%** เพราะ compiled output ยังมี side effect คือการฉีด CSS อยู่ ในบาง edge case (เช่น style แยกไปคนละ chunk) bundler อาจเก็บ class map แต่ตัดส่วนฉีด style วิธีที่ปลอดภัยคือ **ใส่ทั้ง `**/*.css` และ `**/*.scss` ใน allowlist เสมอ** ไม่ต้องเสี่ยง (scss ครอบกรณีที่ source ยัง `import './x.scss'` ก่อน compile ด้วย)
+
+> สรุป: frontend lib ที่แตะ CSS/SCSS ห้ามใช้ `sideEffects: false` เด็ดขาด ใช้ allowlist `["**/*.css", "**/*.scss"]` — เป็นกฎที่ template v1.4 ตั้งให้แล้ว แต่ถ้าสร้าง lib เองต้องระวังจุดนี้
+
+---
+
+## 10. Promotion: ยก folder → project
 
 เมื่อ shared folder ใน lib มี consumer ตัวที่ 2 (web อื่น) → ยกเป็น project แยก เป็น **pure move + mechanical rewiring** (ไม่ต้องตีความ ถ้าเขียนตามกฎมาตั้งแต่แรก):
 
@@ -205,7 +250,7 @@ consumer ทั้งเก่าและใหม่เลือก slice ท�
 
 ---
 
-## 10. Enforce ด้วยเครื่อง
+## 11. Enforce ด้วยเครื่อง
 
 กฎ boundary จะพังถ้าพึ่งวินัยคนตอน deadline บีบ — ต้อง enforce อัตโนมัติด้วย `@nx/enforce-module-boundaries` + tags:
 

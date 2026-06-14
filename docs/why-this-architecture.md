@@ -104,7 +104,7 @@ section 1-7 ข้างบนเป็นเหตุผลของฝั่�
 
 **ถ้าไม่มี:** feature ค่อยๆ อ้างกันไปมาจนกลายเป็นก้อนเดียว — แก้ feature หนึ่งกระทบอีกหลายตัว, เขียน test ต้อง setup feature อื่นด้วย, และเป้าหมาย "feature แยกขาด deploy/promote ได้" หายไป
 
-**enforce ยังไง:** กฎนี้เผลอละเมิดง่ายสุดตอนรีบ จึงต้องบังคับด้วย `@nx/enforce-module-boundaries` (tag `type:feature` ห้าม depend `type:feature`) ไม่ใช่พึ่งวินัยคน — รายละเอียดใน [frontend-structure.md §10](./frontend-structure.md#10-enforce-ด้วยเครื่อง)
+**enforce ยังไง:** กฎนี้เผลอละเมิดง่ายสุดตอนรีบ จึงต้องบังคับด้วย `@nx/enforce-module-boundaries` (tag `type:feature` ห้าม depend `type:feature`) ไม่ใช่พึ่งวินัยคน — รายละเอียดใน [frontend-structure.md §11](./frontend-structure.md#11-enforce-ด้วยเครื่อง)
 
 ### 10. ทำไมเริ่มเป็น folder ใน lib ก่อน แล้วค่อยแตกเป็น project
 
