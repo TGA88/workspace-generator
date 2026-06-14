@@ -1,12 +1,13 @@
 databaseChangeLog:
-    - changeSet:
-            id: 1
-            author: nonthawat.pae
-            context: table,glob
-            label: F1S1,Prescription,list-prescription
-            changes:
-                - sqlFile:
-                        path: prisma/migrations/20241221082221_exm_data/migration.sql
-                - rollback:
-                      - sqlFile:
-                              path: prisma/migrations/20241221082221_exm_data/down.sql
+    # เพิ่ม changeSet ต่อ migration ที่สร้างด้วย `pnpm gen:up-script`
+    # ตัวอย่าง:
+    # - changeSet:
+    #     id: 1
+    #     author: your-name
+    #     context: table,glob
+    #     changes:
+    #         - sqlFile:
+    #             path: prisma/migrations/<timestamp>_<name>/migration.sql
+    #         - rollback:
+    #             - sqlFile:
+    #                 path: prisma/migrations/<timestamp>_<name>/down.sql
