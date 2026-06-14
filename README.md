@@ -23,15 +23,24 @@ script to create pnpm workspace boilerplate
 
 ## Export Strategy & Build System (v1.4)
 
-> README ฉบับก่อนหน้า: [README_v1_3.md](./README_v1_3.md)
-> 📖 **เอกสารฉบับเต็ม (กลไก + config ครบทุกจุด + troubleshooting): [docs/export-strategy.md](./docs/export-strategy.md)**
-> 🤔 **ทำไม template ถึง "ดูเยอะ" — เหตุผลเบื้องหลังสำหรับทีม: [docs/why-this-architecture.md](./docs/why-this-architecture.md)**
-> 🎨 **จัดโครง frontend lib (feature / ui-components / ui-functions / ui-state-&lt;vendor&gt;, boundary, promotion): [docs/frontend-structure.md](./docs/frontend-structure.md)**
-> 🧩 **จัดโครง backend API (unified-route: core/service/client + DI + ResultV2 + telemetry, grouped vs promoted): [docs/backend-structure.md](./docs/backend-structure.md)**
-> 🚀 **เพิ่ม backend API ตั้งแต่ศูนย์ (user guide — scaffolding `gen:api-domain/wire/action/promote/demote`): [docs/api-scaffolding.user-guide.md](./docs/api-scaffolding.user-guide.md)**
-> 🛠️ **แก้ template/scaffolding ของ generator (developer guide): [docs/api-scaffolding.developer-guide.md](./docs/api-scaffolding.developer-guide.md)**
+**เอกสารที่เกี่ยวข้อง**
 
-ตั้งแต่ v1.4 ทุก lib template ใช้ **dual-condition exports** เพื่อให้ **lint / test / build รันได้ทันทีโดยไม่ต้อง build local dependency ก่อน** แต่ production ยังใช้ `dist` ตามเดิมทุกประการ — ทำได้โดยเพิ่ม custom condition `development` ชี้ไปที่ source ไว้บนสุดของทุก exports entry แล้วเปิด condition นี้เฉพาะ dev tooling
+| | เอกสาร | เนื้อหา |
+|---|---|---|
+| 📖 | [export-strategy.md](./docs/export-strategy.md) | กลไก export เต็ม + config ครบทุกจุด + troubleshooting |
+| 🤔 | [why-this-architecture.md](./docs/why-this-architecture.md) | ทำไม template ถึง "ดูเยอะ" — เหตุผลเบื้องหลังสำหรับทีม |
+| 🎨 | [frontend-structure.md](./docs/frontend-structure.md) | จัดโครง frontend lib (feature / ui-components / ui-functions / ui-state-&lt;vendor&gt;, boundary, promotion) |
+| 🧩 | [backend-structure.md](./docs/backend-structure.md) | จัดโครง backend API (unified-route: core/service/client + DI + ResultV2 + telemetry, grouped vs promoted) |
+| 🚀 | [api-scaffolding.user-guide.md](./docs/api-scaffolding.user-guide.md) | เพิ่ม backend API ตั้งแต่ศูนย์ — scaffolding `gen:api-domain/wire/action/promote/demote` |
+| 🛠️ | [api-scaffolding.developer-guide.md](./docs/api-scaffolding.developer-guide.md) | แก้ template/scaffolding ของ generator เอง (developer guide) |
+
+> README ฉบับก่อนหน้า: [README_v1_3.md](./README_v1_3.md)
+
+**สรุปสั้น ๆ:** ตั้งแต่ v1.4 ทุก lib template ใช้ **dual-condition exports** เพื่อให้:
+
+- **dev tooling** (lint / test / build) รันได้ทันที — ไม่ต้อง build local dependency ก่อน
+- **production** ยังใช้ `dist` ตามเดิมทุกประการ
+- ทำได้โดยเพิ่ม custom condition `development` ชี้ไปที่ source แล้ววางไว้ **บนสุด** ของทุก exports entry และเปิด condition นี้เฉพาะ dev tooling
 
 ```jsonc
 "exports": {
@@ -44,7 +53,13 @@ script to create pnpm workspace boilerplate
 }
 ```
 
-condition `development` ถูกเปิดที่ 3 จุด: tsc ผ่าน `customConditions` (tsconfig base), jest ผ่าน `customExportConditions`, และ nx.json เอา `^build` ออกจาก lint/test/build (คงไว้ที่ serve/release ส่วน app override `^build` กลับใน package.json ของตัวเอง) — รายละเอียดว่าแต่ละจุดทำงานยังไง พร้อมตัวอย่าง config เต็ม, ตาราง nx targets, กฎที่ต้องรักษา และ troubleshooting อยู่ใน [docs/export-strategy.md](./docs/export-strategy.md)
+condition `development` ถูกเปิดที่ **3 จุด**:
+
+- **tsc** — ผ่าน `customConditions` (ใน tsconfig base)
+- **jest** — ผ่าน `customExportConditions`
+- **nx.json** — เอา `^build` ออกจาก lint/test/build (คงไว้ที่ serve/release; ส่วน app จะ override `^build` กลับใน package.json ของตัวเอง)
+
+> รายละเอียดของแต่ละจุด + ตัวอย่าง config เต็ม, ตาราง nx targets, กฎที่ต้องรักษา และ troubleshooting อยู่ใน [docs/export-strategy.md](./docs/export-strategy.md)
 
 **Migrate workspace เดิม (สร้างด้วย version < 1.4)**
 ```bash
