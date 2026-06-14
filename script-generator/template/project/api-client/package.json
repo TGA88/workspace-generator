@@ -31,12 +31,6 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
     },
-    "./command/send-email": {
-      "development": "./src/command/send-email/index.ts",
-      "types": "./dist/command/send-email/index.d.ts",
-      "import": "./dist/command/send-email/index.mjs",
-      "require": "./dist/command/send-email/index.js"
-    },
     "./types": {
       "development": "./src/types/index.ts",
       "types": "./dist/types/index.d.ts",

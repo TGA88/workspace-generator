@@ -21,17 +21,11 @@
       "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
-    "./command/*": {
-      "development": "./src/command/*/index.ts",
-      "import": "./dist/command/*/index.mjs",
-      "require": "./dist/command/*/index.js",
-      "types": "./dist/command/*/index.d.ts"
-    },
-    "./query/*": {
-      "development": "./src/query/*/index.ts",
-      "import": "./dist/query/*/index.mjs",
-      "require": "./dist/query/*/index.js",
-      "types": "./dist/query/*/index.d.ts"
+    "./shared/*": {
+      "development": "./src/shared/*",
+      "import": "./dist/shared/*.mjs",
+      "require": "./dist/shared/*.js",
+      "types": "./dist/shared/*.d.ts"
     }
   },
   "keywords": [],
@@ -44,7 +38,10 @@
     "@inh-lib/common": "^1.0.7",
     "@inh-lib/ddd": "^1.0.1",
     "tslib": "^2.3.0",
-    "zod": "^3.24.1"
+    "zod": "^3.24.1",
+    "@inh-lib/unified-route": "0.4.8",
+    "@inh-lib/unified-telemetry-core": "^0.3.4",
+    "@inh-lib/unified-telemetry-middleware": "0.3.20"
   },
   "sideEffects": false
 }

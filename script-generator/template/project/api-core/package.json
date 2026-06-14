@@ -23,18 +23,6 @@
       "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
-    "./command/*": {
-      "development": "./src/command/*/index.ts",
-      "import": "./dist/command/*/index.mjs",
-      "require": "./dist/command/*/index.js",
-      "types": "./dist/command/*/index.d.ts"
-    },
-    "./query/*": {
-      "development": "./src/query/*/index.ts",
-      "import": "./dist/query/*/index.mjs",
-      "require": "./dist/query/*/index.js",
-      "types": "./dist/query/*/index.d.ts"
-    },
     "./logics/*": {
       "development": "./src/logics/*.ts",
       "import": "./dist/logics/*.mjs",
@@ -45,7 +33,8 @@
   "peerDependencies": {
     "@inh-lib/common": "^1.0.7",
     "@inh-lib/ddd": "^1.0.1",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "@inh-lib/unified-route": "0.4.8"
   },
   "sideEffects": false
 }
