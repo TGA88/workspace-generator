@@ -5,7 +5,10 @@
   "main": "dist/main.cjs",
   "module": "dist/main.js",
   "types": "dist/types/main.d.ts",
-  "sideEffects": false,
+  "sideEffects": [
+    "**/*.css",
+    "**/*.scss"
+  ],
   "files": [
     "dist"
   ],

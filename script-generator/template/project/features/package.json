@@ -9,7 +9,10 @@
   "files": [
     "dist"
   ],
-  "sideEffects": false,
+  "sideEffects": [
+    "**/*.css",
+    "**/*.scss"
+  ],
   "publishConfig": {
     "access": "restricted"
   },
