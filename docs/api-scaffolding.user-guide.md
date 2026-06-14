@@ -54,6 +54,18 @@ base ที่ได้สะอาด (ไม่มีตัวอย่าง 
 > 💡 **ไม่ใส่ param ก็ได้** — รัน `pnpm gen:api-domain` เฉยๆ แล้วมันจะ **ถามทีละค่า** (TUI) ให้กรอก
 > 💡 **เลือก gen เฉพาะชั้น** — `gen:api-domain` / `gen:api-action` รับ `[layer]` ท้ายสุด (`core|service|client|all`, default `all`) เช่น `pnpm gen:api-domain shared-webapi shared-api order core`
 
+### แปลงโครง grouped ↔ standalone (promote / demote)
+```bash
+# grouped domain (ใน shared-api) -> standalone project (<domain>-api แยก, src แบน)
+pnpm gen:api-promote <scope> <shared-api> <domain>
+#   เช่น: pnpm gen:api-promote shared-webapi shared-api product
+
+# standalone project -> grouped domain (กลับเข้า shared-api)
+pnpm gen:api-demote <scope> <project> <shared-api>
+#   เช่น: pnpm gen:api-demote shared-webapi product-api shared-api
+```
+> แก้ import + deps + exports ของทั้ง workspace ให้อัตโนมัติ (ตรวจ `git diff` ได้); ถ้ามี root aggregate client (custom) ต้องแก้เอง
+
 ### `pnpm gen:api-domain <scope> <api-pkg> <domain> [layer]`
 สร้าง vertical slice ของ domain (command `create-<domain>` + query `get-<domain>`) ครบ **core/service/client** + อัปเดต exports + core index ให้อัตโนมัติ
 

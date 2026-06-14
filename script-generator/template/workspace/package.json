@@ -110,7 +110,9 @@
     "cache:remote:help": "bash tools/remote-cache/cache-helper.sh help",
     "gen:api-domain": "bash ./tools/gen-api-domain.sh",
     "gen:api-wire": "bash ./tools/gen-api-wire.sh",
-    "gen:api-action": "bash ./tools/gen-api-action.sh"
+    "gen:api-action": "bash ./tools/gen-api-action.sh",
+    "gen:api-promote": "bash ./tools/gen-api-promote.sh",
+    "gen:api-demote": "bash ./tools/gen-api-demote.sh"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.5",

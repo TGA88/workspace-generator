@@ -104,7 +104,7 @@ base ปัจจุบัน (หลังเคลียร์ bible) มี:
 4. แก้ exports: `./<domain>-api/command/*` → `./command/*`
 5. แก้ consumer (route/wire) ให้ชี้ package ใหม่ + ลบ domain เดิมจาก shared-api + ลบ `export * from './<domain>-api'` ใน core index
 
-> รุ่นถัดไปจะมี `promote-api-domain.sh` ทำอัตโนมัติ + flag `--standalone` ใน gen:api-domain
+> มีคำสั่งอัตโนมัติแล้ว: `promote-api-domain.sh` / `demote-api-domain.sh` (เรียกผ่าน `pnpm gen:api-promote` / `gen:api-demote`) — ย้ายไฟล์ + แก้ exports/index/import/deps + relative-shared-depth ให้ครบ; เหลือ root-aggregate client ที่ต้องแก้เอง (custom code)
 
 ---
 

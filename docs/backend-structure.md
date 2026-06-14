@@ -132,7 +132,7 @@ fastify route (composition root)
 
 **เมื่อไรควร promote:** domain ถูกใช้โดย consumer ตัวที่ 2 หรือ build รวมแล้วหน่วยความจำไม่พอ (เหมือนเกณฑ์ promote ฝั่ง frontend) — ดูวิธี promote ใน `api-scaffolding.developer-guide.md`
 
-> scaffolding ปัจจุบัน (`gen:api-domain`) สร้างแบบ **grouped**; standalone/promote ทำมือตามคู่มือ maintainer (จะมี flag/script อัตโนมัติในรุ่นถัดไป)
+> `gen:api-domain` สร้างแบบ **grouped**; แปลงไป-กลับระหว่าง grouped ↔ standalone อัตโนมัติด้วย **`pnpm gen:api-promote`** (grouped→standalone) และ **`pnpm gen:api-demote`** (standalone→grouped) — ดู user-guide
 
 ---
 
