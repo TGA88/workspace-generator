@@ -150,6 +150,8 @@ fastify route (composition root)
 
 ---
 
+<a id="export-strategy"></a>
+
 ## 8. Export strategy: ทำไม per-subpath (ไม่ใช่ barrel เดียว) + ทำไม client ต่าง
 
 public interface อยู่ที่ **`index.ts` ของแต่ละ sub-module (per-subpath)** ไม่ใช่ barrel เดียวที่ root `src/index.ts` — เลือกแบบนี้ด้วยเหตุผล:

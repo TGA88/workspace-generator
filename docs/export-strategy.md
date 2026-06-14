@@ -270,7 +270,7 @@ node workspace-generator/script-generator/migrate/apply-export-strategy.mjs <pat
 
 ## ดูต่อ
 
-- **public surface ของแต่ละ layer (per-subpath vs barrel) + เหตุผลที่ client เลือก option B** — ดู `backend-structure.md` §8 ([Export strategy](./backend-structure.md))
+- **public surface ของแต่ละ layer** — core/service เปิด export ราย action (per-subpath) ส่วน client เปิดแค่ `Client` + types (ซ่อน fn ภายใน) ทำไมถึงต่างกัน + ข้อดี/ข้อเสียของ per-subpath vs barrel เดียว อ่านที่ [backend-structure.md §8](./backend-structure.md#export-strategy)
 
 ## อ้างอิง
 
