@@ -29,7 +29,12 @@ const featureConfig: Config = {
   moduleNameMapper: {
     '^@/(.*)$': path.resolve(__dirname, './$1'), // refs to node-app folder
     '^@root/(.*)$': path.resolve(__dirname, '../../$1'), // refs to root workspace (gu-example-system)
-    '\\.(css|less|scss|sass)$': 'identity-obj-proxy'
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+    // pin react ให้ทุก lib ใช้สำเนาเดียว (กัน dual-React: "Cannot read properties of null (reading 'useState')")
+    // ไว้ที่ base config เพราะ update_alias_path.sh เขียน moduleNameMapper ของ per-lib ใหม่ทับ — react-pin จะหายถ้าไว้ใน per-lib
+    '^react$': require.resolve('react'),
+    '^react-dom$': require.resolve('react-dom'),
+    '^react/jsx-runtime$': require.resolve('react/jsx-runtime')
   },
 
   // setupFilesAfterEnv: ['<rootDir>/src/test/setup.ts'],

@@ -32,7 +32,11 @@ const webConfig: Config = {
     '^@/(.*)$': path.resolve(__dirname, './$1'), // refs to node-app folder
     '^@root/(.*)$': path.resolve(__dirname, '../../$1'), // refs to root workspace (gu-example-system)
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
-    '\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/test/__mocks__/fileMock.ts'
+    '\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/test/__mocks__/fileMock.ts',
+    // pin react ให้ใช้สำเนาเดียว (กัน dual-React) — ไว้ที่ base เพราะ update_alias_path.sh เขียน per-lib moduleNameMapper ทับ
+    '^react$': require.resolve('react'),
+    '^react-dom$': require.resolve('react-dom'),
+    '^react/jsx-runtime$': require.resolve('react/jsx-runtime')
   },
 
   // setupFilesAfterEnv: ['<rootDir>/src/test/setup.ts'],
