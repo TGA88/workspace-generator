@@ -38,8 +38,10 @@ for layer in core service client; do
   node -e '
     const fs=require("fs");const f=process.argv[1],d=process.argv[2],layer=process.argv[3];
     const j=JSON.parse(fs.readFileSync(f));j.exports=j.exports||{};
-    j.exports[`./${d}/command/*`]={development:`./src/${d}/command/*/index.ts`,import:`./dist/${d}/command/*/index.mjs`,require:`./dist/${d}/command/*/index.js`,types:`./dist/${d}/command/*/index.d.ts`};
-    j.exports[`./${d}/query/*`]={development:`./src/${d}/query/*/index.ts`,import:`./dist/${d}/query/*/index.mjs`,require:`./dist/${d}/query/*/index.js`,types:`./dist/${d}/query/*/index.d.ts`};
+    if(layer!=="client"){
+      j.exports[`./${d}/command/*`]={development:`./src/${d}/command/*/index.ts`,import:`./dist/${d}/command/*/index.mjs`,require:`./dist/${d}/command/*/index.js`,types:`./dist/${d}/command/*/index.d.ts`};
+      j.exports[`./${d}/query/*`]={development:`./src/${d}/query/*/index.ts`,import:`./dist/${d}/query/*/index.mjs`,require:`./dist/${d}/query/*/index.js`,types:`./dist/${d}/query/*/index.d.ts`};
+    }
     if(layer!=="service") j.exports[`./${d}`]={development:`./src/${d}/index.ts`,import:`./dist/${d}/index.mjs`,require:`./dist/${d}/index.js`,types:`./dist/${d}/index.d.ts`};
     fs.writeFileSync(f,JSON.stringify(j,null,2));
   ' "$SA/package.json" "$NEW" "$layer"

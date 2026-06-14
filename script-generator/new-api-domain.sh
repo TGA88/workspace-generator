@@ -72,8 +72,10 @@ add_exports() {
     const fs=require("fs");const f=process.argv[1],d=process.argv[2],layer=process.argv[3];
     const j=JSON.parse(fs.readFileSync(f));j.exports=j.exports||{};
     const mk=(sub)=>({development:`./src/${sub}`,import:`./dist/${sub.replace(/\.ts$/,".mjs")}`,require:`./dist/${sub.replace(/\.ts$/,".js")}`,types:`./dist/${sub.replace(/\.ts$/,".d.ts")}`});
-    j.exports[`./${d}-api/command/*`]={development:`./src/${d}-api/command/*/index.ts`,import:`./dist/${d}-api/command/*/index.mjs`,require:`./dist/${d}-api/command/*/index.js`,types:`./dist/${d}-api/command/*/index.d.ts`};
-    j.exports[`./${d}-api/query/*`]={development:`./src/${d}-api/query/*/index.ts`,import:`./dist/${d}-api/query/*/index.mjs`,require:`./dist/${d}-api/query/*/index.js`,types:`./dist/${d}-api/query/*/index.d.ts`};
+    if(layer!=="client"){
+      j.exports[`./${d}-api/command/*`]={development:`./src/${d}-api/command/*/index.ts`,import:`./dist/${d}-api/command/*/index.mjs`,require:`./dist/${d}-api/command/*/index.js`,types:`./dist/${d}-api/command/*/index.d.ts`};
+      j.exports[`./${d}-api/query/*`]={development:`./src/${d}-api/query/*/index.ts`,import:`./dist/${d}-api/query/*/index.mjs`,require:`./dist/${d}-api/query/*/index.js`,types:`./dist/${d}-api/query/*/index.d.ts`};
+    }
     if(layer!=="service") j.exports[`./${d}-api`]={development:`./src/${d}-api/index.ts`,import:`./dist/${d}-api/index.mjs`,require:`./dist/${d}-api/index.js`,types:`./dist/${d}-api/index.d.ts`};
     fs.writeFileSync(f,JSON.stringify(j,null,2));
   ' "$pkg" "$DOMAIN" "$layer"

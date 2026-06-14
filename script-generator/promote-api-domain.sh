@@ -35,10 +35,11 @@ for layer in core service client; do
     j.name=`@${ws}/${neu}-${layer}`;
     const ex={};
     ex["."]={development:"./src/index.ts",import:"./dist/index.mjs",require:"./dist/index.js",types:"./dist/index.d.ts"};
-    ex["./command/*"]={development:"./src/command/*/index.ts",import:"./dist/command/*/index.mjs",require:"./dist/command/*/index.js",types:"./dist/command/*/index.d.ts"};
-    ex["./query/*"]={development:"./src/query/*/index.ts",import:"./dist/query/*/index.mjs",require:"./dist/query/*/index.js",types:"./dist/query/*/index.d.ts"};
+    if(layer!=="client"){
+      ex["./command/*"]={development:"./src/command/*/index.ts",import:"./dist/command/*/index.mjs",require:"./dist/command/*/index.js",types:"./dist/command/*/index.d.ts"};
+      ex["./query/*"]={development:"./src/query/*/index.ts",import:"./dist/query/*/index.mjs",require:"./dist/query/*/index.js",types:"./dist/query/*/index.d.ts"};
+    }
     if(layer==="service") ex["./shared/*"]={development:"./src/shared/*",import:"./dist/shared/*.mjs",require:"./dist/shared/*.js",types:"./dist/shared/*.d.ts"};
-    if(layer==="client") ex["./types"]={development:"./src/types.ts",import:"./dist/types.mjs",require:"./dist/types.js",types:"./dist/types.d.ts"};
     j.exports=ex;
     if(j.dependencies && j.dependencies[`@${ws}/${shared}-core`]){ delete j.dependencies[`@${ws}/${shared}-core`]; j.dependencies[`@${ws}/${neu}-core`]="workspace:^"; }
     if(j.scripts && j.scripts["fix:lcov"]) j.scripts["fix:lcov"]=j.scripts["fix:lcov"].replace(`/${shared}/${layer}`,`/${neu}/${layer}`);
