@@ -36,6 +36,21 @@
 - shared component = **`ui-components`** (ไม่ใช่ `ui`)
 - shared state = **`ui-state-<vendor>`** เสมอ — ไม่มี `ui-state` เฉยๆ, vendor ต่อท้ายเสมอ (`ui-state-redux`)
 
+### การตั้งชื่อ project/folder ระดับ workspace
+
+สมมติ system = `demo-shop-system`, base = `shop-demo`, web app = `shop-demo-web` — ตั้งชื่อตามนี้ (อิง pattern feedos: `feedos-frgm-lib` / `feedos-frgm-web` / storybook `feedos-frgm`):
+
+| สิ่งที่ | ชื่อ | location |
+|---|---|---|
+| frontend-lib-module | `shop-demo-lib` | `libs/shop-demo-lib/` |
+| web-config (scope = web app) | `shop-demo-web/config` | `libs/shop-demo-web/config/` |
+| web app | `shop-demo-web` | `apps/shop-demo-web/nextjs/` |
+| storybook host | `shop-demo` | `storybook-host/shop-demo/` |
+| feature/shared ที่ promote (web เดียว) | — | `libs/shop-demo-web/<name>/` |
+| feature/shared ที่ promote (หลาย web) | generic | `libs/shared-web/<name>/` |
+
+จุดสำคัญ: **frontend-lib-module (`shop-demo-lib`) กับ web scope folder (`shop-demo-web`) เป็นคนละ folder ที่ libs root** ไม่ใช่ lib ซ้อนใน scope — เพื่อให้เวลา promote feature เป็น project มันไปอยู่ใต้ `libs/shop-demo-web/` (scope ของ web ตัวนั้น) แยกออกจากตัว lib ได้สะอาด
+
 ---
 
 ## 2. กฎ 2 ทาง: folder ใน lib vs project แยก
@@ -44,7 +59,7 @@
 
 | ขอบเขตการใช้ | อยู่ที่ไหน | ตัวอย่าง |
 |---|---|---|
-| ใช้ **web เดียว** | folder ใน frontend-lib-module ของ web นั้น | `shop-web-lib/lib/ui-components/` |
+| ใช้ **web เดียว** | folder ใน frontend-lib-module ของ web นั้น | `shop-demo-lib/lib/ui-components/` |
 | ใช้ **หลาย web** ใน workspace | project แยก ชื่อ generic (ไม่ prefix) | `@scope/ui-components` |
 
 เหตุผลที่ project generic **ไม่ต้อง prefix ชื่อ web**: มันคือ "ตัวกลางของ workspace มีตัวเดียว" — เหมือน `share-data` ที่ไม่ตั้ง `shop-share-data` ส่วนของที่ผูกกับ web เดียว มันอยู่ใน lib ของ web นั้นซึ่งชื่อ lib ระบุ owner อยู่แล้ว จึงไม่มีทางชนกัน
@@ -235,6 +250,17 @@ CSS module ปลอดภัยกว่า plain import เพราะมั�
 
 ## 10. Promotion: ยก folder → project
 
+### เมื่อไหร่ต้อง promote (2 เหตุผล)
+
+1. **มี consumer ตัวที่ 2 (web/module อื่น)** → ยกขึ้น **project generic** ที่ `libs/shared-web/<name>` เพื่อแชร์ข้าม web
+2. **frontend-lib-module ใหญ่เกินจน build เจอ heap out of memory** → split เฉพาะ sub-module ที่โต (feature/ui) ออกเป็น **project แยก** แต่ยังเป็นของ web เดียว จึงไปอยู่ใต้ scope ของ web นั้น `libs/shop-demo-web/<name>`
+
+เหตุผลที่กรณี 2 ไป `libs/shop-demo-web/` (ไม่ใช่ `shared-web`): มันยังเป็นของ web เดียว — การ split เป็นการแก้ปัญหา build memory/เวลา ไม่ใช่การแชร์ข้าม web ดังนั้นวางใต้ scope ของ web ตัวเจ้าของ เพื่อให้ ownership ชัด และถ้าวันหลังมี web ที่ 2 มาใช้ค่อยยกขึ้น `shared-web` อีกที (README เรียก project ประเภทนี้ว่า Feature-Lib — ใช้ตอน frontend-lib-module ใหญ่เกินหรือ heap OOM)
+
+> เมื่อ frontend-lib-module โตขึ้นเรื่อยๆ `vite build` / `tsc` จะกิน memory มากขึ้นจน Node heap เต็ม (JavaScript heap out of memory) การ split sub-module ที่ใหญ่ออกเป็น project แยกช่วยให้ build ทีละหน่วยเล็กลง + Nx affected build เฉพาะส่วนที่เปลี่ยน
+
+### ขั้นตอน (pure move + mechanical rewiring)
+
 เมื่อ shared folder ใน lib มี consumer ตัวที่ 2 (web อื่น) → ยกเป็น project แยก เป็น **pure move + mechanical rewiring** (ไม่ต้องตีความ ถ้าเขียนตามกฎมาตั้งแต่แรก):
 
 1. สร้าง project type ชื่อเดียวกับ folder (เช่น `ui-state-redux` → project `@scope/ui-state-redux`)
@@ -273,3 +299,21 @@ consumer ทั้งเก่าและใหม่เลือก slice ท�
 - กฎห้าม relative ลึกเกิน N ชั้น
 
 แบบนี้ใครเขียน `import ... from '@feature-other'` ใน feature → lint แดงทันที ไม่ต้องรอ reviewer
+
+---
+
+## 12. Setup commands หลังเพิ่ม sub-module
+
+ทุกครั้งที่เพิ่ม/ลบ sub-module ใน frontend-lib-module ต้องรัน 2 คำสั่งนี้ในโฟลเดอร์ lib (ไม่งั้น alias ไม่ครบ / build พัง):
+
+```bash
+pnpm update:alias-paths   # gen alias @<sub>/* ลง tsconfig.json, tsconfig.build.json, jest.config.ts, vite.config.ts
+pnpm update:config        # แก้ extends/relative path ให้ถูกตามความลึกของ project (เช่น tsconfig.build.json extends ../../ ไม่ใช่ ../../../)
+```
+
+> verified (template v1.4) ด้วยการ generate frontend stack จริงแล้ว lint / jest / vite build / storybook build ผ่านครบ:
+> - `update:alias-paths` อัปเดต **ทั้ง** tsconfig.json (editor/lint/jest) และ tsconfig.build.json (build) — ถ้าขาด build.json จะ resolve `@ui-components` ไม่เจอตอน `tsc -p tsconfig.build.json`
+> - `update:config` จำเป็นเพราะ template tsconfig.build.json extends `../../../` (สำหรับ feature-lib 3 ชั้น) แต่ frontend-lib-module อยู่ 2 ชั้น ต้องแก้เป็น `../../`
+> - react-pin อยู่ที่ base jest config (`jest.config.features.ts`/`jest.config.web.ts`) ไม่ใช่ per-lib — เพราะ `update:alias-paths` เขียน moduleNameMapper ของ per-lib ใหม่ทับ
+
+หมายเหตุ tsconfig 2 ไฟล์: **`tsconfig.json` = ให้ VSCode/editor + lint + jest** (จะได้ไม่มี error ใน editor), **`tsconfig.build.json` = ใช้ตอน build** — แยกกันโดยตั้งใจ ดังนั้น alias ต้องอยู่ครบทั้งสองไฟล์
