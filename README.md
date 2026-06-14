@@ -8,6 +8,19 @@ script to create pnpm workspace boilerplate
 - < 1.2.0 compatible with nodejs <= 20.x
 ```
 
+## สารบัญ
+
+- [Export Strategy & Build System (v1.4)](#export-strategy--build-system-v14)
+- [Workspace](#workspace) — สร้าง / update config / init system
+- [Storybook host](#storybook-host)
+- [System Workspace](#system-workspace)
+  - [Frontend Project](#frontend-project) — web, frontend-lib-modules, feature, ui-components, ui-state, web-config
+  - [API Project](#api-project) — **scaffolding (เพิ่ม API)** + base package (core/service/client/store-prisma/webapi)
+  - [Global Packages](#global-packages) — ui-common, functions, base-types, fastify-plugins
+- [Other (troubleshooting)](#other)
+
+> 🧭 **เพิ่งเริ่ม?** flow ปกติ: สร้าง workspace → init system → update config → สร้าง base API package (core/service/client/store-prisma/webapi) → เติม domain/endpoint ด้วย **scaffolding** (`pnpm gen:api-*`) ดู [API Project › scaffolding](#scaffolding-เพิ่ม-api-domain-unified-route-pattern)
+
 ## Export Strategy & Build System (v1.4)
 
 > README ฉบับก่อนหน้า: [README_v1_3.md](./README_v1_3.md)
@@ -40,7 +53,7 @@ node workspace-generator/script-generator/migrate/apply-export-strategy.mjs <pat
 ```
 
 ## workspace
-คือ location ในการจัดเก็บ source code แบ่งตาม programming language เข่น node-app, python-app, springboot-app และ infrastructure สำหรับ เตรียม environment ในการรัน app
+คือ location ในการจัดเก็บ source code แบ่งตาม programming language เช่น node-app, python-app, springboot-app และ infrastructure สำหรับ เตรียม environment ในการรัน app
 ### create workspace
 ตัวอย่างการ สร้าง workspace
 ```bash
@@ -49,7 +62,7 @@ bash workspace-generator/script-generator/create-workspace.sh gu-example-system 
 
 ```
 ### update workspace config
-คือ การupdate command script ใน root package.json และ update base confg ต่างๆ เช่น tsconfig,jest,lint เป็นต้น
+คือ การupdate command script ใน root package.json และ update base config ต่างๆ เช่น tsconfig,jest,lint เป็นต้น
 
 ```bash
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
@@ -59,13 +72,13 @@ bash workspace-generator/script-generator/update-workspace-config.sh gu-example-
 
 ## Initial package for System workspace
 **เมื่อ Initial package แล้วให้ update package ตาม section update workspace configด้วย**
-ตัวอย่างการ init system-workspace เพื่อ intall and config tools 
+ตัวอย่างการ init system-workspace เพื่อ install and config tools 
 ```bash
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/init-system.sh gu-example-system node-app
 
 ```
-ระหว่าง install package จะมีคถามดังนี้ ให้ตอบ skip-now
+ระหว่าง install package จะมีคำถามดังนี้ ให้ตอบ skip-now
 ![image](assets/Screenshot%202567-12-23%20at%2016.51.52.png)
 
 ## Storybook host
@@ -105,8 +118,10 @@ bash workspace-generator/script-generator/update-sb.sh gu-example-system example
 ## Frontend Project
 
 ### Web-Nextjs
-**param1=ชื่อ workspace** เช่น gu-example-system
-**param2=ชื่อ webproject** เช่น demo-exm-web
+
+- **param1=ชื่อ workspace** เช่น gu-example-system
+- **param2=ชื่อ webproject** เช่น demo-exm-web
+
 ตัวอย่างการ generate project type web nextjs
 ```bash
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
@@ -114,7 +129,7 @@ bash workspace-generator/script-generator/new-web.sh gu-example-system demo-exm-
 
 ```
 ### frontend-lib-modules(แนะนำให้ใช้ type นี้ก่อน project type feature)
-คือ lib ของ frontend-app โดยชื่อ module จะต้องชื่อเดีนวกับ app
+คือ lib ของ frontend-app โดยชื่อ module จะต้องชื่อเดียวกับ app
 โดยประกอบไปด้วย feature กับ ui
 - ui คือ share component,customhook,theme ให้กับ feature ต่างๆภายใน module เดียวกัน
 - feature คือ program ของ module
@@ -125,22 +140,25 @@ bash workspace-generator/script-generator/new-web.sh gu-example-system demo-exm-
 - update path alias ของ sub-modules ด้วย script ใน package.json
 
 #### สร้าง project frontend-lib-module
-**param1=ชื่อworkspace**
-**param2=ชื่อappname**
+
+- **param1=ชื่อworkspace**
+- **param2=ชื่อappname**
 
 ```bash
 bash workspace-generator/script-generator/new-frontend-lib-modules.sh gu-example-system demo-exm-web
 ```
 
 ### Feature-Lib
-<span style="color:red">เอาไว้ใช้ กรณีที่ frontend-lib-modules ม่ีขนาดใหญ่เกินไป หรือ เจอปัญหา heap out of memory ให้นำ feature หรือ ui แยกมาสร้าง เป็นproject</span>
+<span style="color:red">เอาไว้ใช้ กรณีที่ frontend-lib-modules มีขนาดใหญ่เกินไป หรือ เจอปัญหา heap out of memory ให้นำ feature หรือ ui แยกมาสร้าง เป็นproject</span>
 
 โดย ให้ Feature-lib และ copy subfolder ทั้งหมด ของ feature ใน frontend-lib-modules มาไว้ที่ folder lib ที่เราพึ่งสร้าง **ชื่อ project feature-lib ที่สร้างใหม่ จะต้องตรงกับ folder feature ใน frontend-lib-modules**
 
 ตัวอย่างการ generate project type feature
-**param1=ชื่อ workspace** เช่น gu-example-system
-**param2=ชื่อ fetaure** เช่น feature-funny
-**param3=ชื่อ scope  เช่น demo-funny-web แต่ถ้าไม่ใส่ จะ default เป็น shared-web**
+
+- **param1=ชื่อ workspace** เช่น gu-example-system
+- **param2=ชื่อ feature** เช่น feature-funny
+- **param3=ชื่อ scope  เช่น demo-funny-web แต่ถ้าไม่ใส่ จะ default เป็น shared-web**
+
 ```bash
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/new-feature.sh gu-example-system feature-funny
@@ -151,7 +169,8 @@ bash workspace-generator/script-generator/new-feature.sh gu-example-system featu
 เป็น project ที่ component ,customhooks ที่เอาไว้แชร์ เฉพาะภายใน scope ของ system worksapce เท่านั้น ซึ่งจะไม่ deploy ขึ้น npm
 **ใช้ new-feature.sh แต่ไม่ระบุ project name จะได้ project ui-components**
 
-**param1=ชื่อ workspace** เช่น gu-example-system
+- **param1=ชื่อ workspace** เช่น gu-example-system
+
 <Br/>
 
 **ตัวอย่าง**
@@ -160,7 +179,7 @@ bash workspace-generator/script-generator/new-feature.sh gu-example-system featu
 bash workspace-generator/script-generator/new-feature.sh gu-example-system 
 ```
 
-**ผลลัพ**
+**ผลลัพธ์**
 ```
 |-- libs
     |-- shared-web
@@ -169,9 +188,11 @@ bash workspace-generator/script-generator/new-feature.sh gu-example-system
 
 ### ui-state-redux
 ตัวอย่างการ generate project type ui-state
-**param1=ชื่อ workspace** เช่น gu-example-system
-**param2=ชื่อ ui-state** เช่น ui-state-redux หรือ ui-state-zudstand ตามprovider ที่ใช้
-**param3=ชื่อ scope  เช่น demo-funny-web แต่ถ้าไม่ใส่ จะ default เป็น shared-web**
+
+- **param1=ชื่อ workspace** เช่น gu-example-system
+- **param2=ชื่อ ui-state** เช่น ui-state-redux หรือ ui-state-zustand ตามprovider ที่ใช้
+- **param3=ชื่อ scope  เช่น demo-funny-web แต่ถ้าไม่ใส่ จะ default เป็น shared-web**
+
 ```bash
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/new-feature.sh gu-example-system ui-state-redux
@@ -189,15 +210,16 @@ bash workspace-generator/script-generator/new-feature.sh gu-example-system ui-st
 
 **ใช้ new-feature.sh  แต่ให้ระบุ suffix project name เช่น demo-exm-web-config**
 
-**param1=ชื่อ workspace**
-**param2=ชื่อ scopename** เช่น demo-exm-web หรือ ถ้าไม่ใส่จะเป็น share-web
+- **param1=ชื่อ workspace**
+- **param2=ชื่อ scopename** เช่น demo-exm-web หรือ ถ้าไม่ใส่จะเป็น share-web
+
 ```bash
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/new-webconfig.sh gu-example-system  demo-exm-web
 
 ```
 
-**ผลลัพ**
+**ผลลัพธ์**
 ```
 # แบบ ไม่ระบุ scope (recommend)
 |-- libs
@@ -216,19 +238,61 @@ bash workspace-generator/script-generator/new-webconfig.sh gu-example-system  de
 > 🧩 **โครง/แนวคิด pattern ใหม่ (unified-route: core/service/client + DI + ResultV2 + telemetry):** [docs/backend-structure.md](./docs/backend-structure.md)
 > 🚀 **วิธีเพิ่ม API ตั้งแต่ศูนย์ (ใช้งานจริง):** [docs/api-scaffolding.user-guide.md](./docs/api-scaffolding.user-guide.md)
 >
-> **Workflow ใหม่ (v1.4+):** คำสั่ง `new-api*.sh` ด้านล่างสร้าง **base package เปล่า** (สะอาด ไม่มีตัวอย่าง bible) — 1 ชุด `shared-api` (core/service/client) เก็บได้หลาย domain แล้ว **เติม domain/endpoint ด้วย scaffolding** จากใน `workspaces/node-app`:
-> ```bash
-> pnpm gen:api-domain shared-webapi shared-api order                                   # slice core/service/client
-> pnpm gen:api-wire   shared-webapi shared-api demo-shop-data demo-shop-webapi order    # repo + route + prisma model
-> ```
-> (รายละเอียด + การแก้ field/logic/migration/test อยู่ใน user guide)
+> **Workflow ใหม่ (v1.4+) — 2 ขั้น:**
+> 1. **สร้าง base package เปล่า** ด้วย `new-api*.sh` ด้านล่าง (สะอาด ไม่มีตัวอย่าง bible) — 1 ชุด `shared-api` (core/service/client) เก็บได้หลาย domain
+> 2. **เติม domain/endpoint ด้วย scaffolding** (`pnpm gen:api-*`) จากใน `workspaces/node-app` — ดู [scaffolding](#scaffolding-เพิ่ม-api-domain-unified-route-pattern) ด้านล่าง
+
+### scaffolding: เพิ่ม API domain (unified-route pattern)
+
+> 📖 **คู่มือเต็ม (แก้ field/logic/migration/test + ปัญหาที่เจอบ่อย):** [docs/api-scaffolding.user-guide.md](./docs/api-scaffolding.user-guide.md)
+
+มี 5 คำสั่ง (รันจาก `workspaces/node-app`) — **ไม่ใส่ param ก็ได้ จะถามทีละค่า (TUI)**:
+
+```bash
+# 1) slice: core+service+client ของ domain (command create-<domain> + query get-<domain>) + อัปเดต exports/index
+pnpm gen:api-domain <scope> <api-pkg> <domain> [layer]
+#   เช่น: pnpm gen:api-domain shared-webapi shared-api order
+#   [layer] = core|service|client|all (default all) — gen เฉพาะชั้นได้
+
+# 2) wire: data-layer repo (store-prisma) + webapi route + prisma model + deps
+pnpm gen:api-wire <scope> <api-pkg> <data-pkg> <webapi-app> <domain>
+#   เช่น: pnpm gen:api-wire shared-webapi shared-api demo-shop-data demo-shop-webapi order
+
+# 3) action: เพิ่ม action เดี่ยว (เช่น update/list) เข้า domain เดิม + เพิ่ม DI key อัตโนมัติ
+pnpm gen:api-action <scope> <api-pkg> <domain> <command|query> <verb> [layer]
+#   เช่น: pnpm gen:api-action shared-webapi shared-api order command update
+
+# 4) promote: grouped domain (ใน shared-api) -> standalone project (<domain>-api แยก, src แบน)
+pnpm gen:api-promote <scope> <shared-api> <domain>
+#   เช่น: pnpm gen:api-promote shared-webapi shared-api product
+
+# 5) demote: standalone project -> กลับเป็น grouped domain ใน shared-api
+pnpm gen:api-demote <scope> <project> <shared-api>
+#   เช่น: pnpm gen:api-demote shared-webapi product-api shared-api
+```
+> ต้อง clone `workspace-generator` ไว้ระดับเดียวกับ workspace (หรือ set `WORKSPACE_GENERATOR_DIR`) — จำเป็นเฉพาะตอน scaffold; build/test/run ไม่ต้องมี
+
+หรือเรียก bash ตรงๆ (จาก dir แม่ที่มี workspace + generator เป็น sibling):
+```bash
+bash workspace-generator/script-generator/new-api-domain.sh  <workspace> <scope> <api-pkg> <domain> [generator-dir] [layer]
+bash workspace-generator/script-generator/new-api-wire.sh    <workspace> <scope> <api-pkg> <data-pkg> <webapi-app> <domain>
+bash workspace-generator/script-generator/new-api-action.sh  <workspace> <scope> <api-pkg> <domain> <command|query> <verb>
+bash workspace-generator/script-generator/promote-api-domain.sh <workspace> <scope> <shared-api> <domain>
+bash workspace-generator/script-generator/demote-api-domain.sh  <workspace> <scope> <project> <shared-api>
+```
+หลัง wire แล้ว: `pnpm prisma:generate` + `pnpm gen:up-script` (migration) ที่ store-prisma แล้วทดสอบด้วย `make test` (ดู user guide)
+
+---
+
+> 📦 **ด้านล่างคือคำสั่งสร้าง _base package_ (ทำครั้งเดียวต่อ API หนึ่งชุด)** — `new-apicore` / `new-apiservice` / `new-apiclient` / `new-storeprisma` / `new-webapi` แล้วค่อยใช้ scaffolding ด้านบนเติม domain/endpoint
 
 ### API-CORE
 ตัวอย่างการ update project api-core  สำหรับเก็บ abstract layer เช่น interface,type,repository,และ BusinessLogic ที่ต้องการ Share ระหว่าง DataLayer และ ServiceLayer
 
-**param1=ชื่อ workspace**
-**param2=ชื่อ api**
-**param3=ชื่อ scope  เช่น demo-funny-webapi แต่ถ้าไม่ใส่ จะ default เป็น shared-webapi**
+- **param1=ชื่อ workspace**
+- **param2=ชื่อ api**
+- **param3=ชื่อ scope  เช่น demo-funny-webapi แต่ถ้าไม่ใส่ จะ default เป็น shared-webapi**
+
 ```bash
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/new-apicore.sh gu-example-system sample-api
@@ -238,9 +302,9 @@ bash workspace-generator/script-generator/new-apicore.sh gu-example-system sampl
 ### API-Service
 ตัวอย่างการ update project api-service สำหรับ Provide Action ตาม Business Requirement
 
-**param1=ชื่อ workspace**
-**param2=ชื่อ api**
-**param3=ชื่อ scope  เช่น demo-funny-webapi แต่ถ้าไม่ใส่ จะ default เป็น shared-webapi**
+- **param1=ชื่อ workspace**
+- **param2=ชื่อ api**
+- **param3=ชื่อ scope  เช่น demo-funny-webapi แต่ถ้าไม่ใส่ จะ default เป็น shared-webapi**
 
 ```bash
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
@@ -251,9 +315,9 @@ bash workspace-generator/script-generator/new-apiservice.sh gu-example-system sa
 ### API-client
 ตัวอย่างการ project type api-client สำหรับ provide httpClient สำหรับ request api-service สำหรับ front-end และ backend
 
-**param1=ชื่อ workspace**
-**param2=ชื่อ api** ช่วย suffix ด้วย -api ด้วย
-**param3=ชื่อ scope  เช่น demo-funny-webapi แต่ถ้าไม่ใส่ จะ default เป็น shared-webapi**
+- **param1=ชื่อ workspace**
+- **param2=ชื่อ api** ช่วย suffix ด้วย -api ด้วย
+- **param3=ชื่อ scope  เช่น demo-funny-webapi แต่ถ้าไม่ใส่ จะ default เป็น shared-webapi**
 
 ```bash
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
@@ -264,9 +328,10 @@ bash workspace-generator/script-generator/new-apiclient.sh gu-example-system sam
 ### API-StorePrisma
 ตัวอย่างการ update project api-store-prisma สำหรับ Provide data layer และ schema model สำหรับ prismaorm
 
-**param1=ชื่อ workspace**
-**param2=ชื่อ database schema**
-**param3=ชื่อ scope  เช่น demo-funny-webapi แต่ถ้าไม่ใส่ จะ default เป็น shared-webapi**
+- **param1=ชื่อ workspace**
+- **param2=ชื่อ database schema**
+- **param3=ชื่อ scope  เช่น demo-funny-webapi แต่ถ้าไม่ใส่ จะ default เป็น shared-webapi**
+
 ```bash
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
 bash workspace-generator/script-generator/new-storeprisma.sh gu-example-system demo
@@ -301,7 +366,7 @@ bash workspace-generator/script-generator/new-webapi.sh gu-example-system demo-e
 ```
 
 ---
-## Global Packagaes
+## Global Packages
 คือ Package ที่สร้างไว้ใน Global Workspace สำหรับ เอาไว้ Share การใช้งาน ในหลายๆ System Workspace
 
 ### ui-common
@@ -316,11 +381,11 @@ bash workspace-generator/script-generator/new-uicommon.sh gu-example-system
 
 ```
 
-### ui-function, api-functions, common-funtions
+### ui-function, api-functions, common-functions
 เป็น Project ที่เก็บ แต่ pure function ที่เอาไว้ใช้ ให้ Project อื่นๆ นำไปใช้งาน โดย
 - **ui-functions** คือ project ที่มีการใช้ builtin ของ browser เช่น window,localstorage เป็นต้น
-- **api-functions** คือ project ที่มีการใช้ buitin ของ nodejs เช่น path,os,fs เป็นต้น
-- **common-functions** ตือ project ที่รันไ้ด้ทั้ง ใน  browser และ nodejs environemnt
+- **api-functions** คือ project ที่มีการใช้ builtin ของ nodejs เช่น path,os,fs เป็นต้น
+- **common-functions** คือ project ที่รันไ้ด้ทั้ง ใน  browser และ nodejs environment
 
 ตัวอย่าง การสร้าง api-function และ ui-functions
 ```bash
@@ -368,7 +433,7 @@ bash workspace-generator/script-generator/new-basetypes.sh gu-example-system ui-
   ],
 ```
 
-#### ก่อน push commit project Bastype
+#### ก่อน push commit project BaseType
 ให้รันคำสั่ง เพื่อสร้าง export path ใน package.json
 ```bash
 # จะ export ทุก path ที่มี file index.ts
@@ -377,7 +442,7 @@ pnpm gen:exports
 โครงสร้าง folder ใน source ดังนี้
 ![image](assets/Screenshot%202568-01-06%20at%2019.25.53.png)
 
-จะได้ผลลัพ ใน package.json ดังนี้
+จะได้ผลลัพธ์ ใน package.json ดังนี้
 ```json
   "exports": {
     "./exm": {
@@ -396,8 +461,8 @@ pnpm gen:exports
 ### fastify-plugins
 เป็น project ที่ plugin สำหรับ web framework fastify เพื่อเอาไว้ share ให้ project type webapi ใน system-workspace อื่นๆ
 
-**param1=ชื่อ workspace** เช่น gu-example-system
-**param2=ชื่อ scope_name** ถ้าต้องการสร้าง project ภายใน scope folder ให้ใส่ค่าเป็น shared-webapi
+- **param1=ชื่อ workspace** เช่น gu-example-system
+- **param2=ชื่อ scope_name** ถ้าต้องการสร้าง project ภายใน scope folder ให้ใส่ค่าเป็น shared-webapi
 
 ```bash
 # สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
@@ -408,9 +473,10 @@ bash workspace-generator/script-generator/new-plugin-fastify.sh gu-example-syste
 ***
 
 ## Other
-- ### วิธีเคลีย package ทั้งหมด เพื่อติดตั้งใหม่
 
-#### บน ubuntu ให้ เปิด globstar ก่อน (บน mac เปิด defaultอยู่แล้ว)
+### วิธีเคลีย package ทั้งหมด เพื่อติดตั้งใหม่
+
+> บน ubuntu ให้ เปิด globstar ก่อน (บน mac เปิด default อยู่แล้ว)
 
 สั่งลบ package ทั้งหมด
 ```bash
@@ -423,7 +489,7 @@ pnpm store prune
 
 <br/>
 
-- ### การแก้ไข nx console error และ มี error ดั้งนี้
+### การแก้ไข nx console error และ มี error ดังนี้
 ![image](assets/Screenshot%202568-04-10%20at%2011.01.51.png)
 
 แก้ไขโดย
@@ -437,44 +503,5 @@ rm -rf **/node_modules
 #และทำการ reload window ของ vs-code หรือ ปิดแล้วเปิดใหม่ก็ได้
 ```
 
-- ### ปัญหา react-pdf-veiewer installation
-https://stackoverflow.com/questions/76934122/canvas-node-error-during-installation-of-react-pdf-viewer-package-with-next-js
-### scaffolding: เพิ่ม API domain (unified-route pattern)
-
-> 📖 **คู่มือเต็ม (แก้ field/logic/migration/test + ปัญหาที่เจอบ่อย):** [docs/api-scaffolding.user-guide.md](./docs/api-scaffolding.user-guide.md)
-
-มี 5 คำสั่ง (รันจาก `workspaces/node-app`) — **ไม่ใส่ param ก็ได้ จะถามทีละค่า (TUI)**:
-
-```bash
-# 1) slice: core+service+client ของ domain (command create-<domain> + query get-<domain>) + อัปเดต exports/index
-pnpm gen:api-domain <scope> <api-pkg> <domain> [layer]
-#   เช่น: pnpm gen:api-domain shared-webapi shared-api order
-#   [layer] = core|service|client|all (default all) — gen เฉพาะชั้นได้
-
-# 2) wire: data-layer repo (store-prisma) + webapi route + prisma model + deps
-pnpm gen:api-wire <scope> <api-pkg> <data-pkg> <webapi-app> <domain>
-#   เช่น: pnpm gen:api-wire shared-webapi shared-api demo-shop-data demo-shop-webapi order
-
-# 3) action: เพิ่ม action เดี่ยว (เช่น update/list) เข้า domain เดิม + เพิ่ม DI key อัตโนมัติ
-pnpm gen:api-action <scope> <api-pkg> <domain> <command|query> <verb> [layer]
-#   เช่น: pnpm gen:api-action shared-webapi shared-api order command update
-
-# 4) promote: grouped domain (ใน shared-api) -> standalone project (<domain>-api แยก, src แบน)
-pnpm gen:api-promote <scope> <shared-api> <domain>
-#   เช่น: pnpm gen:api-promote shared-webapi shared-api product
-
-# 5) demote: standalone project -> กลับเป็น grouped domain ใน shared-api
-pnpm gen:api-demote <scope> <project> <shared-api>
-#   เช่น: pnpm gen:api-demote shared-webapi product-api shared-api
-```
-> ต้อง clone `workspace-generator` ไว้ระดับเดียวกับ workspace (หรือ set `WORKSPACE_GENERATOR_DIR`) — จำเป็นเฉพาะตอน scaffold; build/test/run ไม่ต้องมี
-
-หรือเรียก bash ตรงๆ (จาก dir แม่ที่มี workspace + generator เป็น sibling):
-```bash
-bash workspace-generator/script-generator/new-api-domain.sh  <workspace> <scope> <api-pkg> <domain> [generator-dir] [layer]
-bash workspace-generator/script-generator/new-api-wire.sh    <workspace> <scope> <api-pkg> <data-pkg> <webapi-app> <domain>
-bash workspace-generator/script-generator/new-api-action.sh  <workspace> <scope> <api-pkg> <domain> <command|query> <verb>
-bash workspace-generator/script-generator/promote-api-domain.sh <workspace> <scope> <shared-api> <domain>
-bash workspace-generator/script-generator/demote-api-domain.sh  <workspace> <scope> <project> <shared-api>
-```
-หลัง wire แล้ว: `pnpm prisma:generate` + `pnpm gen:up-script` (migration) ที่ store-prisma แล้วทดสอบด้วย `make test` (ดู user guide)
+### ปัญหา react-pdf-viewer installation
+ดูวิธีแก้: [stackoverflow #76934122](https://stackoverflow.com/questions/76934122/canvas-node-error-during-installation-of-react-pdf-viewer-package-with-next-js)
