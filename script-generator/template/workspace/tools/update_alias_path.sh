@@ -11,7 +11,9 @@ fi
 
 # สร้าง paths JSON
 paths_json="{ \"@$PACKAGE_NAME/*\": [\"./lib/*\"]"
-jest_paths_json=" '^@$PACKAGE_NAME/(.*)$': '<rootDir>/lib/\$1'"
+# คง base mapper (react-pin, css, @/@root) ไว้ด้วยการ spread baseConfig.moduleNameMapper เป็นตัวแรกเสมอ
+# ไม่งั้นการเขียน moduleNameMapper ใหม่จะทับ react-pin/css หาย -> jest พัง (dual-React / parse css)
+jest_paths_json=" ...(baseConfig.moduleNameMapper || {}), '^@$PACKAGE_NAME/(.*)$': '<rootDir>/lib/\$1'"
 vite_paths_json=" '@$PACKAGE_NAME':  resolve(__dirname, './lib') "
 first=false
 
@@ -78,6 +80,33 @@ rm sed_replace.txt
 
  npx prettier --write tsconfig.json
 echo "Updated paths in tsconfig.json with only lib folder aliases"
+
+
+# tsconfig.build.json — มี paths block แยกของตัวเอง (ไม่ inherit tsconfig.json)
+# ของเดิม tool อัปเดตแค่ tsconfig.json -> build (tsc -p tsconfig.build.json) หา per-submodule alias ไม่เจอ
+# จึงต้อง inject paths ชุดเดียวกันเข้า tsconfig.build.json ด้วย
+if [ -f tsconfig.build.json ]; then
+  cp tsconfig.build.json tsconfig.build.json.bak
+  cat > sed_remove.txt << EOF
+/[[:space:]]*"paths"[[:space:]]*:[[:space:]]*{/,/}/ {
+  c\\
+
+}
+EOF
+  cat > sed_replace.txt << EOF
+/[[:space:]]*"compilerOptions"[[:space:]]*:/ {
+  c\\
+  "compilerOptions": {\\
+    "paths": $paths_json,
+}
+EOF
+  sed -f sed_remove.txt tsconfig.build.json > tsconfig.build.temp.json
+  sed -f sed_replace.txt tsconfig.build.temp.json > tsconfig.build.temp2.json
+  mv tsconfig.build.temp2.json tsconfig.build.json
+  rm tsconfig.build.temp.json sed_remove.txt sed_replace.txt
+  npx prettier --write tsconfig.build.json
+  echo "Updated paths in tsconfig.build.json with only lib folder aliases"
+fi
 
 
 # jest

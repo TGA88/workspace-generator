@@ -49,7 +49,9 @@ update_config_files() {
         paths_config+="      \"@${feature_name}/*\": [\"../../libs/${feature_path}*\"],"
         # alias_config+="    '@${feature_name}': path.resolve(__dirname, '../../../libs/${feature_name}/${suffix_path}'),"
         # paths_config+="      \"@${feature_name}/*\": [\"../../libs/${feature_name}/${suffix_path}*\"],"
-    done < <(find "$LIBS_PATH" -maxdepth 3 -type d  \( -name "feature-*"  -o -name "ui-*-lib" -o -name "ui-components" -o -name "ui-common" \) -not -path "*/dist/*" -not -path "*/node_modules/*")
+    # จับทุก sub-module ที่ขึ้นต้น feature- หรือ ui- (ครอบ ui-components, ui-functions, ui-state-<vendor>, ui-*-lib, ui-common)
+    # ของเดิม list เฉพาะ ui-components/ui-common/ui-*-lib ทำให้ ui-functions, ui-state-redux ฯลฯ ไม่ได้ alias -> story ที่ import จากมันใน storybook พัง
+    done < <(find "$LIBS_PATH" -maxdepth 3 -type d  \( -name "feature-*"  -o -name "ui-*" \) -not -path "*/dist/*" -not -path "*/node_modules/*")
   
 
   # check dup tsconfig paths with existing paths
