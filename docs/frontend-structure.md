@@ -38,18 +38,18 @@
 
 ### การตั้งชื่อ project/folder ระดับ workspace
 
-สมมติ system = `demo-shop-system`, base = `shop-demo`, web app = `shop-demo-web` — ตั้งชื่อตามนี้ (อิง pattern feedos: `feedos-frgm-lib` / `feedos-frgm-web` / storybook `feedos-frgm`):
+สมมติ repo (= workspace/system) ชื่อ `demo-shop-system` รูปแบบ `<corp|product>-<system>-system` → base = `demo-shop` (corp `demo` + system `shop`) — ตั้งชื่อทุก project เป็น `demo-shop-<suffix>`:
 
 | สิ่งที่ | ชื่อ | location |
 |---|---|---|
-| frontend-lib-module | `shop-demo-lib` | `libs/shop-demo-lib/` |
-| web-config (scope = web app) | `shop-demo-web/config` | `libs/shop-demo-web/config/` |
-| web app | `shop-demo-web` | `apps/shop-demo-web/nextjs/` |
-| storybook host | `shop-demo` | `storybook-host/shop-demo/` |
-| feature/shared ที่ promote (web เดียว) | — | `libs/shop-demo-web/<name>/` |
+| frontend-lib-module | `demo-shop-lib` | `libs/demo-shop-lib/` |
+| web-config (scope = web app) | `demo-shop-web/config` | `libs/demo-shop-web/config/` |
+| web app | `demo-shop-web` | `apps/demo-shop-web/nextjs/` |
+| storybook host | `demo-shop` | `storybook-host/demo-shop/` |
+| feature/shared ที่ promote (web เดียว) | — | `libs/demo-shop-web/<name>/` |
 | feature/shared ที่ promote (หลาย web) | generic | `libs/shared-web/<name>/` |
 
-จุดสำคัญ: **frontend-lib-module (`shop-demo-lib`) กับ web scope folder (`shop-demo-web`) เป็นคนละ folder ที่ libs root** ไม่ใช่ lib ซ้อนใน scope — เพื่อให้เวลา promote feature เป็น project มันไปอยู่ใต้ `libs/shop-demo-web/` (scope ของ web ตัวนั้น) แยกออกจากตัว lib ได้สะอาด
+จุดสำคัญ: **frontend-lib-module (`demo-shop-lib`) กับ web scope folder (`demo-shop-web`) เป็นคนละ folder ที่ libs root** ไม่ใช่ lib ซ้อนใน scope — เพื่อให้เวลา promote feature เป็น project มันไปอยู่ใต้ `libs/demo-shop-web/` (scope ของ web ตัวนั้น) แยกออกจากตัว lib ได้สะอาด
 
 ---
 
@@ -59,7 +59,7 @@
 
 | ขอบเขตการใช้ | อยู่ที่ไหน | ตัวอย่าง |
 |---|---|---|
-| ใช้ **web เดียว** | folder ใน frontend-lib-module ของ web นั้น | `shop-demo-lib/lib/ui-components/` |
+| ใช้ **web เดียว** | folder ใน frontend-lib-module ของ web นั้น | `demo-shop-lib/lib/ui-components/` |
 | ใช้ **หลาย web** ใน workspace | project แยก ชื่อ generic (ไม่ prefix) | `@scope/ui-components` |
 
 เหตุผลที่ project generic **ไม่ต้อง prefix ชื่อ web**: มันคือ "ตัวกลางของ workspace มีตัวเดียว" — เหมือน `share-data` ที่ไม่ตั้ง `shop-share-data` ส่วนของที่ผูกกับ web เดียว มันอยู่ใน lib ของ web นั้นซึ่งชื่อ lib ระบุ owner อยู่แล้ว จึงไม่มีทางชนกัน
@@ -71,7 +71,7 @@
 ## 3. โครงภายใน frontend-lib-module
 
 ```
-libs/shop-web-lib/                         ← frontend-lib-module ของ shop-web (ชื่อ = ของ web ไหน)
+libs/demo-shop-lib/                         ← frontend-lib-module (base demo-shop)
   lib/
     feature-cart/                          ← business slice
       components/
@@ -253,9 +253,9 @@ CSS module ปลอดภัยกว่า plain import เพราะมั�
 ### เมื่อไหร่ต้อง promote (2 เหตุผล)
 
 1. **มี consumer ตัวที่ 2 (web/module อื่น)** → ยกขึ้น **project generic** ที่ `libs/shared-web/<name>` เพื่อแชร์ข้าม web
-2. **frontend-lib-module ใหญ่เกินจน build เจอ heap out of memory** → split เฉพาะ sub-module ที่โต (feature/ui) ออกเป็น **project แยก** แต่ยังเป็นของ web เดียว จึงไปอยู่ใต้ scope ของ web นั้น `libs/shop-demo-web/<name>`
+2. **frontend-lib-module ใหญ่เกินจน build เจอ heap out of memory** → split เฉพาะ sub-module ที่โต (feature/ui) ออกเป็น **project แยก** แต่ยังเป็นของ web เดียว จึงไปอยู่ใต้ scope ของ web นั้น `libs/demo-shop-web/<name>`
 
-เหตุผลที่กรณี 2 ไป `libs/shop-demo-web/` (ไม่ใช่ `shared-web`): มันยังเป็นของ web เดียว — การ split เป็นการแก้ปัญหา build memory/เวลา ไม่ใช่การแชร์ข้าม web ดังนั้นวางใต้ scope ของ web ตัวเจ้าของ เพื่อให้ ownership ชัด และถ้าวันหลังมี web ที่ 2 มาใช้ค่อยยกขึ้น `shared-web` อีกที (README เรียก project ประเภทนี้ว่า Feature-Lib — ใช้ตอน frontend-lib-module ใหญ่เกินหรือ heap OOM)
+เหตุผลที่กรณี 2 ไป `libs/demo-shop-web/` (ไม่ใช่ `shared-web`): มันยังเป็นของ web เดียว — การ split เป็นการแก้ปัญหา build memory/เวลา ไม่ใช่การแชร์ข้าม web ดังนั้นวางใต้ scope ของ web ตัวเจ้าของ เพื่อให้ ownership ชัด และถ้าวันหลังมี web ที่ 2 มาใช้ค่อยยกขึ้น `shared-web` อีกที (README เรียก project ประเภทนี้ว่า Feature-Lib — ใช้ตอน frontend-lib-module ใหญ่เกินหรือ heap OOM)
 
 > เมื่อ frontend-lib-module โตขึ้นเรื่อยๆ `vite build` / `tsc` จะกิน memory มากขึ้นจน Node heap เต็ม (JavaScript heap out of memory) การ split sub-module ที่ใหญ่ออกเป็น project แยกช่วยให้ build ทีละหน่วยเล็กลง + Nx affected build เฉพาะส่วนที่เปลี่ยน
 
