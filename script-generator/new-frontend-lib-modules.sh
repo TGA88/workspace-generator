@@ -51,6 +51,9 @@ cp -r $GENERATOR_DIR/script-generator/template/project/features/* $WORKSPACE_DIR
 rm  -rf $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME/lib/*
 touch $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME/lib/.gitkeep
 touch $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME/lib/main.ts
+# jest.config อ้าง setupFilesAfterEnv: <rootDir>/lib/setupTest.ts — rm lib/* ลบไฟล์นี้จาก template ทิ้ง
+# จึงต้องสร้างใหม่ ไม่งั้น jest พังทันทีที่มี test แรก (Module lib/setupTest.ts not found)
+echo "import '@testing-library/jest-dom';" > $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME/lib/setupTest.ts
 
 
 cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME
