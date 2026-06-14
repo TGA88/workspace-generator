@@ -8,7 +8,7 @@
 // 1. nx.json: เอา ^build ออกจาก lint/test/build (คงไว้ที่ serve/release)
 // 2. tsconfig base + tsconfig ของ apps: เพิ่ม customConditions ["development"]
 // 3. jest.config.*: เพิ่ม testEnvironmentOptions.customExportConditions
-// 4. ทุก lib ใน libs/** ที่มี exports: เพิ่ม "development" ชี้ source + sideEffects:false
+// 4. ทุก lib ใน libs/** ที่มี exports: เพิ่ม "development" ชี้ source + sideEffects (backend:false / frontend:css-scss)
 // 5. apps/**: override nx targets.build.dependsOn = ["^build"]
 // 6. tsup config: minify false
 import fs from 'node:fs';
@@ -117,7 +117,10 @@ for (const f of walkPkgJson(P('libs'))) {
   }
   if (changed || pkg.sideEffects === undefined) {
     pkg.exports = out;
-    if (pkg.sideEffects === undefined) pkg.sideEffects = false;
+    // sideEffects: frontend lib (lib/) อาจ import CSS/SCSS ซึ่งเป็น side-effect-only
+    // -> ห้าม false (ไม่งั้น bundler tree-shake CSS ทิ้ง style หายตอน build)
+    // backend lib (src/) ไม่มี CSS -> false ได้ (tree-shake เต็มที่)
+    if (pkg.sideEffects === undefined) pkg.sideEffects = frontend ? ['**/*.css', '**/*.scss'] : false;
     writeJson(f, pkg);
     log('lib exports patched:', path.relative(ROOT, f));
   }
