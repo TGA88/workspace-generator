@@ -30,6 +30,7 @@ script to create pnpm workspace boilerplate
 | 📖 | [export-strategy.md](./docs/export-strategy.md) | กลไก export เต็ม + config ครบทุกจุด + troubleshooting |
 | 🤔 | [why-this-architecture.md](./docs/why-this-architecture.md) | ทำไม template ถึง "ดูเยอะ" — เหตุผลเบื้องหลังสำหรับทีม |
 | 🎨 | [frontend-structure.md](./docs/frontend-structure.md) | จัดโครง frontend lib (feature / ui-components / ui-functions / ui-state-&lt;vendor&gt;, boundary, promotion) |
+| 🧪 | [frontend-dev-workflow.md](./docs/frontend-dev-workflow.md) | ขั้นตอนพัฒนา frontend — Storybook vs Next.js, storybook-host scripts, mock (MSW / fe-client) |
 | 🧩 | [backend-structure.md](./docs/backend-structure.md) | จัดโครง backend API (unified-route: core/service/client + DI + ResultV2 + telemetry, grouped vs promoted) |
 | 🚀 | [api-scaffolding.user-guide.md](./docs/api-scaffolding.user-guide.md) | เพิ่ม backend API ตั้งแต่ศูนย์ — scaffolding `gen:api-domain/wire/action/promote/demote` |
 | 🛠️ | [api-scaffolding.developer-guide.md](./docs/api-scaffolding.developer-guide.md) | แก้ template/scaffolding ของ generator เอง (developer guide) |

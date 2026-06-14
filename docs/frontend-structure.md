@@ -4,6 +4,7 @@
 
 > - **ทำไม**ต้องแบ่งแบบนี้ → [why-this-architecture.md](./why-this-architecture.md#frontend-libs)
 > - **build/resolution** ทำงานยังไง (dev-condition, peer dependency mechanics) → [export-strategy.md](./export-strategy.md)
+> - **ขั้นตอนพัฒนาจริง** (Storybook vs Next.js, storybook-host scripts, mock/MSW) → [frontend-dev-workflow.md](./frontend-dev-workflow.md)
 
 ## สารบัญ
 
