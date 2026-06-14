@@ -48,12 +48,15 @@ service/src/product-api/
   query/get-product/ ...
 
 client/src/product-api/
-  types.ts                                # CustomHeader
-  command/create-product/{types,endpoint,index}.ts   # Request/Response + fn เรียก API
-  query/get-product/ ...
+  index.ts                                # PUBLIC entry (บาง): export client + types
   client.ts                               # ProductClient (รวม fn ของ domain)
-  index.ts
+  types.ts                                # PUBLIC types barrel (re-export ด้วย export type)
+  shared/types.ts                         # type ที่ command+query ใช้ร่วม (เช่น CustomHeader)
+  command/create-product/{types,endpoint,index}.ts   # Req/Res + fn (INTERNAL — ไม่เปิด export)
+  query/get-product/ ...
 ```
+
+> **public surface ของ client** = แค่ `ProductClient` + types (ผ่าน `@<ws>/shared-api-client/product-api`); fn ย่อย (`createProduct`) เป็น internal ที่ Client ห่ออยู่ — ต่างจาก core/service ที่เปิด public ราย action (`./<domain>/command/*`) เพราะ client ต้องการแค่ตัว Client + types (ดู `api-scaffolding.developer-guide.md`)
 
 ฝั่ง data + app (wire):
 ```
@@ -144,6 +147,35 @@ fastify route (composition root)
 - action: `command/<verb>-<name>` หรือ `query/<verb>-<name>` (เช่น `create-product`, `get-product`)
 - DI key const: `<DOMAINUP>_API_CONTEXT_KEY.REPO_<ACTION>`
 - data factory: `<domain>-factory/command|query/<action>/repository.ts`
+
+---
+
+## 8. Export strategy: ทำไม per-subpath (ไม่ใช่ barrel เดียว) + ทำไม client ต่าง
+
+public interface อยู่ที่ **`index.ts` ของแต่ละ sub-module (per-subpath)** ไม่ใช่ barrel เดียวที่ root `src/index.ts` — เลือกแบบนี้ด้วยเหตุผล:
+
+**core / service → per-subpath** (`./<domain>/command/*`, `./<domain>/query/*`):
+
+| | barrel เดียว (`import {X} from '@<ws>/shared-api-core'`) | **per-subpath (ที่เลือก)** |
+|---|---|---|
+| bundle / tree-shake | ❌ import ตัวเดียวลาก module graph ทั้ง barrel มา (bundle บวม) | ✅ โหลดเฉพาะที่ import → เล็กสุด |
+| dev tooling (tsc/jest) | ❌ แตะ barrel = resolve ทั้ง package | ✅ resolve เฉพาะ subpath → เร็ว |
+| scale (domain เยอะ) | ❌ barrel กลางบวม + เสี่ยง circular import | ✅ เพิ่ม domain/action ไม่กระทบ entry กลาง |
+| consumer ใช้ | ✅ path เดียว จำง่าย | ⚠️ path ยาว ต้องรู้โครง (ข้อเสียที่ยอมรับ) |
+
+→ สถาปัตยกรรมนี้เน้น **build เร็ว + bundle เล็ก** (เหตุผลเดียวกับ dev-condition export strategy) ดังนั้น per-subpath เหมาะกว่า; ข้อเสีย "path ยาว" ยอมรับได้แลกกับ performance
+
+**client → ต่าง: public = แค่ `Client` + types (per-domain barrel ที่ `./<domain>`)**
+- `ProductClient` รวม fn ทุก action อยู่แล้ว → import client ก็ลาก action มาหมด การเปิด fn **ราย action** ไม่ช่วย tree-shake แถมรก
+- consumer (frontend / service อื่น) ต้องการแค่ "ตัวเรียก + type" → เปิดแค่ Client + types = API surface เล็ก ดูแลง่าย
+- fn ย่อย (`createProduct`) เป็น **internal** (Client ห่อไว้) → เปลี่ยน internal ได้โดย consumer ไม่พัง
+- ข้อเสีย: ถ้าใครอยากเรียก fn ดิบ (ไม่ผ่าน Client) ทำไม่ได้ — แต่ pattern ตั้งใจให้ใช้ผ่าน Client เสมอ
+
+**root `src/index.ts` ทำไมยังต้องมี (แต่ minimal `export {}`):**
+- tsup config ระบุ entry `'src/index.ts'` ตรงๆ + package.json มี export `"."` → ไม่มีไฟล์นี้ = build error
+- เนื้อในเป็น `export {}` พอ — public จริงอยู่ที่ sub-module ไม่ใช่ root
+
+> **standalone (promoted)** ใช้หลักเดียวกัน แค่ไม่มี `<domain>/` ครอบ: core/service เปิด `./command/*`; client เปิด `.` (root = Client+types)
 
 ---
 
