@@ -5,6 +5,10 @@
 > รันคำสั่ง `pnpm ...` ทั้งหมด **จากในโฟลเดอร์ `workspaces/node-app`** (pnpm workspace root)
 > และต้อง clone `workspace-generator` ไว้ระดับเดียวกับโฟลเดอร์ workspace ของคุณ (หรือ set `WORKSPACE_GENERATOR_DIR`)
 
+> ℹ️ **workspace-generator จำเป็นเฉพาะตอน "สร้างของใหม่" (`pnpm gen:api-*`) เท่านั้น**
+> งานประจำวัน — `pnpm lint` / `test` / `build` / `make test` / รัน app — **workspace ทำเองได้ครบ ไม่ต้องมี generator** (โค้ดที่ gen ออกมาแล้ว self-contained); ถ้าลบ generator ไป build/run ยังทำงานปกติ แค่ `pnpm gen:api-*` จะใช้ไม่ได้จนกว่าจะ clone กลับมา
+> 🔄 **อัปเดต scaffolding = `git pull` ที่ `workspace-generator` ที่เดียว** → ทุก workspace ที่ชี้มาได้ของใหม่ทันที (ไม่ต้องตามแก้ทีละ workspace)
+
 ---
 
 ## TL;DR — เพิ่ม 1 API ใน 4 ขั้น

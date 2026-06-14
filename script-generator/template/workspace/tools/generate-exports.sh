@@ -69,14 +69,15 @@ generate_export_entry() {
     }
 
     # Generate paths
-    local types_path=$(clean_dist_path "./src/${clean_path}/index.ts")
+    local dev_path=$(clean_dist_path "./src/${clean_path}/index.ts")          # development -> src (dev tooling/customConditions)
+    local types_path=$(clean_dist_path "./dist/${clean_path}/index.d.ts")     # types -> dist .d.ts (build/publish)
     local import_path=$(clean_dist_path "./dist/${clean_path}/index.${ESM_EXT}")
     local require_path=$(clean_dist_path "./dist/${clean_path}/index.${COMMONJS_EXT}")
 
     # Generate the export entry
     cat << EOF
     "${clean_path}": {
-      "development": "${types_path}",
+      "development": "${dev_path}",
       "types": "${types_path}",
       "import": "${import_path}",
       "require": "${require_path}"
