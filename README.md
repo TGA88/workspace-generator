@@ -15,7 +15,7 @@ script to create pnpm workspace boilerplate
 > 🤔 **ทำไม template ถึง "ดูเยอะ" — เหตุผลเบื้องหลังสำหรับทีม: [docs/why-this-architecture.md](./docs/why-this-architecture.md)**
 > 🎨 **จัดโครง frontend lib (feature / ui-components / ui-functions / ui-state-&lt;vendor&gt;, boundary, promotion): [docs/frontend-structure.md](./docs/frontend-structure.md)**
 > 🧩 **จัดโครง backend API (unified-route: core/service/client + DI + ResultV2 + telemetry, grouped vs promoted): [docs/backend-structure.md](./docs/backend-structure.md)**
-> 🚀 **เพิ่ม backend API ตั้งแต่ศูนย์ (user guide — scaffolding `gen:api-domain` / `gen:api-wire`): [docs/api-scaffolding.user-guide.md](./docs/api-scaffolding.user-guide.md)**
+> 🚀 **เพิ่ม backend API ตั้งแต่ศูนย์ (user guide — scaffolding `gen:api-domain/wire/action/promote/demote`): [docs/api-scaffolding.user-guide.md](./docs/api-scaffolding.user-guide.md)**
 > 🛠️ **แก้ template/scaffolding ของ generator (developer guide): [docs/api-scaffolding.developer-guide.md](./docs/api-scaffolding.developer-guide.md)**
 
 ตั้งแต่ v1.4 ทุก lib template ใช้ **dual-condition exports** เพื่อให้ **lint / test / build รันได้ทันทีโดยไม่ต้อง build local dependency ก่อน** แต่ production ยังใช้ `dist` ตามเดิมทุกประการ — ทำได้โดยเพิ่ม custom condition `development` ชี้ไปที่ source ไว้บนสุดของทุก exports entry แล้วเปิด condition นี้เฉพาะ dev tooling
@@ -443,7 +443,7 @@ https://stackoverflow.com/questions/76934122/canvas-node-error-during-installati
 
 > 📖 **คู่มือเต็ม (แก้ field/logic/migration/test + ปัญหาที่เจอบ่อย):** [docs/api-scaffolding.user-guide.md](./docs/api-scaffolding.user-guide.md)
 
-มี 3 คำสั่ง (รันจาก `workspaces/node-app`) — **ไม่ใส่ param ก็ได้ จะถามทีละค่า (TUI)**:
+มี 5 คำสั่ง (รันจาก `workspaces/node-app`) — **ไม่ใส่ param ก็ได้ จะถามทีละค่า (TUI)**:
 
 ```bash
 # 1) slice: core+service+client ของ domain (command create-<domain> + query get-<domain>) + อัปเดต exports/index
@@ -458,13 +458,23 @@ pnpm gen:api-wire <scope> <api-pkg> <data-pkg> <webapi-app> <domain>
 # 3) action: เพิ่ม action เดี่ยว (เช่น update/list) เข้า domain เดิม + เพิ่ม DI key อัตโนมัติ
 pnpm gen:api-action <scope> <api-pkg> <domain> <command|query> <verb> [layer]
 #   เช่น: pnpm gen:api-action shared-webapi shared-api order command update
+
+# 4) promote: grouped domain (ใน shared-api) -> standalone project (<domain>-api แยก, src แบน)
+pnpm gen:api-promote <scope> <shared-api> <domain>
+#   เช่น: pnpm gen:api-promote shared-webapi shared-api product
+
+# 5) demote: standalone project -> กลับเป็น grouped domain ใน shared-api
+pnpm gen:api-demote <scope> <project> <shared-api>
+#   เช่น: pnpm gen:api-demote shared-webapi product-api shared-api
 ```
-> ต้อง clone `workspace-generator` ไว้ระดับเดียวกับ workspace (หรือ set `WORKSPACE_GENERATOR_DIR`)
+> ต้อง clone `workspace-generator` ไว้ระดับเดียวกับ workspace (หรือ set `WORKSPACE_GENERATOR_DIR`) — จำเป็นเฉพาะตอน scaffold; build/test/run ไม่ต้องมี
 
 หรือเรียก bash ตรงๆ (จาก dir แม่ที่มี workspace + generator เป็น sibling):
 ```bash
-bash workspace-generator/script-generator/new-api-domain.sh <workspace> <scope> <api-pkg> <domain> [generator-dir] [layer]
-bash workspace-generator/script-generator/new-api-wire.sh   <workspace> <scope> <api-pkg> <data-pkg> <webapi-app> <domain>
-bash workspace-generator/script-generator/new-api-action.sh <workspace> <scope> <api-pkg> <domain> <command|query> <verb>
+bash workspace-generator/script-generator/new-api-domain.sh  <workspace> <scope> <api-pkg> <domain> [generator-dir] [layer]
+bash workspace-generator/script-generator/new-api-wire.sh    <workspace> <scope> <api-pkg> <data-pkg> <webapi-app> <domain>
+bash workspace-generator/script-generator/new-api-action.sh  <workspace> <scope> <api-pkg> <domain> <command|query> <verb>
+bash workspace-generator/script-generator/promote-api-domain.sh <workspace> <scope> <shared-api> <domain>
+bash workspace-generator/script-generator/demote-api-domain.sh  <workspace> <scope> <project> <shared-api>
 ```
 หลัง wire แล้ว: `pnpm prisma:generate` + `pnpm gen:up-script` (migration) ที่ store-prisma แล้วทดสอบด้วย `make test` (ดู user guide)

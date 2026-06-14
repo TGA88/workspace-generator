@@ -268,6 +268,10 @@ node workspace-generator/script-generator/migrate/apply-export-strategy.mjs <pat
 
 ---
 
+## ดูต่อ
+
+- **public surface ของแต่ละ layer (per-subpath vs barrel) + เหตุผลที่ client เลือก option B** — ดู `backend-structure.md` §8 ([Export strategy](./backend-structure.md))
+
 ## อ้างอิง
 
 - [Node.js — Conditional exports](https://nodejs.org/api/packages.html#conditional-exports)
