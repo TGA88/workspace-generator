@@ -1,5 +1,5 @@
 
-import { PrismaClient } from '@prisma/exm-data-client';
+import { PrismaClient } from '../generated/client/client';
 import { mockDeep, mockReset, DeepMockProxy } from 'jest-mock-extended';
 
 import { getPrismaInstance } from './dbclient';

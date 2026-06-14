@@ -63,4 +63,14 @@ node -e '
   fs.writeFileSync(f,JSON.stringify(j,null,2));
 ' "$STORE/package.json" "$DOMAIN"
 
+# ---- webapi: ensure workspace deps for the generated routes ----
+node -e '
+  const fs=require("fs");const f=process.argv[1],ws=process.argv[2],api=process.argv[3],data=process.argv[4];
+  const j=JSON.parse(fs.readFileSync(f));j.dependencies=j.dependencies||{};
+  j.dependencies[`@${ws}/${api}-core`]="workspace:^";
+  j.dependencies[`@${ws}/${api}-service`]="workspace:^";
+  j.dependencies[`@${ws}/${data}-store-prisma`]="workspace:^";
+  fs.writeFileSync(f,JSON.stringify(j,null,2));
+' "$WEBAPI/package.json" "$WORKSPACE" "$API_PKG" "$DATA_PKG"
+
 echo "wired ${DOMAIN}: store-prisma repo + webapi route + prisma model. run prisma:generate + migration."
