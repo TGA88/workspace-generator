@@ -7,6 +7,13 @@ set -e
 WORKSPACE=$1; SCOPE=$2; API_PKG=$3; DOMAIN=$4; TYPE=$5; VERB=$6; GENERATOR_DIR=$7; LAYER=${8:-all}
 SYSTEM_DIR='node-app'
 [ -z "$GENERATOR_DIR" ] && { [ -d "workspace-generator" ] && GENERATOR_DIR="workspace-generator" || GENERATOR_DIR="."; }
+# --- TUI: prompt for any missing arg (ไม่ใส่ param ก็ได้) ---
+if [ -z "${WORKSPACE}" ]; then read -rp "workspace name (เช่น demo-shop-system): " WORKSPACE; fi
+if [ -z "${SCOPE}" ]; then read -rp "scope (group folder ใต้ libs/, เช่น shared-webapi): " SCOPE; fi
+if [ -z "${API_PKG}" ]; then read -rp "api package (เช่น shared-api): " API_PKG; fi
+if [ -z "${DOMAIN}" ]; then read -rp "domain (เช่น order): " DOMAIN; fi
+if [ -z "${TYPE}" ]; then read -rp "type [command|query]: " TYPE; fi
+if [ -z "${VERB}" ]; then read -rp "verb (เช่น update, delete, list): " VERB; fi
 for v in WORKSPACE SCOPE API_PKG DOMAIN TYPE VERB; do [ -z "${!v}" ] && { echo "Error: $v is required"; exit 1; }; done
 [ "$TYPE" != "command" ] && [ "$TYPE" != "query" ] && { echo "Error: TYPE ต้องเป็น command หรือ query"; exit 1; }
 

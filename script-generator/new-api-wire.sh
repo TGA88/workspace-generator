@@ -9,6 +9,13 @@ set -e
 WORKSPACE=$1; SCOPE=$2; API_PKG=$3; DATA_PKG=$4; WEBAPI_APP=$5; DOMAIN=$6; GENERATOR_DIR=$7
 SYSTEM_DIR='node-app'
 [ -z "$GENERATOR_DIR" ] && { [ -d "workspace-generator" ] && GENERATOR_DIR="workspace-generator" || GENERATOR_DIR="."; }
+# --- TUI: prompt for any missing arg (ไม่ใส่ param ก็ได้) ---
+if [ -z "${WORKSPACE}" ]; then read -rp "workspace name (เช่น demo-shop-system): " WORKSPACE; fi
+if [ -z "${SCOPE}" ]; then read -rp "scope (group folder ใต้ libs/, เช่น shared-webapi): " SCOPE; fi
+if [ -z "${API_PKG}" ]; then read -rp "api package (เช่น shared-api): " API_PKG; fi
+if [ -z "${DATA_PKG}" ]; then read -rp "data package (มี store-prisma, เช่น demo-shop-data): " DATA_PKG; fi
+if [ -z "${WEBAPI_APP}" ]; then read -rp "webapi app (เช่น demo-shop-webapi): " WEBAPI_APP; fi
+if [ -z "${DOMAIN}" ]; then read -rp "domain (เช่น order): " DOMAIN; fi
 for v in WORKSPACE SCOPE API_PKG DATA_PKG WEBAPI_APP DOMAIN; do [ -z "${!v}" ] && { echo "Error: $v is required"; exit 1; }; done
 
 Domain="$(echo "$DOMAIN" | sed -E 's/(^|-)([a-z])/\U\2/g')"
