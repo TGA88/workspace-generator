@@ -145,8 +145,8 @@ export const ORDER_API_CONTEXT_KEY = {
 
 **ที่ขึ้นบน terminal:**
 ```
-  + store-prisma/order-factory/command/create-order
-  + store-prisma/order-factory/query/get-order
+  + store-prisma/order-api/command/create-order
+  + store-prisma/order-api/query/get-order
   + routes/order-api/create-order
   + routes/order-api/get-order
   + prisma model Order (run: pnpm prisma:generate && pnpm gen:up-script)
@@ -156,12 +156,15 @@ wired order: store-prisma repo + webapi route + prisma model. run prisma:generat
 **ไฟล์ที่ได้:**
 ```
 libs/shared-webapi/demo-shop-data/store-prisma/
-├── src/order-factory/command/create-order/{repository.ts, index.ts}   # CreateOrderRepo (prisma)
-├── src/order-factory/query/get-order/{repository.ts, index.ts}        # GetOrderRepo
-└── prisma/schema.prisma   ← เพิ่ม  model Order { id, sku, name, price, ... }
+├── src/order-api/command/create-order/   # Action-Based (CreateOrderEntry)
+│   ├── entry.ts  createOrder.task.ts  checkDuplicateSku.task.ts  flows.ts
+│   ├── db.logic.ts  data.logic.ts  internal.type.ts  index.ts
+│   └── __tests__/createOrder.test.ts
+├── src/order-api/query/get-order/         # entry.ts getOrder.task.ts db.logic.ts data.logic.ts internal.type.ts index.ts (+__tests__)
+└── prisma/schema.prisma   ← model Order { ...fields + audit: createdBy/createdAt/updatedBy/updatedAt @map UPPER_SNAKE }
 
 apps/demo-shop-webapi/mcs-fastify/src/routes/order-api/
-├── create-order/index.ts   # POST route — ฉีด CreateOrderRepo เข้า registry แล้วเรียก endpoint
+├── create-order/index.ts   # POST route — ฉีด CreateOrderEntry เข้า registry แล้วเรียก endpoint
 └── get-order/index.ts      # GET  route
 ```
 

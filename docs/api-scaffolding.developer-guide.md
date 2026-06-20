@@ -80,7 +80,7 @@ base ปัจจุบัน (หลังเคลียร์ bible) มี:
 - เพิ่ม `export * from './<domain>-api'` ใน `core/src/index.ts`
 
 `new-api-wire.sh`:
-- gen `store-prisma/src/<domain>-factory/...` (repo impl) + เพิ่ม store-prisma exports
+- gen `store-prisma/src/<domain>-api/... (Action-Based)` (repo impl) + เพิ่ม store-prisma exports
 - gen `webapi/src/routes/<domain>-api/...` (route)
 - append prisma model ใน `schema.prisma` (ถ้ายังไม่มี)
 - เพิ่ม workspace deps (`<api>-core/service`, `<data>-store-prisma`) ใน webapi package.json
