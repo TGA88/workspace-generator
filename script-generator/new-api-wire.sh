@@ -35,13 +35,21 @@ tok() {
 }
 
 # ---- data-layer repo (store-prisma) ----
-DF="$STORE/src/${DOMAIN}-factory"
+DF="$STORE/src/${DOMAIN}-api"
 for pair in "command/create-${DOMAIN}:__cmd__" "query/get-${DOMAIN}:__qry__"; do
   dest="$DF/${pair%%:*}"; srcname="${pair##*:}"
   if [ -d "$dest" ]; then echo "  ! $dest exists, skip"; else
     mkdir -p "$(dirname "$dest")"; cp -r "$SC/data/$srcname" "$dest"
     find "$dest" -type f -name "*.ts" -print0 | while IFS= read -r -d '' f; do tok "$f"; done
-    echo "  + store-prisma/${DOMAIN}-factory/${pair%%:*}"
+    # rename filename tokens (deepest-first; skip the literal __tests__ dir)
+    while true; do
+      p="$(find "$dest" -depth -name '*__*' ! -name '__tests__' | head -1)"
+      [ -z "$p" ] && break
+      np="$(dirname "$p")/$(basename "$p" | sed -e "s/__DOMAIN_API__/${DOMAIN}-api/g" -e "s/__DOMAINUP__/${DOMAINUP}/g" -e "s/__Domain__/${Domain}/g" -e "s/__domain__/${DOMAIN}/g" -e "s/__DOMAIN__/${DOMAIN}/g")"
+      [ "$p" = "$np" ] && break
+      mv "$p" "$np"
+    done
+    echo "  + store-prisma/${DOMAIN}-api/${pair%%:*}"
   fi
 done
 
@@ -66,7 +74,7 @@ node -e '
   const fs=require("fs");const f=process.argv[1],d=process.argv[2];
   const j=JSON.parse(fs.readFileSync(f));j.exports=j.exports||{};
   for (const [t,a] of [["command",`create-${d}`],["query",`get-${d}`]]) {
-    const p=`${d}-factory/${t}/${a}/index`;
+    const p=`${d}-api/${t}/${a}/index`;
     j.exports[`./${d}-api/${t}/${a}`]={development:`./src/${p}.ts`,import:`./dist/${p}.mjs`,types:`./dist/${p}.d.ts`,require:`./dist/${p}.js`};
   }
   fs.writeFileSync(f,JSON.stringify(j,null,2));

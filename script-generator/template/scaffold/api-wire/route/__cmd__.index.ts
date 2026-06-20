@@ -5,7 +5,7 @@ import { TelemetryMiddlewareService } from '@inh-lib/unified-telemetry-middlewar
 import { TELEMETRY_CONTEXT_KEYS } from '@inh-lib/unified-telemetry-core';
 import { PrismaClient, getPrismaInstance } from '@__WS__/__DATA__-store-prisma';
 import { Repository } from '@__WS__/__API__-core/__DOMAIN_API__/command/create-__DOMAIN__';
-import { Create__Domain__Repo } from '@__WS__/__DATA__-store-prisma/__DOMAIN_API__/command/create-__DOMAIN__';
+import { Create__Domain__Entry } from '@__WS__/__DATA__-store-prisma/__DOMAIN_API__/command/create-__DOMAIN__';
 import { __DOMAINUP___API_CONTEXT_KEY } from '@__WS__/__API__-core/__DOMAIN_API__';
 import { create__Domain__Endpoint } from '@__WS__/__API__-service/__DOMAIN_API__/command/create-__DOMAIN__';
 
@@ -24,7 +24,7 @@ const create__Domain__Route: FastifyPluginAsync = async (fastify): Promise<void>
         throw new Error('Telemetry service not found in context');
       }
 
-      const repository: Repository = new Create__Domain__Repo(prismaClient);
+      const repository: Repository = new Create__Domain__Entry(prismaClient, telemetryService);
       addRegistryItem(ctx, __DOMAINUP___API_CONTEXT_KEY.REPO_CREATE___DOMAINUP__, repository);
       done();
     },

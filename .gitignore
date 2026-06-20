@@ -72,3 +72,6 @@ infrastructure/vol/*
 .nx/installation
 .nx/cache
 .nx/workspace-data
+
+# scaffold template dir literally named "data" must be tracked (overrides bare "data" rule above)
+!/script-generator/template/scaffold/api-wire/data/

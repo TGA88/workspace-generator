@@ -25,6 +25,7 @@ const apiCoreConfig: Config = {
     '!**/model.ts',
     '!**/models.ts',
     '!**/failures.ts',
+    '!**/contract.type.ts',
     '!**/repository.ts',
     '!**/entry.ts',
     '!**/*.config.ts',

@@ -5,8 +5,10 @@ model __Domain__ {
   name        String
   price       Float
   description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdBy   String?  @map("CREATE_BY")
+  createdAt   DateTime @default(now()) @map("CREATE_AT")
+  updatedBy   String?  @map("LAST_UPDATE_BY")
+  updatedAt   DateTime @updatedAt @map("LAST_UPDATE_AT")
 
   @@map("__domain__")
 }

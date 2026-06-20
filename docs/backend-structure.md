@@ -30,11 +30,13 @@ domain = กลุ่ม endpoint ที่อยู่ด้วยกัน (�
 core/src/product-api/
   registry.const.ts                       # DI keys (REPO_CREATE_PRODUCT, ...)
   index.ts                                # export registry
-  command/create-product/
-    repository/type.ts                    # Input/Output types
-    repository/repository.ts              # interface Repository (สัญญา ฉีดผ่าน DI)
-    repository/index.ts
+  service-client/                         # ServiceClient contract (Provider Contract)
+    type.ts                               # Req/Res (DataResponse) ของแต่ละ method
+    serviceClient.ts                      # interface ProductServiceClient
     index.ts
+  command/create-product/
+    contract.type.ts                      # Repository interface + Input/Output types (ไฟล์เดียว)
+    index.ts                              # re-export จาก contract.type
   query/get-product/ ...                  # โครงเดียวกัน
 
 service/src/product-api/
@@ -60,14 +62,24 @@ client/src/product-api/
 
 ฝั่ง data + app (wire):
 ```
-<data>/store-prisma/src/product-factory/
-  command/create-product/repository.ts    # class CreateProductRepo implements core Repository (ใช้ prisma)
-  query/get-product/repository.ts
+<data>/store-prisma/src/product-api/                 # Action-Based (ดู Data Layer page)
+  command/create-product/
+    index.ts                              # export Entry เท่านั้น
+    entry.ts                              # CreateProductEntry implements core Repository (delegate → task)
+    createProduct.task.ts                 # orchestration + unit of work ($transaction)
+    flows.ts                              # workflow (ถ้ามี)
+    db.logic.ts                           # DAF (prisma + try/catch → BaseFailure)
+    data.logic.ts                         # pure transforms
+    internal.type.ts                      # types/interfaces/errors ทั้งหมดของ action
+    __tests__/createProduct.test.ts       # 1 test ต่อ action
+  query/get-product/ ...                  # โครงเดียวกัน (query ตรง ๆ ไม่มี flows.ts)
 <data>/store-prisma/prisma/schema.prisma   # model Product { ... }
 apps/<webapi>/mcs-fastify/src/routes/product-api/
   create-product/index.ts                 # fastify route: ฉีด repo เข้า registry แล้วเรียก endpoint
   get-product/index.ts
 ```
+
+> **รายละเอียดเชิงลึก + ตัวอย่างโค้ดเต็ม (product-api):** core (Repository interface, types, ServiceClient) → [Core — Contract Structure](https://bebestdev.com/developer-handbook/core-structure.html) · ชั้น data (entry/task/flows/db.logic/data.logic/internal.type) → [Data Layer (Action-Based)](https://bebestdev.com/developer-handbook/data-layer-action-based.html) · ServiceClient (remote/internal) → [ServiceClient Contract](https://bebestdev.com/developer-handbook/backend-service-client.html)
 
 ---
 
@@ -76,15 +88,14 @@ apps/<webapi>/mcs-fastify/src/routes/product-api/
 | ไฟล์ | ชั้น | หน้าที่ | กฎ |
 |---|---|---|---|
 | `registry.const.ts` | core | ประกาศ DI key (string) ของ repository แต่ละตัว | ค่าคงที่ ไม่มี logic |
-| `repository/repository.ts` | core | `interface Repository` = สัญญาว่ามี method อะไร คืน `Result<T, BaseFailure>` | **interface เท่านั้น** ตัวจริงอยู่ data layer |
-| `repository/type.ts` | core | Input/Output types ของ repo | type ล้วน |
+| `contract.type.ts` | core | `interface Repository` (บนสุด) + Input/Output types ของ action — Repository คืน `Result<T, BaseFailure>` | ไฟล์เดียวต่อ action · type ล้วน · ตัวจริงอยู่ data layer |
 | `dto.ts` | service | zod schema + `z.infer` type | validate ที่ขอบ request |
 | `business.logic.ts` | service | **pure logic** (validate rule, transform) | ไม่มี I/O / ไม่แตะ context/registry → test ง่าย, reuse ได้ |
 | `routeSteps.logic.ts` | service | pre-handlers + handler (อ่าน registry, เรียก repo, คืน `ResultV2`) + `setupProcess()` (ลำดับ pre-handlers) | logic ที่มี side-effect อยู่ที่นี่ |
 | `endpoint/endpoint.config.ts` | service | `makeTelemetryEndpoint(setupProcess)` → route handler ห่อ telemetry | บางสุด |
 | `client/.../endpoint.ts` | client | fn เรียก API (`inhClient.post(...)`) คืน typed `DataResponse` | จับ error คืน response แบบ fail |
 | `client/.../client.ts` | client | class รวม fn ของ domain (`ProductClient`) | convenience |
-| `store-prisma/.../repository.ts` | data | `class XxxRepo implements Repository` ใช้ prisma | try/catch → `Result.ok/fail` |
+| `store-prisma/.../entry.ts` (+ task/flows/db.logic/data.logic) | data | `class XxxEntry implements Repository` — delegate → task (Action-Based) | try/catch → `Result.ok/fail` |
 | `routes/.../index.ts` | app | composition root: `new XxxRepo(prisma)` → `addRegistryItem(ctx, KEY, repo)` → เรียก endpoint | ฉีด dependency ที่นี่ |
 
 ---
@@ -146,7 +157,7 @@ fastify route (composition root)
 - domain (subfolder): `<name>-api` (เช่น `product-api`, `order-api`)
 - action: `command/<verb>-<name>` หรือ `query/<verb>-<name>` (เช่น `create-product`, `get-product`)
 - DI key const: `<DOMAINUP>_API_CONTEXT_KEY.REPO_<ACTION>`
-- data factory: `<domain>-factory/command|query/<action>/repository.ts`
+- data (store-prisma): `<domain>-api/command|query/<action>/{entry,<method>.task,flows,db.logic,data.logic,internal.type}.ts`
 
 ---
 
@@ -183,6 +194,8 @@ public interface อยู่ที่ **`index.ts` ของแต่ละ sub
 
 ## ดูต่อ
 
+- โครง core เชิงลึก (Repository + types + ServiceClient, product-api) → [Core — Contract Structure](https://bebestdev.com/developer-handbook/core-structure.html)
+- โครง data layer เชิงลึก (Action-Based: entry/task/flows/db.logic/data.logic) → [Data Layer (Action-Based)](https://bebestdev.com/developer-handbook/data-layer-action-based.html)
 - วิธีใช้งานจริง (สร้าง API ตั้งแต่ศูนย์) → `docs/api-scaffolding.user-guide.md`
 - วิธีแก้ template/scaffolding (สำหรับ maintainer) → `docs/api-scaffolding.developer-guide.md`
 - export/build strategy → `docs/export-strategy.md`
