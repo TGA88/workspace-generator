@@ -19,6 +19,7 @@ export async function insert__Domain__DAF(
         sku: data.sku.trim(),
         price: data.price,
         description: data.description,
+        createdBy: data.createBy,
       },
     });
     return right(raw);

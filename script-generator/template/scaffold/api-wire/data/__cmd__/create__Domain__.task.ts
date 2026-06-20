@@ -24,6 +24,7 @@ export async function create__Domain__Task(
         sku: props.sku,
         price: props.price,
         description: props.description,
+        createBy: props.createBy,
       });
       if (created.isLeft()) throw created.value;
 

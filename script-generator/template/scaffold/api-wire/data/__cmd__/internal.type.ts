@@ -25,6 +25,7 @@ export interface Insert__Domain__DbInput {
   sku: string;
   price: number;
   description?: string;
+  createBy?: string;
 }
 
 export type Raw__Domain__ = {
@@ -33,7 +34,10 @@ export type Raw__Domain__ = {
   name: string;
   price: number;
   description: string | null;
+  createdBy: string | null;
   createdAt: Date;
+  updatedBy: string | null;
+  updatedAt: Date;
 };
 
 // ─── custom errors ───────────────────────────────────────────
