@@ -109,10 +109,11 @@ core/src/order-api/
 ├── index.ts
 ├── __test__/registry.test.ts
 ├── command/create-order/
-│   ├── index.ts
-│   └── repository/{type.ts, repository.ts, index.ts}
+│   ├── contract.type.ts              # Repository interface + Input/Output types
+│   └── index.ts
 └── query/get-order/
-    └── repository/{type.ts, repository.ts, index.ts}
+    ├── contract.type.ts
+    └── index.ts
 
 service/src/order-api/
 ├── command/create-order/
@@ -178,7 +179,7 @@ GET  /<API_PREFIX>/order-api/get-order/:id
 
 scaffolding สร้างตัวอย่างที่มี field `name / sku / price / description` มาให้ — แก้ให้ตรงงานจริง:
 
-1. **field ของข้อมูล** — `core/src/<domain>-api/command/create-<domain>/repository/type.ts`
+1. **field ของข้อมูล** — `core/src/<domain>-api/command/create-<domain>/contract.type.ts`
    (Input/Output) และ `service/.../dto.ts` (zod schema) ให้ตรงกัน
 2. **กฎ validate** — `service/.../logic/business.logic.ts` (ฟังก์ชัน `validateCreate<Domain>Input`)
 3. **prisma model** — `<data>/store-prisma/prisma/schema.prisma` (model `<Domain>`) ให้ field ตรงกับ type
