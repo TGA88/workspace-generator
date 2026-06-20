@@ -11,7 +11,10 @@ describe('create-__domain__', () => {
           name: 'name',
           price: 100,
           description: null,
+          createdBy: null,
           createdAt: new Date(),
+          updatedBy: null,
+          updatedAt: new Date(),
         });
         expect(out).toEqual({ id: 'id-1', sku: 'SKU-1' });
       });
