@@ -41,7 +41,7 @@ core/src/product-api/
 
 service/src/product-api/
   command/create-product/
-    dto.ts                                # zod schema (validate ที่ขอบ)
+    dto.ts                                # zod schema (validate ตรงทางเข้า)
     logic/business.logic.ts               # pure logic (validate/transform) — test ตรงๆ
     logic/routeSteps.logic.ts             # pre-handlers/handler (I/O, registry, repo) + setupProcess (wiring)
     logic/__tests__/...                   # unit tests (1 ไฟล์/action)
@@ -89,7 +89,7 @@ apps/<webapi>/mcs-fastify/src/routes/product-api/
 |---|---|---|---|
 | `registry.const.ts` | core | ประกาศ DI key (string) ของ repository แต่ละตัว | ค่าคงที่ ไม่มี logic |
 | `contract.type.ts` | core | `interface Repository` (บนสุด) + Input/Output types ของ action — Repository คืน `Result<T, BaseFailure>` | ไฟล์เดียวต่อ action · type ล้วน · ตัวจริงอยู่ data layer |
-| `dto.ts` | service | zod schema + `z.infer` type | validate ที่ขอบ request |
+| `dto.ts` | service | zod schema + `z.infer` type | ตรวจ input ตรงทางเข้า (ก่อนเข้า logic) |
 | `business.logic.ts` | service | **pure logic** (validate rule, transform) | ไม่มี I/O / ไม่แตะ context/registry → test ง่าย, reuse ได้ |
 | `routeSteps.logic.ts` | service | pre-handlers + handler (อ่าน registry, เรียก repo, คืน `ResultV2`) + `setupProcess()` (ลำดับ pre-handlers) | logic ที่มี side-effect อยู่ที่นี่ |
 | `endpoint/endpoint.config.ts` | service | `makeTelemetryEndpoint(setupProcess)` → route handler ห่อ telemetry | บางสุด |
