@@ -79,7 +79,7 @@ apps/<webapi>/mcs-fastify/src/routes/product-api/
   get-product/index.ts
 ```
 
-> **รายละเอียดเชิงลึก + ตัวอย่างโค้ดเต็ม (product-api):** core (Repository interface, types, ServiceClient) → [Core — Contract Structure](https://bebestdev.com/developer-handbook/core-structure.html) · ชั้น data (entry/task/flows/db.logic/data.logic/internal.type) → [Data Layer (Action-Based)](https://bebestdev.com/developer-handbook/data-layer-action-based.html) · ServiceClient (remote/internal) → [ServiceClient Contract](https://bebestdev.com/developer-handbook/backend-service-client.html)
+> **รายละเอียดเชิงลึก + ตัวอย่างโค้ดเต็ม (product-api):** core (Repository interface, types, ServiceClient) → [Core — Contract Structure](https://bebestdev.com/developer-handbook/core-structure.html) · ชั้น service (UseCase Layer: dto/routeSteps/business.logic + setupProcess) → [Service (UseCase) Layer](https://bebestdev.com/developer-handbook/service-usecase.html) · ชั้น data (entry/task/flows/db.logic/data.logic/internal.type) → [Data Layer (Action-Based)](https://bebestdev.com/developer-handbook/data-layer-action-based.html) · ServiceClient (remote/internal) → [ServiceClient Contract](https://bebestdev.com/developer-handbook/backend-service-client.html)
 
 ---
 
@@ -195,6 +195,7 @@ public interface อยู่ที่ **`index.ts` ของแต่ละ sub
 ## ดูต่อ
 
 - โครง core เชิงลึก (Repository + types + ServiceClient, product-api) → [Core — Contract Structure](https://bebestdev.com/developer-handbook/core-structure.html)
+- โครง service เชิงลึก (UseCase Layer: dto/routeSteps/business.logic + ทำไม setupProcess ไม่อยู่ business.logic) → [Service (UseCase) Layer](https://bebestdev.com/developer-handbook/service-usecase.html)
 - โครง data layer เชิงลึก (Action-Based: entry/task/flows/db.logic/data.logic) → [Data Layer (Action-Based)](https://bebestdev.com/developer-handbook/data-layer-action-based.html)
 - วิธีใช้งานจริง (สร้าง API ตั้งแต่ศูนย์) → `docs/api-scaffolding.user-guide.md`
 - วิธีแก้ template/scaffolding (สำหรับ maintainer) → `docs/api-scaffolding.developer-guide.md`
