@@ -73,7 +73,7 @@ export const processCheckDuplicateInRepoPreHandler: UnifiedHandlerFn = async (co
 };
 
 // final handler: create __domain__ ใน repo
-export const processCreate__Domain__InRepoHandler: UnifiedHandlerFn = async (context) => {
+export const processCreate__Domain__Handler: UnifiedHandlerFn = async (context) => {
   const { telemetryLogger: logger, traceId } = getTelemetry(context);
   const inputRequest = getRegistryItem<InputDTO>(context, 'inputRequest') as InputDTO;
   const repo = getRegistryItem<Repository>(
@@ -99,6 +99,6 @@ export function setupProcess(): { preHandlers: UnifiedPreHandlerFn[]; handler: U
       processCheckRequiredFieldPreHandler,
       processCheckDuplicateInRepoPreHandler,
     ],
-    handler: processCreate__Domain__InRepoHandler,
+    handler: processCreate__Domain__Handler,
   };
 }
