@@ -5,7 +5,7 @@ import { setupProcess } from '../routeSteps.logic';
 import {
   processCheckRequiredFieldPreHandler,
   processCheckDuplicateInRepoPreHandler,
-  processCreate__Domain__InRepoHandler,
+  processCreate__Domain__Handler,
 } from '../routeSteps.logic';
 import { buildContext } from './test-helper';
 
@@ -88,7 +88,7 @@ describe('processCheckDuplicateInRepoPreHandler', () => {
   });
 });
 
-describe('processCreate__Domain__InRepoHandler', () => {
+describe('processCreate__Domain__Handler', () => {
   it('creates and returns ok payload', async () => {
     const repo = {
       checkDuplicateSku: jest.fn(),
@@ -98,7 +98,7 @@ describe('processCreate__Domain__InRepoHandler', () => {
       inputRequest: validInput,
       [__DOMAINUP___API_CONTEXT_KEY.REPO_CREATE___DOMAINUP__]: repo,
     });
-    await processCreate__Domain__InRepoHandler(ctx);
+    await processCreate__Domain__Handler(ctx);
     expect(repo.create__Domain__).toHaveBeenCalled();
     expect(captured.body).toBeDefined();
   });
@@ -111,7 +111,7 @@ describe('processCreate__Domain__InRepoHandler', () => {
       inputRequest: validInput,
       [__DOMAINUP___API_CONTEXT_KEY.REPO_CREATE___DOMAINUP__]: repo,
     });
-    await processCreate__Domain__InRepoHandler(ctx);
+    await processCreate__Domain__Handler(ctx);
     expect(captured.statusCode).toBeGreaterThanOrEqual(400);
   });
 });

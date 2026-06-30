@@ -25,7 +25,7 @@ export const mapReqToInputPreHandler = createMapReqToInputPreHandler(
   (context) => ({ id: context.request.params['id'] ?? context.request.query['id'] }),
 );
 
-export const processGet__Domain__InRepoHandler: UnifiedHandlerFn = async (context) => {
+export const processGet__Domain__Handler: UnifiedHandlerFn = async (context) => {
   const { telemetryLogger: logger, traceId } = getTelemetry(context);
   const inputRequest = getRegistryItem<InputDTO>(context, 'inputRequest') as InputDTO;
   const repo = getRegistryItem<Repository>(
@@ -53,6 +53,6 @@ export const processGet__Domain__InRepoHandler: UnifiedHandlerFn = async (contex
 export function setupProcess(): { preHandlers: UnifiedPreHandlerFn[]; handler: UnifiedHandlerFn } {
   return {
     preHandlers: [authGuardPreHandler, mapReqToInputPreHandler],
-    handler: processGet__Domain__InRepoHandler,
+    handler: processGet__Domain__Handler,
   };
 }
