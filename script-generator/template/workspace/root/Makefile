@@ -31,9 +31,11 @@ down:    ; $(COMPOSE) down -v
 
 # backend-test = standalone package (นอก node-app pnpm workspace) → cd เข้าไปให้ tsx/pg resolve
 # path ใน test file อ้าง contract แบบ file-relative (../../../infrastructure) → cwd ไม่กระทบ
+# ⚠️ node --test ต้องได้ "ไฟล์" ระบุตรงๆ — dir/argless discovery ครอบเฉพาะ .js, glob รองรับเฉพาะ node22+
+#    → ใช้ find enumerate .test.ts (ปลอดภัยทุกเวอร์ชัน) · action ระบุ = ไฟล์เดียว
 BT        = workspaces/backend-test
-TEST_PATH = $(SERVICE)$(if $(DOMAIN),/$(DOMAIN))$(if $(ACTION),/$(ACTION).test.ts)
-test:    ; cd $(BT) && node --test --import tsx $(TEST_PATH)
+TEST_FILES = $(if $(ACTION),$(SERVICE)/$(DOMAIN)/$(ACTION).test.ts,$$(find $(SERVICE)$(if $(DOMAIN),/$(DOMAIN)) -name '*.test.ts'))
+test:    ; cd $(BT) && node --test --import tsx $(TEST_FILES)
 
 # full pipeline (local == CI) — DB สดทุกครั้ง (down -v ท้าย)
 api-test: up migrate init seed api-up test down

@@ -5,8 +5,8 @@
   "type": "module",
   "description": "black-box api-test (node:test, out-of-process) — data-driven จาก infrastructure/contract (SSOT)",
   "scripts": {
-    "test": "node --test --import tsx",
-    "test:conformance": "node --test --import tsx _conformance"
+    "test": "node --test --import tsx $(find . -name '*.test.ts')",
+    "test:conformance": "node --test --import tsx $(find _conformance -name '*.test.ts')"
   },
   "dependencies": {
     "pg": "^8.13.1"

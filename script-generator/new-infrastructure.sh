@@ -56,8 +56,9 @@ rename_token() {  # rename path token <TOKEN> -> <VALUE> under $1 (deepest-first
 }
 
 # ---- infrastructure ----
-if [ -d "$INFRA" ]; then echo "  ! $INFRA exists, skip infrastructure"; else
-  mkdir -p "$(dirname "$INFRA")"; cp -r "$TPL/infrastructure" "$INFRA"
+# guard = docker-compose.yml (ไม่ใช่แค่ dir) — เผื่อ gen:api-contract สร้าง contract/ ไว้ก่อน (merge เข้า)
+if [ -f "$INFRA/docker-compose.yml" ]; then echo "  ! infrastructure/docker-compose.yml exists, skip infrastructure"; else
+  mkdir -p "$INFRA"; cp -r "$TPL/infrastructure/." "$INFRA/"   # merge (คง contract/ ที่มีอยู่)
   rename_token "$INFRA" "__DB_SCHEMA__" "$DB_SCHEMA"
   tokenize_tree "$INFRA"
   echo "  + workspaces/infrastructure (contract/ db/$DB_SCHEMA liquibase docker-compose)"
