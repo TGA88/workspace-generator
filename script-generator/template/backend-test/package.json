@@ -1,0 +1,20 @@
+{
+  "name": "@__WS__/backend-test",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "black-box api-test (node:test, out-of-process) — data-driven จาก infrastructure/contract (SSOT)",
+  "scripts": {
+    "test": "node --test --import tsx",
+    "test:conformance": "node --test --import tsx _conformance"
+  },
+  "dependencies": {
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "@types/pg": "^8.11.10",
+    "tsx": "^4.19.2",
+    "typescript": "~5.4.2"
+  }
+}

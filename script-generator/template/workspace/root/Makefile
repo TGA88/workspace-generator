@@ -26,8 +26,11 @@ seed:    ; $(LB) update --context-filter=seed $(if $(DOMAIN),--label-filter="sha
 api-up:  ; $(COMPOSE) up -d api
 down:    ; $(COMPOSE) down -v
 
-TEST_PATH = workspaces/backend-test/$(SERVICE)$(if $(DOMAIN),/$(DOMAIN))$(if $(ACTION),/$(ACTION).test.ts)
-test:    ; node --test --import tsx $(TEST_PATH)
+# backend-test = standalone package (นอก node-app pnpm workspace) → cd เข้าไปให้ tsx/pg resolve
+# path ใน test file อ้าง contract แบบ file-relative (../../../infrastructure) → cwd ไม่กระทบ
+BT        = workspaces/backend-test
+TEST_PATH = $(SERVICE)$(if $(DOMAIN),/$(DOMAIN))$(if $(ACTION),/$(ACTION).test.ts)
+test:    ; cd $(BT) && node --test --import tsx $(TEST_PATH)
 
 # full pipeline (local == CI) — DB สดทุกครั้ง (down -v ท้าย)
 api-test: up migrate init seed api-up test down

@@ -1,0 +1,4 @@
+-- seed / shared — test fixtures ใช้ร่วมข้าม domain (cross-domain)
+-- โหลดที่ bring-up ผ่าน liquibase (context=seed, label=shared)
+-- อ้างด้วย key คงที่ (ไม่ hardcode id เต็มซ้ำทุกไฟล์) ให้ setup ราย action อ้างต่อได้
+-- (skeleton — ยังว่าง · เติมเมื่อมี table จาก migrate)

@@ -1,0 +1,4 @@
+-- init / shared — reference & lookup (production-like) · tenant-agnostic
+-- โหลดที่ bring-up ผ่าน liquibase (context=init) หลัง migrate
+-- ใส่ master/lookup ที่ทั้งระบบใช้ร่วม เช่น enums, currency, master code
+-- (skeleton — ยังว่าง · เติมเมื่อมี table จาก migrate) · naming schema/table ตาม ARCH-STD-001

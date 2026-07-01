@@ -1,0 +1,64 @@
+# infrastructure topology — postgres + liquibase + api  (service names ตรงกับ root Makefile)
+# รันผ่าน root Makefile: make up / migrate / init / seed / api-up / down / api-test
+# paths relative = project-directory (workspaces/infrastructure) · '../node-app' = โค้ดจริง
+services:
+  postgres:
+    image: postgres:15.2
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=__DB_NAME__
+    volumes:
+      - ./initdb/init.postgresql.sql:/docker-entrypoint-initdb.d/init.postgresql.sql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - '5433:5432'
+    networks:
+      - backend-test-net
+
+  # liquibase = one-shot runner (make ... => `run --rm liquibase update --context-filter=<phase>`)
+  # entrypoint=liquibase → args ต่อท้ายจาก make กลายเป็น command · searchPath ครอบทั้ง db/ + prisma/
+  liquibase:
+    image: liquibase/liquibase:4.28.0-alpine
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./liquibase/changelog.yaml:/liquibase/changelog/changelog.yaml
+      - ./db:/liquibase/changelog/db
+      - ../node-app/libs/__SCOPE__/__DATA_PKG__/store-prisma/prisma:/liquibase/changelog/prisma
+    environment:
+      - LIQUIBASE_SEARCH_PATH=/liquibase/changelog
+      - LIQUIBASE_COMMAND_CHANGELOG_FILE=changelog.yaml
+      - LIQUIBASE_COMMAND_URL=jdbc:postgresql://postgres:5432/__DB_NAME__
+      - LIQUIBASE_COMMAND_USERNAME=postgres
+      - LIQUIBASE_COMMAND_PASSWORD=postgres
+      - LIQUIBASE_COMMAND_DEFAULT_SCHEMA_NAME=__DB_SCHEMA_NAME__
+      - LIQUIBASE_LIQUIBASE_SCHEMA_NAME=__DB_SCHEMA_NAME__
+    entrypoint: ['liquibase']
+    networks:
+      - backend-test-net
+
+  # api = artifact ที่ deploy จริง (black-box target) — Dockerfile เป็นของ webapi app
+  api:
+    build:
+      context: ../node-app
+      dockerfile: apps/__SERVICE__/mcs-fastify/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - PORT=3000
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/__DB_NAME__?schema=__DB_SCHEMA_NAME__
+    ports:
+      - '3010:3000'
+    networks:
+      - backend-test-net
+
+networks:
+  backend-test-net:
+    driver: bridge

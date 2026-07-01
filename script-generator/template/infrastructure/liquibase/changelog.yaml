@@ -1,0 +1,37 @@
+databaseChangeLog:
+  # ═══ context = เฟส (migrate | init | seed) · label = domain:<name> (filter ราย domain) ═══
+  # paths relative ต่อ LIQUIBASE_SEARCH_PATH (/liquibase/changelog) — mount จาก docker-compose:
+  #   prisma/  → ../node-app/libs/<scope>/<data-pkg>/store-prisma/prisma   (DDL migrations)
+  #   db/      → ./db                                                       (init/seed sql)
+
+  # ── migrate (DDL) ────────────────────────────────────────────────
+  # ต่อ migration ที่ prisma สร้าง เพิ่ม changeSet ที่นี่ (context: migrate) — timestamp folder รู้ตอน migrate
+  # gen:api-wire + prisma migrate สร้าง migration แล้วค่อยผูก · ตัวอย่าง:
+  # - changeSet:
+  #     id: migrate-0001
+  #     author: gen
+  #     context: migrate
+  #     labels: schema
+  #     changes:
+  #       - sqlFile: { path: prisma/migrations/0001_init/migration.sql, relativeToChangelogFile: false }
+
+  # ── init (reference/lookup — production-like) ────────────────────
+  - changeSet:
+      id: init-shared
+      author: gen
+      context: init
+      labels: shared
+      changes:
+        - sqlFile: { path: db/__DB_SCHEMA__/init/shared/lookup.sql, relativeToChangelogFile: false }
+
+  # ── seed (test fixtures) ─────────────────────────────────────────
+  - changeSet:
+      id: seed-shared
+      author: gen
+      context: seed
+      labels: shared
+      changes:
+        - sqlFile: { path: db/__DB_SCHEMA__/seed/shared/base.sql, relativeToChangelogFile: false }
+
+  # ── domain seed changeSets: gen:api-contract แทรกต่อท้ายที่นี่ (context: seed · label: domain:<domain>-api) ──
+  # ▼ GEN:DOMAIN-SEED-ANCHOR ▼ (อย่าลบบรรทัดนี้ — เป็นจุด anchor ให้ generator แทรก)
