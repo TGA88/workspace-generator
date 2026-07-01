@@ -112,7 +112,9 @@
     "gen:api-wire": "bash ./tools/gen-api-wire.sh",
     "gen:api-action": "bash ./tools/gen-api-action.sh",
     "gen:api-promote": "bash ./tools/gen-api-promote.sh",
-    "gen:api-demote": "bash ./tools/gen-api-demote.sh"
+    "gen:api-demote": "bash ./tools/gen-api-demote.sh",
+    "gen:infra": "bash ./tools/gen-infra.sh",
+    "gen:api-contract": "bash ./tools/gen-api-contract.sh"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.5",
