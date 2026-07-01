@@ -1,0 +1,3 @@
+-- teardown (action-level) — รันครั้งเดียวหลังทุกเคส (node:test `after`)
+-- ⚠️ ลบเฉพาะของที่ setup.sql/เคสใส่ (scoped ด้วย id/key) — อย่า DELETE เหวี่ยงทั้ง table
+--    (out-of-process ครอบ transaction rollback ที่ server ไม่ได้ → ล้าง domain/shared seed พังด้วย)

@@ -1,0 +1,3 @@
+-- seed / __DOMAIN_API__ — domain-level test fixtures (context=seed, label=domain:__DOMAIN_API__)
+-- โหลดที่ bring-up ผ่าน liquibase · filter ด้วย `make seed DOMAIN=__DOMAIN_API__`
+-- อ้าง shared seed ด้วย key คงที่ · (skeleton — ยังว่าง · เติมตาม table ของ domain)

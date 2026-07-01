@@ -90,4 +90,10 @@ node -e '
   fs.writeFileSync(f,JSON.stringify(j,null,2));
 ' "$WEBAPI/package.json" "$WORKSPACE" "$API_PKG" "$DATA_PKG"
 
-echo "wired ${DOMAIN}: store-prisma repo + webapi route + prisma model. run prisma:generate + migration."
+# ---- contract ⇄ backend-test pair (auto, "คู่กัน") — opt-out ด้วย SKIP_CONTRACT=1 ----
+# wire รู้ WEBAPI_APP (=service) + DOMAIN อยู่แล้ว → สร้าง pair ของ create-/get-<domain> ให้อัตโนมัติ
+if [ "${SKIP_CONTRACT:-0}" != "1" ] && [ -f "$GENERATOR_DIR/script-generator/new-api-contract.sh" ]; then
+  bash "$GENERATOR_DIR/script-generator/new-api-contract.sh" "$WORKSPACE" "$WEBAPI_APP" "$DOMAIN" "" "$GENERATOR_DIR"
+fi
+
+echo "wired ${DOMAIN}: store-prisma repo + webapi route + prisma model + contract⇄test pair. run prisma:generate + migration."

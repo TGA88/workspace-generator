@@ -1,0 +1,7 @@
+{
+  "endpoint": "__DOMAIN_API__/__ACTION__",
+  "cases": [
+    { "key": "c1", "desc": "__ACTION__ สำเร็จ", "setup": null, "teardown": null },
+    { "key": "e1", "desc": "input ไม่ถูกต้อง → 422 (validate)", "setup": null, "teardown": null }
+  ]
+}

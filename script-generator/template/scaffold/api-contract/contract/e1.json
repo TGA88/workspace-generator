@@ -1,0 +1,23 @@
+{
+  "key": "e1",
+  "desc": "__ACTION__ ไม่สำเร็จ — input ไม่ถูกต้อง (validate)",
+  "withRequest": {
+    "method": "__METHOD__",
+    "path": "/__DOMAIN_API__/__ACTION__",
+    "headers": { "content-type": "application/json", "x-tenant-id": "TENANT_01" },
+    "body": {},
+    "query": {},
+    "params": {}
+  },
+  "withResponse": {
+    "status": 422,
+    "headers": {},
+    "body": {
+      "statusCode": 422,
+      "isSuccess": false,
+      "codeResult": "VALIDATE_REQUEST_FAIL",
+      "message": "Input not complete",
+      "dataResult": {}
+    }
+  }
+}
