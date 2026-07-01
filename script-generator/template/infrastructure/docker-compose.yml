@@ -44,6 +44,8 @@ services:
       - backend-test-net
 
   # api = artifact ที่ deploy จริง (black-box target) — Dockerfile เป็นของ webapi app
+  # ⚠️ Dockerfile ของ webapi (template ปัจจุบัน) คาดหวัง build output (dist/) — ต้องปรับ build context/
+  #    stage ให้ตรงกับ pipeline ของ service ก่อน `make api-up` จะ build ได้ (เป็นเรื่องของ webapi app)
   api:
     build:
       context: ../node-app
