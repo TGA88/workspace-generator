@@ -10,9 +10,12 @@
 # recipe ใช้รูปแบบ `target: ; cmd` (inline) เพื่อเลี่ยงปัญหา TAB ในไฟล์ generate
 # (.editorconfig + .gitattributes บังคับ Makefile = TAB/LF อยู่แล้ว ถ้าจะเพิ่ม recipe แบบหลายบรรทัด)
 
-SERVICE ?= __SERVICE__     # webapi app (service) = โฟลเดอร์ใน backend-test/ + contract/
-DOMAIN  ?=                 # ว่าง = ทุก domain · ใส่เช่น product-api
-ACTION  ?=                 # ว่าง = ทุก action ของ domain · ใส่เช่น create-product
+# ⚠️ อย่าใส่คอมเมนต์ `#` ท้ายบรรทัด assignment — make เก็บ space ก่อน `#` เข้าไปในค่า (พัง TEST_PATH)
+# SERVICE = webapi app (service) = โฟลเดอร์ใน backend-test/ + contract/
+# DOMAIN  = ว่าง = ทุก domain (เช่น product-api) · ACTION = ว่าง = ทุก action (เช่น create-product)
+SERVICE ?= __SERVICE__
+DOMAIN  ?=
+ACTION  ?=
 
 COMPOSE = docker compose -f workspaces/infrastructure/docker-compose.yml --project-directory workspaces/infrastructure
 LB      = $(COMPOSE) run --rm liquibase
