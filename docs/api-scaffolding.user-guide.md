@@ -18,6 +18,7 @@
 pnpm gen:api-domain shared-webapi shared-api order
 
 # 2) wire ลง DB + endpoint (prisma repo + fastify route + prisma model)
+#    + สร้าง contract⇄backend-test pair ให้อัตโนมัติ (opt-out: SKIP_CONTRACT=1)
 pnpm gen:api-wire shared-webapi shared-api demo-shop-data demo-shop-webapi order
 
 # 3) แก้ field/logic/model ให้ตรงงานจริง (ดูข้อ "แก้อะไรบ้าง" ด้านล่าง)
@@ -207,7 +208,53 @@ pnpm gen:api-action <scope> <api-pkg> <domain> <command|query> <verb>
 
 ---
 
-## ทดสอบ
+## Infrastructure + backend-test (api-test ระดับ API — black-box)
+
+นอกจาก unit test (white-box, jest, co-located ใน node-app) generator ยัง scaffold **api-test**
+(black-box, out-of-process, **`node:test`**) + **infrastructure** (contract SSOT / db / liquibase / docker-compose)
+ให้ด้วย — ยิง HTTP เข้า service ที่รันจริง + DB จริง เทียบผลกับ **contract** (SSOT)
+
+### one-time ต่อ system: `pnpm gen:infra <service> <db-schema> [scope] [data-pkg] [api-pkg]`
+```bash
+pnpm gen:infra demo-shop-webapi demo-shop
+#              │                └ db-schema folder (kebab) → db/<db-schema>/ · schema name = UPPER
+#              └ service = webapi app → contract/ + backend-test/ group ต่อ service
+```
+สร้าง: `workspaces/infrastructure/` (docker-compose + liquibase changelog[context migrate|init|seed ·
+label domain:] + db/<db-schema>/{init,seed}/{shared,tenant} + contract/ SSOT root) ·
+`workspaces/backend-test/` (harness node:test + `_conformance/` skeleton) · **root `Makefile`** +
+`.gitattributes`/`.editorconfig` (LF/TAB)
+
+### ต่อ action: contract⇄test **คู่กัน** (gen:api-wire ทำให้อัตโนมัติแล้ว)
+`gen:api-wire` เรียก `gen:api-contract` ให้เอง (create+get) · เพิ่ม action เดี่ยว/regenerate ใช้:
+```bash
+pnpm gen:api-contract <service> <domain> [action]
+#   เช่น: pnpm gen:api-contract demo-shop-webapi product update-product
+#         pnpm gen:api-contract demo-shop-webapi product            # ว่าง = create+get
+```
+ได้ **คู่กัน**: `infrastructure/contract/<service>/<domain>-api/<action>/`
+(`c1/e1.json` envelope + `setup/teardown.sql` + `_cases.json`) **+**
+`backend-test/<service>/<domain>-api/<action>.test.ts` (วน `_cases.json`) · และ (ครั้งเดียว/domain)
+`db/<db-schema>/seed/<domain>-api/base.sql` + liquibase changeSet (context=seed, label=domain:)
+
+### รัน (bring-up สด → test → down · local == CI)
+```bash
+cd workspaces/backend-test && pnpm install   # ครั้งเดียว (backend-test = standalone package)
+cd ../../ && make api-test                                          # ทุก domain
+make api-test DOMAIN=product-api                                    # เฉพาะ domain
+make api-test DOMAIN=product-api ACTION=create-product             # เฉพาะ action
+```
+> แก้ envelope (`body`/`headers`/`dataResult`) + `setup/teardown.sql` ให้ตรง action จริง ·
+> `_conformance/` เติม type-check เทียบ core Input/Output (กัน contract drift)
+
+> 📖 แนวคิด/ADR/strategy เต็ม (white-box vs black-box · contract SSOT · db scope ladder · make/compose/liquibase) →
+> [Backend Test & Infrastructure](https://bebestdev.com/developer-handbook/backend-test-infrastructure.html) ·
+> DB strategy (server/instance/schema + evolution S→M→L) →
+> [DB Architecture Standard (ARCH-STD-001)](https://bebestdev.com/developer-handbook/db-architecture-standard.html)
+
+---
+
+## ทดสอบ (unit — white-box)
 
 ```bash
 # รายตัว (จาก node-app) — รันได้โดยไม่ต้อง build dependency ก่อน (dev-condition exports)

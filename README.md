@@ -262,7 +262,7 @@ bash workspace-generator/script-generator/new-webconfig.sh gu-example-system  de
 
 > 📖 **คู่มือเต็ม (แก้ field/logic/migration/test + ปัญหาที่เจอบ่อย):** [docs/api-scaffolding.user-guide.md](./docs/api-scaffolding.user-guide.md)
 
-มี 5 คำสั่ง (รันจาก `workspaces/node-app`) — **ไม่ใส่ param ก็ได้ จะถามทีละค่า (TUI)**:
+มี 7 คำสั่ง (รันจาก `workspaces/node-app`) — **ไม่ใส่ param ก็ได้ จะถามทีละค่า (TUI)**:
 
 ```bash
 # 1) slice: core+service+client ของ domain (command create-<domain> + query get-<domain>) + อัปเดต exports/index
@@ -285,6 +285,14 @@ pnpm gen:api-promote <scope> <shared-api> <domain>
 # 5) demote: standalone project -> กลับเป็น grouped domain ใน shared-api
 pnpm gen:api-demote <scope> <project> <shared-api>
 #   เช่น: pnpm gen:api-demote shared-webapi product-api shared-api
+
+# 6) infra: (one-time/system) workspaces/infrastructure + backend-test + root Makefile (api-test ระดับ API)
+pnpm gen:infra <service> <db-schema> [scope] [data-pkg] [api-pkg]
+#   เช่น: pnpm gen:infra demo-shop-webapi demo-shop
+
+# 7) contract: คู่กัน contract(SSOT) + backend-test node:test ต่อ action (gen:api-wire เรียกให้อัตโนมัติ)
+pnpm gen:api-contract <service> <domain> [action]
+#   เช่น: pnpm gen:api-contract demo-shop-webapi product update-product   (ว่าง = create+get)
 ```
 > ต้อง clone `workspace-generator` ไว้ระดับเดียวกับ workspace (หรือ set `WORKSPACE_GENERATOR_DIR`) — จำเป็นเฉพาะตอน scaffold; build/test/run ไม่ต้องมี
 
@@ -295,6 +303,8 @@ bash workspace-generator/script-generator/new-api-wire.sh    <workspace> <scope>
 bash workspace-generator/script-generator/new-api-action.sh  <workspace> <scope> <api-pkg> <domain> <command|query> <verb>
 bash workspace-generator/script-generator/promote-api-domain.sh <workspace> <scope> <shared-api> <domain>
 bash workspace-generator/script-generator/demote-api-domain.sh  <workspace> <scope> <project> <shared-api>
+bash workspace-generator/script-generator/new-infrastructure.sh <workspace> <service> <db-schema> [scope] [data-pkg] [api-pkg]
+bash workspace-generator/script-generator/new-api-contract.sh   <workspace> <service> <domain> [action]
 ```
 หลัง wire แล้ว: `pnpm prisma:generate` + `pnpm gen:up-script` (migration) ที่ store-prisma แล้วทดสอบด้วย `make test` (ดู user guide)
 
