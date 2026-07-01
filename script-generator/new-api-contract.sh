@@ -69,9 +69,9 @@ else
   DB_SCHEMA_DIR="$(basename "$(dirname "$SEED_ROOT")")"
   DSEED="$SEED_ROOT/$DOMAIN_API"
   if [ ! -d "$DSEED" ]; then
-    mkdir -p "$DSEED"; cp "$SC/seed/base.sql" "$DSEED/base.sql"
-    sedi -e "s/__DOMAIN_API__/${DOMAIN_API}/g" -e "s/__DOMAIN__/${DOMAIN}/g" "$DSEED/base.sql"
-    echo "  + db/$DB_SCHEMA_DIR/seed/$DOMAIN_API/base.sql"
+    mkdir -p "$DSEED"; cp "$SC/seed/base.sql" "$DSEED/base.sql"; cp "$SC/seed/base.down.sql" "$DSEED/base.down.sql"
+    sedi -e "s/__DOMAIN_API__/${DOMAIN_API}/g" -e "s/__DOMAIN__/${DOMAIN}/g" "$DSEED/base.sql" "$DSEED/base.down.sql"
+    echo "  + db/$DB_SCHEMA_DIR/seed/$DOMAIN_API/{base.sql,base.down.sql}"
   fi
   CHANGELOG="$INFRA/liquibase/changelog.yaml"
   if [ -f "$CHANGELOG" ] && ! grep -q "id: seed-${DOMAIN_API}\b" "$CHANGELOG"; then
@@ -84,7 +84,13 @@ else
       context: seed
       labels: domain:${DOMAIN_API}
       changes:
-        - sqlFile: { path: db/${DB_SCHEMA_DIR}/seed/${DOMAIN_API}/base.sql, relativeToChangelogFile: false }
+        - sqlFile:
+            path: db/${DB_SCHEMA_DIR}/seed/${DOMAIN_API}/base.sql
+            relativeToChangelogFile: false
+        - rollback:
+            - sqlFile:
+                path: db/${DB_SCHEMA_DIR}/seed/${DOMAIN_API}/base.down.sql
+                relativeToChangelogFile: false
 EOF
       awk -v bf="$BLOCK" '/GEN:DOMAIN-SEED-ANCHOR/{while((getline l<bf)>0)print l; close(bf)} {print}' \
         "$CHANGELOG" > "$CHANGELOG.tmp" && mv "$CHANGELOG.tmp" "$CHANGELOG"

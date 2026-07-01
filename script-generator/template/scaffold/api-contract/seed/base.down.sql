@@ -1,0 +1,2 @@
+-- rollback ของ seed/__DOMAIN_API__/base.sql — ย้อน domain fixtures ที่ base.sql ใส่
+-- ลบเฉพาะของที่ base.sql สร้าง (scoped ด้วย key) · (skeleton — ยังว่าง · เติมคู่กับ base.sql)

@@ -158,8 +158,9 @@ default `SCOPE=shared-webapi` · `DATA_PKG=<DB_SCHEMA>-data` · `API_PKG=shared-
 สร้าง pair + domain seed:
 - `infrastructure/contract/<service>/<domain>-api/<action>/` (c1/e1.json + setup/teardown.sql + _cases.json)
 - `backend-test/<service>/<domain>-api/<action>.test.ts` (วน `_cases.json`)
-- ครั้งเดียว/domain: `db/<db-schema>/seed/<domain>-api/base.sql` + **แทรก changeSet** ที่ anchor
+- ครั้งเดียว/domain: `db/<db-schema>/seed/<domain>-api/{base.sql,base.down.sql}` + **แทรก changeSet** ที่ anchor
   `# ▼ GEN:DOMAIN-SEED-ANCHOR ▼` ใน `changelog.yaml` (context=seed, label=domain:<domain>-api) ผ่าน awk
+  · ⚠️ ทุก changeSet gen พร้อม **`rollback`** ชี้ `base.down.sql` เสมอ (init/seed skeleton ก็มี `*.down.sql` คู่)
 
 `ACTION` ว่าง = default `create-<domain>` + `get-<domain>` · **method** derive จาก verb
 (`get/list/find/search→get`, `update/edit/patch→put`, `delete/remove→delete`, อื่น→`post`) ·
