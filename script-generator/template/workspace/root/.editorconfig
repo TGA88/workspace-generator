@@ -1,0 +1,18 @@
+# EditorConfig — dev-env convention (LF ทุกไฟล์ · Makefile = TAB indent)
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+charset = utf-8
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+# Makefile recipe ต้องเป็น TAB (ถ้าเขียน recipe แบบหลายบรรทัดแทน inline `;`)
+[Makefile]
+indent_style = tab
+
+[*.{sh,sql}]
+indent_style = space
+indent_size = 2

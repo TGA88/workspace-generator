@@ -1,0 +1,35 @@
+# __WS__ — root entrypoint (local == CI)
+# ห่อ docker-compose (topology) + liquibase (migrate/init/seed) + backend-test (node:test)
+# ทุก target เรียกจาก git root · CI checkout ลง root แล้วเรียก target เดียวกับ local
+#
+# ใช้:
+#   make api-test                                  # ทุก domain (bring-up สด → test → down -v)
+#   make api-test DOMAIN=product-api               # เฉพาะ domain
+#   make api-test DOMAIN=product-api ACTION=create-product   # เฉพาะ action
+#
+# recipe ใช้รูปแบบ `target: ; cmd` (inline) เพื่อเลี่ยงปัญหา TAB ในไฟล์ generate
+# (.editorconfig + .gitattributes บังคับ Makefile = TAB/LF อยู่แล้ว ถ้าจะเพิ่ม recipe แบบหลายบรรทัด)
+
+SERVICE ?= __SERVICE__     # webapi app (service) = โฟลเดอร์ใน backend-test/ + contract/
+DOMAIN  ?=                 # ว่าง = ทุก domain · ใส่เช่น product-api
+ACTION  ?=                 # ว่าง = ทุก action ของ domain · ใส่เช่น create-product
+
+COMPOSE = docker compose -f workspaces/infrastructure/docker-compose.yml --project-directory workspaces/infrastructure
+LB      = $(COMPOSE) run --rm liquibase
+
+.PHONY: up migrate init seed api-up down test api-test help
+
+up:      ; $(COMPOSE) up -d postgres
+migrate: ; $(LB) update --context-filter=migrate
+init:    ; $(LB) update --context-filter=init
+seed:    ; $(LB) update --context-filter=seed $(if $(DOMAIN),--label-filter="shared OR domain:$(DOMAIN)")
+api-up:  ; $(COMPOSE) up -d api
+down:    ; $(COMPOSE) down -v
+
+TEST_PATH = workspaces/backend-test/$(SERVICE)$(if $(DOMAIN),/$(DOMAIN))$(if $(ACTION),/$(ACTION).test.ts)
+test:    ; node --test --import tsx $(TEST_PATH)
+
+# full pipeline (local == CI) — DB สดทุกครั้ง (down -v ท้าย)
+api-test: up migrate init seed api-up test down
+
+help: ; @echo "targets: up migrate init seed api-up test down api-test  | vars: SERVICE=$(SERVICE) DOMAIN=<d>-api ACTION=<verb>-<d>"

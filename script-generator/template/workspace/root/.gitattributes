@@ -1,0 +1,8 @@
+# บังคับ LF สำหรับไฟล์ที่ CRLF ทำพัง (make/bash/sql/liquibase) — ดู dev-env convention (WSL2)
+# กันเคส Windows checkout เป็น CRLF แล้ว recipe ใน Makefile / entrypoint.sh / .sql รันไม่ผ่าน
+Makefile        text eol=lf
+*.mk            text eol=lf
+*.sh            text eol=lf
+*.sql           text eol=lf
+*.yaml          text eol=lf
+*.yml           text eol=lf
