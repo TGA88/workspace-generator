@@ -53,6 +53,10 @@ cp $GENERATOR_DIR/script-generator/template/workspace/pnpm-workspace.yaml $WORKS
 # .dockerignore ที่ node-app root = build context ของ webapi (กัน host node_modules/dist/generated เข้า image)
 cp $GENERATOR_DIR/script-generator/template/workspace/.dockerignore $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 
+# verify Dockerfiles ที่ node-app root = in-container lint+tsc+unit test (make verify-backend / verify-nx-backend · tokenless)
+cp $GENERATOR_DIR/script-generator/template/workspace/Dockerfile.verify-backend $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
+cp $GENERATOR_DIR/script-generator/template/workspace/Dockerfile.verify-nx-backend $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
+
 cp -r $GENERATOR_DIR/script-generator/template/workspace/.changeset $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 
 

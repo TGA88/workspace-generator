@@ -19,8 +19,9 @@ ACTION  ?=
 
 COMPOSE = docker compose -f workspaces/infrastructure/docker-compose.yml --project-directory workspaces/infrastructure
 LB      = $(COMPOSE) run --rm liquibase
+NODE_APP = workspaces/node-app
 
-.PHONY: up migrate init seed api-up down test api-test help
+.PHONY: up migrate init seed api-up down test api-test verify-backend verify-nx-backend help
 
 up:      ; $(COMPOSE) up -d postgres
 migrate: ; $(LB) update --context-filter=migrate
@@ -40,4 +41,11 @@ test:    ; cd $(BT) && node --test --import tsx $(TEST_FILES)
 # full pipeline (local == CI) — DB สดทุกครั้ง (down -v ท้าย)
 api-test: up migrate init seed api-up test down
 
-help: ; @echo "targets: up migrate init seed api-up test down api-test  | vars: SERVICE=$(SERVICE) DOMAIN=<d>-api ACTION=<verb>-<d>"
+# verify-backend = node-app lint+tsc+unit test ในคอนเทนเนอร์ (ไม่ต้องมี DB/stack · ไม่ต้อง install ลงเครื่อง)
+#   ต่างจาก api-test (black-box: compose ยก DB+API จริงแล้วยิง HTTP) — คนละ layer แต่ทั้งคู่ = local==CI
+#   build fail = มี lint/tsc/test พัง · เขียว = CMD echo ✅ · (multi-stack: อนาคตแต่ละ stack มี verify-<stack> ของตัวเอง)
+#   verify-backend = pnpm --filter (default, robust) · verify-nx-backend = nx run-many (ตรง pipeline · ตัวอย่างที่ 2)
+verify-backend:    ; docker build -f $(NODE_APP)/Dockerfile.verify-backend $(NODE_APP)
+verify-nx-backend: ; docker build -f $(NODE_APP)/Dockerfile.verify-nx-backend $(NODE_APP)
+
+help: ; @echo "targets: up migrate init seed api-up test down api-test verify-backend verify-nx-backend  | vars: SERVICE=$(SERVICE) DOMAIN=<d>-api ACTION=<verb>-<d>"

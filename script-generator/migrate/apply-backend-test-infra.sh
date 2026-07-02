@@ -44,10 +44,10 @@ for v in SERVICE DB_SCHEMA SCOPE DATA_PKG API_PKG; do [ -z "${!v}" ] && { echo "
 echo "  [1/5] infrastructure + backend-test"
 ( cd "$PARENT" && bash "$GEN/script-generator/new-infrastructure.sh" "$WS_NAME" "$SERVICE" "$DB_SCHEMA" "$SCOPE" "$DATA_PKG" "$API_PKG" "$GEN" ) | sed 's/^/      /'
 
-# ── Step 2: webapi build Dockerfiles (.build + .nx-build) + node-app .dockerignore (build tooling — ไม่แตะ app source) ──
+# ── Step 2: webapi build Dockerfiles (.build + .nx-build) + node-app verify Dockerfiles + .dockerignore (build tooling — ไม่แตะ app source) ──
 # ⚠️ ไม่ patch app.ts / create-telemetry (app config = ของ app-owner) · telemetry+prefix จัดการผ่าน compose/_config
 # ⚠️ ไม่แตะ `Dockerfile` เดิม (runtime-only ของ CI release→docker:build) — เพิ่มแค่ .build (pnpm · compose default) + .nx-build (nx)
-echo "  [2/5] webapi build Dockerfiles (.build + .nx-build) + .dockerignore"
+echo "  [2/5] webapi build Dockerfiles (.build + .nx-build) + node-app verify Dockerfiles + .dockerignore"
 APPDIR="$NA/apps/$SERVICE/mcs-fastify"
 sed_df() { sedi -e "s/demo-exm-webapi/${SERVICE}/g" -e "s/gu-example-system/${WS_NAME}/g" -e "s/exm-data/${DATA_PKG}/g" "$1"; }
 for variant in Dockerfile.build Dockerfile.nx-build; do
@@ -60,6 +60,19 @@ for variant in Dockerfile.build Dockerfile.nx-build; do
   fi
 done
 [ -f "$NA/.dockerignore" ] || { cp "$GEN/script-generator/template/workspace/.dockerignore" "$NA/.dockerignore"; echo "      + node-app/.dockerignore"; }
+# node-app verify Dockerfiles (in-container lint+tsc+unit test · make verify-backend / verify-nx-backend · tokenless → cp ตรง ไม่ sed)
+for vf in Dockerfile.verify-backend Dockerfile.verify-nx-backend; do
+  [ -f "$NA/$vf" ] || { cp "$GEN/script-generator/template/workspace/$vf" "$NA/$vf"; echo "      + node-app/$vf"; }
+done
+# patch *:backend-libs scripts → --exclude apps (glob **/*api-* จับ webapi app ด้วย → test:backend-libs/verify-nx-backend เผลอรัน app jest ติด coverage gate)
+# idempotent · npm pkg set เขียนค่ามาตรฐาน (single-quote = literal glob ไม่ให้ shell expand)
+if [ -f "$NA/package.json" ]; then
+  ( cd "$NA" \
+    && npm pkg set 'scripts.lint:backend-libs=nx run-many --target=lint --projects=**/common-functions*,**/*api-*,**/*-data-store* --exclude=*webapi*,*webpub*,*websub*,*webio*' \
+    && npm pkg set 'scripts.test:backend-libs=nx run-many --target=test --projects=**/common-functions*,**/*api-*,**/*-data-store* --exclude=*webapi*,*webpub*,*websub*,*webio*' \
+    && npm pkg set 'scripts.build:backend-libs=nx run-many --target=build --projects=**/common-functions*,**/*api-*,**/*-data-store* --exclude=*webapi*,*webpub*,*websub*,*webio*' ) \
+    && echo "      + patched *:backend-libs scripts (--exclude apps)"
+fi
 
 # ── Step 3: discover domains/actions → contract+test pair (idempotent) ──
 echo "  [3/5] backfill contract+test pairs (จาก core domains ที่มี)"
@@ -121,12 +134,13 @@ else
 fi
 
 echo "=== [v1.5 migrate] done ==="
-echo "  auto: infra + backend-test (pure harness + per-service _config) + webapi Dockerfile.build(pnpm)+.nx-build(nx) + .dockerignore + wire migration"
-echo "        (runtime-only Dockerfile ของ CI release→docker:build ไม่ถูกแตะ · compose ใช้ Dockerfile.build)"
+echo "  auto: infra + backend-test (pure harness + per-service _config) + webapi Dockerfile.build(pnpm)+.nx-build(nx) + node-app verify-backend(pnpm)+verify-nx-backend(nx) + .dockerignore + wire migration"
+echo "        (runtime-only Dockerfile ของ CI release→docker:build ไม่ถูกแตะ · compose ใช้ Dockerfile.build · verify: make verify-backend)"
 echo "  manual ที่เหลือ (dev):"
 echo "    (1) cd workspaces/node-app && pnpm install   (store-prisma postinstall → prisma generate)"
 echo "    (2) cd workspaces/backend-test && pnpm install"
 echo "    (3) แก้ contract envelope (body/headers/auth) + assertDb ให้ตรง action จริง (skeleton → meaningful)"
 echo "    (4) เพิ่ม endpoint/action นอกเหนือที่ core มี (ถ้าต้องการ) ด้วย gen:api-action + wire"
-echo "    (5) make api-test  (bring-up สด → node:test → down)"
+echo "    (5) make api-test       (black-box: bring-up สด → node:test → down)"
+echo "    (6) make verify-backend (in-container lint+tsc+unit test · ไม่ต้องมี DB · nx variant = make verify-nx-backend)"
 echo "  telemetry: compose api ตั้ง OTEL env ให้แล้ว (Console provider พังใน core@0.3.4) · prefix: _config.ts (TARGET.prefix)"

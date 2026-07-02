@@ -1,0 +1,29 @@
+# Dockerfile.verify-nx-backend — node-app backend verification **(nx run-many variant)** · ในคอนเทนเนอร์
+#   make verify-nx-backend  # หรือ: docker build -f workspaces/node-app/Dockerfile.verify-nx-backend workspaces/node-app
+# ตรวจ backend ของ node-app: **libs = lint(tsc+eslint) + unit test** · **apps = lint(tsc+eslint) อย่างเดียว** โดยไม่ต้อง install อะไรลงเครื่อง
+#   · apps ไม่รัน unit test ที่นี่ — unit/coverage ของ app = app-owner (มี coverage gate) · apps ถูกครอบด้วย `make api-test` (integration จริง)
+#   · verify ด้วย **nx scripts ของ repo** (lint:backend-libs/test:backend-libs · lint:backend-apps) — ตรง pipeline จริงที่ใช้ nx
+#     (ต่างจาก Dockerfile.verify-backend ที่ใช้ pnpm --filter แค่ **คำสั่ง verify** — ที่เหลือเหมือนกัน · default = pnpm variant)
+#   · prisma client มากับ pnpm install (store-prisma postinstall) · build fail = lint/tsc/test พัง (เขียว = CMD echo ✅)
+# ⚠️ verify image ของ **stack เดียว** (node-app) · workspace แบบ multi-stack (dotnet-app/springboot-app) แต่ละ stack มี verify ของตัวเอง (คนละ toolchain)
+# ต่างจาก `make api-test` (black-box: compose ยก DB+API จริงแล้วยิง HTTP) — คนละ layer แต่ทั้งคู่ = local==CI
+# build context = workspaces/node-app (reuse .dockerignore กัน host artifacts)
+FROM node:22-bookworm-slim
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends openssl ca-certificates bash git \
+  && rm -rf /var/lib/apt/lists/*
+RUN corepack enable
+
+WORKDIR /app
+COPY . ./
+
+RUN pnpm install --no-frozen-lockfile
+# insurance เผื่อ data-store ที่ generate ไม่ผ่าน postinstall (--if-present = ข้าม package ที่ไม่มี script)
+RUN pnpm -r --if-present run prisma:generate
+
+# ---- verify ด้วย nx run-many (repo scripts): backend libs (lint+test) · backend apps (lint อย่างเดียว) ----
+RUN NX_DAEMON=false pnpm run lint:backend-libs && NX_DAEMON=false pnpm run test:backend-libs
+RUN NX_DAEMON=false pnpm run lint:backend-apps
+
+CMD ["echo", "✅ node-app backend: libs lint+test + apps lint passed (nx run-many)"]

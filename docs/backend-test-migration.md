@@ -99,6 +99,16 @@ scaffold ให้ skeleton ตาม envelope ของ framework (`@inh-lib/co
   - ⚠️ `nx run <app>:build` ที่พึ่ง `^build` **ไม่ build deps** ในคอนเทนเนอร์ (nx target-defaults plugin เรียก `pnpm --version`) →
     `.nx-build` เลยใช้ run-many scripts ที่ระบุ project ตรง ๆ · `.build` ใช้ pnpm dependency-graph แทน (เลยเป็น compose default)
   - `.dockerignore` (node-app) กัน host artifacts · compose healthcheck + `make api-up = up -d --build --wait api`
+- **verify layer — `make verify-backend` (in-container lint+tsc+unit test · ไม่ต้องมี DB)** — คนละ layer กับ `api-test`:
+  | layer | ทำอะไร | ต้องมี DB? |
+  |---|---|---|
+  | `make verify-backend` / `verify-nx-backend` | **node-app**: libs = lint+tsc+**unit test** · apps = lint+tsc (unit ของ app → api-test) · ในคอนเทนเนอร์ | ❌ ไม่ต้อง |
+  | `make api-test` | **black-box**: compose ยก DB+API จริง แล้วยิง HTTP (contract + assertDb) | ✅ (compose ยกให้) |
+  | `make test` | host-side `node:test` (iterate เร็ว ตอน stack ขึ้นแล้ว) | ✅ (ต้อง `api-up` ก่อน) |
+  - 2 ไฟล์ที่ **node-app root** (tokenless · glob เดียวกับ `build:backend-*`): `Dockerfile.verify-backend` (**pnpm `--filter`** · default · robust
+    ไม่พึ่ง nx graph) + `Dockerfile.verify-nx-backend` (**nx run-many** `lint:backend-libs`&`test:backend-libs`→`*-apps` · ตรง pipeline)
+  - migration cp ทั้ง 2 ไฟล์ให้ (idempotent · ไม่ sed) · runtime = `CMD echo ✅` (build-time verify เท่านั้น ไม่ start service)
+  - **apps = lint-only** ที่ verify layer โดยตั้งใจ: unit test/coverage gate ของ app = app-owner (webapi jest มี coverage threshold) · apps correctness ครอบด้วย `make api-test` (integration จริง)
 - **prisma generate** — store-prisma ต้องเป็น `"postinstall": "prisma generate"` (ไม่ใช่ `_postinstall` — underscore ไม่ใช่
   lifecycle hook, ไม่ auto-run) → `pnpm install` generate client ให้ · `nx build` ก็ทำอีกชั้น
 - **run บน host** (dev): `cd apps/<service>/mcs-fastify && pnpm dev` (app ที่ prefix default) · `make test` ใช้ default ใน
