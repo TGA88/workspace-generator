@@ -1,0 +1,85 @@
+# infrastructure topology — postgres + liquibase + api  (service names ตรงกับ root Makefile)
+# รันผ่าน root Makefile: make up / migrate / init / seed / api-up / down / api-test
+# paths relative = project-directory (workspaces/infrastructure) · '../node-app' = โค้ดจริง
+services:
+  postgres:
+    image: postgres:15.2
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=__DB_NAME__
+    volumes:
+      - ./initdb/init.postgresql.sql:/docker-entrypoint-initdb.d/init.postgresql.sql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - '5433:5432'
+    networks:
+      - backend-test-net
+
+  # liquibase = one-shot runner (make ... => `run --rm liquibase update --context-filter=<phase>`)
+  # entrypoint=liquibase → args ต่อท้ายจาก make กลายเป็น command · searchPath ครอบทั้ง db/ + prisma/
+  liquibase:
+    image: liquibase/liquibase:4.28.0-alpine
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./liquibase/changelog.yaml:/liquibase/changelog/changelog.yaml
+      - ./db:/liquibase/changelog/db
+      - ../node-app/libs/__SCOPE__/__DATA_PKG__/store-prisma/prisma:/liquibase/changelog/prisma
+    environment:
+      - LIQUIBASE_SEARCH_PATH=/liquibase/changelog
+      - LIQUIBASE_COMMAND_CHANGELOG_FILE=changelog.yaml
+      - LIQUIBASE_COMMAND_URL=jdbc:postgresql://postgres:5432/__DB_NAME__
+      - LIQUIBASE_COMMAND_USERNAME=postgres
+      - LIQUIBASE_COMMAND_PASSWORD=postgres
+      - LIQUIBASE_COMMAND_DEFAULT_SCHEMA_NAME=__DB_SCHEMA_NAME__
+      - LIQUIBASE_LIQUIBASE_SCHEMA_NAME=__DB_SCHEMA_NAME__
+    entrypoint: ['liquibase']
+    networks:
+      - backend-test-net
+
+  # api = artifact ที่ deploy จริง (black-box target) — multi-stage Dockerfile ของ webapi app
+  # build context = ../node-app (ทั้ง workspace) · healthcheck ให้ `up -d --wait api` รอจน listen ก่อน test
+  # Dockerfile.build = pnpm --filter topological (robust สุด, ไม่พึ่ง nx project-graph ในคอนเทนเนอร์)
+  #   · ทางเลือก nx: switch เป็น Dockerfile.nx-build ได้ (ตรง Azure pipeline · verified ทั้งคู่)
+  #   · Dockerfile (ไม่มี suffix) = runtime-only ของ CI release→docker:build — ไม่ใช่ target ของ compose
+  api:
+    build:
+      context: ../node-app
+      dockerfile: apps/__SERVICE__/mcs-fastify/Dockerfile.build
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - PORT=3000
+      # app mount route ที่ prefix default (/__SERVICE__) — ไม่ set API_PREFIX (คง routing ของ app-owner ไว้)
+      # backend-test harness prepend prefix เดียวกันผ่าน _config.ts (TARGET.prefix) → contract คง service-relative
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/__DB_NAME__?schema=__DB_SCHEMA_NAME__
+      # telemetry = env config ของ app-owner · ตั้ง OTEL endpoint → OtelProviderService (Console provider พังใน
+      # unified-telemetry-core@0.3.4: getSpanMetadata throw) · exporter=none = ไม่ export จริง (backend-test ไม่ต้องมี collector)
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - OTEL_TRACES_EXPORTER=none
+      - OTEL_METRICS_EXPORTER=none
+      - OTEL_LOGS_EXPORTER=none
+    ports:
+      - '3010:3000'
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "require('http').get('http://127.0.0.1:3000/',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    networks:
+      - backend-test-net
+
+networks:
+  backend-test-net:
+    driver: bridge

@@ -3,7 +3,6 @@ script to create pnpm workspace boilerplate
 
 ## workspace-generator version compatibility
 ```
-- >= 1.5.0 backend-test + infrastructure layer: black-box api-test (node:test) + contract SSOT + make api-test (ดู section ถัดไป)
 - >= 1.4.0 dev-condition export strategy: lint/test/build ไม่ต้อง build local dependency ก่อน (ดู section ถัดไป)
 - >= 1.2.0 compatible with nodejs >= 22.x
 - < 1.2.0 compatible with nodejs <= 20.x
@@ -11,7 +10,6 @@ script to create pnpm workspace boilerplate
 
 ## สารบัญ
 
-- [Backend-Test & Infrastructure (v1.5)](#backend-test--infrastructure-v15)
 - [Export Strategy & Build System (v1.4)](#export-strategy--build-system-v14)
 - [Workspace](#workspace) — สร้าง / update config / init system
 - [Storybook host](#storybook-host)
@@ -22,29 +20,6 @@ script to create pnpm workspace boilerplate
 - [Other (troubleshooting)](#other)
 
 > 🧭 **เพิ่งเริ่ม?** flow ปกติ: สร้าง workspace → init system → update config → สร้าง base API package (core/service/client/store-prisma/webapi) → เติม domain/endpoint ด้วย **scaffolding** (`pnpm gen:api-*`) ดู [API Project › scaffolding](#scaffolding-เพิ่ม-api-domain-unified-route-pattern)
-
-## Backend-Test & Infrastructure (v1.5)
-
-ตั้งแต่ **v1.5** scaffold เพิ่ม `workspaces/infrastructure/` (contract SSOT + db init/seed + docker-compose +
-liquibase) + `workspaces/backend-test/` (node:test **black-box** harness) + root `Makefile` (`make api-test`)
-→ ยิง HTTP เข้า **service จริง + DB จริง** (out-of-process, local == CI) และ assert ได้ทั้ง **HTTP envelope + DB record**
-
-| | เอกสาร | เนื้อหา |
-|---|---|---|
-| 🪜 | [migration-guide.md](./docs/migration-guide.md) | **อัป workspace เดิมข้ามหลาย version → ล่าสุด** (ladder + idempotent + version marker `template-version`) |
-| 🧪 | [backend-test-migration.md](./docs/backend-test-migration.md) | v1.5 = อะไร/ทำไม + **migrate workspace เดิม** + แก้ contract ให้ meaningful + gotcha (auth/envelope/telemetry/docker) |
-
-**สรุปสั้น ๆ:** 1 action = 1 test file (data-driven จาก contract) · contract (`c*/e*.json`) = **SSOT** เสิร์ฟทั้ง
-BE assert + FE mock · setup/teardown ราย **action** และราย **case** · `assertDb` ตรวจ side-effect จริง ·
-`make api-test` = up → migrate → init → seed → api-up (docker build + wait healthy) → test → down
-
-**Migrate workspace เดิม (สร้างด้วย version < 1.5)**
-```bash
-# ถ้ายัง < 1.4 รัน export-strategy migration ก่อน (ดู section ถัดไป) แล้วค่อย:
-bash workspace-generator/script-generator/migrate/apply-backend-test-infra.sh <ws> [SERVICE] [DB_SCHEMA]
-# แล้ว: cd workspaces/backend-test && pnpm install  →  make api-test  (verify)
-```
-> รายละเอียด + gotcha ที่เจอจริง (API_PREFIX='', envelope OK/PARSE_FAIL, NoOp telemetry, prisma bookworm engine) อยู่ใน [docs/backend-test-migration.md](./docs/backend-test-migration.md)
 
 ## Export Strategy & Build System (v1.4)
 
@@ -60,7 +35,7 @@ bash workspace-generator/script-generator/migrate/apply-backend-test-infra.sh <w
 | 🚀 | [api-scaffolding.user-guide.md](./docs/api-scaffolding.user-guide.md) | เพิ่ม backend API ตั้งแต่ศูนย์ — scaffolding `gen:api-domain/wire/action/promote/demote` |
 | 🛠️ | [api-scaffolding.developer-guide.md](./docs/api-scaffolding.developer-guide.md) | แก้ template/scaffolding ของ generator เอง (developer guide) |
 
-> README ฉบับก่อนหน้า: [README_v1_4.md](./README_v1_4.md) (v1.4) · [README_v1_3.md](./README_v1_3.md) (v1.3) · **อัปข้ามหลาย version → [docs/migration-guide.md](./docs/migration-guide.md)**
+> README ฉบับก่อนหน้า: [README_v1_3.md](./README_v1_3.md)
 
 **สรุปสั้น ๆ:** ตั้งแต่ v1.4 ทุก lib template ใช้ **dual-condition exports** เพื่อให้:
 
@@ -287,7 +262,7 @@ bash workspace-generator/script-generator/new-webconfig.sh gu-example-system  de
 
 > 📖 **คู่มือเต็ม (แก้ field/logic/migration/test + ปัญหาที่เจอบ่อย):** [docs/api-scaffolding.user-guide.md](./docs/api-scaffolding.user-guide.md)
 
-มี 7 คำสั่ง (รันจาก `workspaces/node-app`) — **ไม่ใส่ param ก็ได้ จะถามทีละค่า (TUI)**:
+มี 5 คำสั่ง (รันจาก `workspaces/node-app`) — **ไม่ใส่ param ก็ได้ จะถามทีละค่า (TUI)**:
 
 ```bash
 # 1) slice: core+service+client ของ domain (command create-<domain> + query get-<domain>) + อัปเดต exports/index
@@ -310,14 +285,6 @@ pnpm gen:api-promote <scope> <shared-api> <domain>
 # 5) demote: standalone project -> กลับเป็น grouped domain ใน shared-api
 pnpm gen:api-demote <scope> <project> <shared-api>
 #   เช่น: pnpm gen:api-demote shared-webapi product-api shared-api
-
-# 6) infra: (one-time/system) workspaces/infrastructure + backend-test + root Makefile (api-test ระดับ API)
-pnpm gen:infra <service> <db-schema> [scope] [data-pkg] [api-pkg]
-#   เช่น: pnpm gen:infra demo-shop-webapi demo-shop
-
-# 7) contract: คู่กัน contract(SSOT) + backend-test node:test ต่อ action (gen:api-wire เรียกให้อัตโนมัติ)
-pnpm gen:api-contract <service> <domain> [action]
-#   เช่น: pnpm gen:api-contract demo-shop-webapi product update-product   (ว่าง = create+get)
 ```
 > ต้อง clone `workspace-generator` ไว้ระดับเดียวกับ workspace (หรือ set `WORKSPACE_GENERATOR_DIR`) — จำเป็นเฉพาะตอน scaffold; build/test/run ไม่ต้องมี
 
@@ -328,8 +295,6 @@ bash workspace-generator/script-generator/new-api-wire.sh    <workspace> <scope>
 bash workspace-generator/script-generator/new-api-action.sh  <workspace> <scope> <api-pkg> <domain> <command|query> <verb>
 bash workspace-generator/script-generator/promote-api-domain.sh <workspace> <scope> <shared-api> <domain>
 bash workspace-generator/script-generator/demote-api-domain.sh  <workspace> <scope> <project> <shared-api>
-bash workspace-generator/script-generator/new-infrastructure.sh <workspace> <service> <db-schema> [scope] [data-pkg] [api-pkg]
-bash workspace-generator/script-generator/new-api-contract.sh   <workspace> <service> <domain> [action]
 ```
 หลัง wire แล้ว: `pnpm prisma:generate` + `pnpm gen:up-script` (migration) ที่ store-prisma แล้วทดสอบด้วย `make test` (ดู user guide)
 

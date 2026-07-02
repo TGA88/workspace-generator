@@ -1,0 +1,24 @@
+{
+  "key": "e1",
+  "desc": "__ACTION__ ไม่สำเร็จ — input ไม่ผ่าน validate ที่ขอบ (zod → PARSE_FAIL)",
+  "_note": "default = validate-fail ของ command (body ว่าง → 422 PARSE_FAIL). action ที่เป็น query by id (route /:id) ไม่มี 422 → แก้เป็น NOT_FOUND (404) ตาม action จริง",
+  "withRequest": {
+    "method": "__METHOD__",
+    "path": "/__DOMAIN_API__/__ACTION__",
+    "headers": { "content-type": "application/json", "authorization": "Bearer test-user", "x-tenant-id": "TENANT_01" },
+    "body": {},
+    "query": {},
+    "params": {}
+  },
+  "withResponse": {
+    "status": 422,
+    "headers": {},
+    "body": {
+      "statusCode": 422,
+      "isSuccess": false,
+      "codeResult": "PARSE_FAIL",
+      "message": "validate request fail",
+      "dataResult": {}
+    }
+  }
+}

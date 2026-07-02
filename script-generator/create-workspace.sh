@@ -44,7 +44,18 @@ cp -r $GENERATOR_DIR/script-generator/template/workspace/tools $WORKSPACE_DIR/wo
 
 cp $GENERATOR_DIR/script-generator/template/workspace/.gitignore $WORKSPACE_DIR
 
+# root convention files (dev-env: LF/TAB) — บังคับ EOL ก่อน commit แรก (Makefile มาพร้อม gen:infra)
+cp $GENERATOR_DIR/script-generator/template/workspace/root/.gitattributes $WORKSPACE_DIR
+cp $GENERATOR_DIR/script-generator/template/workspace/root/.editorconfig $WORKSPACE_DIR
+
 cp $GENERATOR_DIR/script-generator/template/workspace/pnpm-workspace.yaml $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
+
+# .dockerignore ที่ node-app root = build context ของ webapi (กัน host node_modules/dist/generated เข้า image)
+cp $GENERATOR_DIR/script-generator/template/workspace/.dockerignore $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
+
+# verify Dockerfiles ที่ node-app root = in-container lint+tsc+unit test (make verify-backend / verify-nx-backend · tokenless)
+cp $GENERATOR_DIR/script-generator/template/workspace/Dockerfile.verify-backend $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
+cp $GENERATOR_DIR/script-generator/template/workspace/Dockerfile.verify-nx-backend $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 
 cp -r $GENERATOR_DIR/script-generator/template/workspace/.changeset $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 

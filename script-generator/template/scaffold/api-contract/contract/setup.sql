@@ -1,0 +1,3 @@
+-- setup (action-level) — รันครั้งเดียวก่อนทุกเคสของ __ACTION__ (node:test `before`)
+-- ใส่ state ที่ทุกเคสต้องใช้ · อ้าง shared/domain seed ด้วย key คงที่ (ไม่ hardcode id ซ้ำ)
+-- (skeleton — ยังว่าง · เติมตาม table ของ __DOMAIN_API__)

@@ -1,0 +1,2 @@
+-- rollback ของ init/shared/lookup.sql — ย้อน reference/lookup ที่ lookup.sql ใส่
+-- ลบเฉพาะของที่ lookup.sql สร้าง (scoped) · (skeleton — ยังว่าง · เติมคู่กับ lookup.sql)

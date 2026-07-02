@@ -17,15 +17,23 @@ script-generator/
     api-domain/{core,service,client}/__DOMAIN_API__/   # vertical slice ของ 1 domain
     api-wire/{data,route,prisma}/                      # repo + route + model
     api-action/{command,query}/{core,service,client}/  # action เดี่ยว (verb-tokenized)
+    api-contract/{contract,test,seed}/                 # contract⇄backend-test pair ต่อ action (§9)
+  template/infrastructure/             # skeleton: docker-compose + liquibase + db/ + contract/ (§9)
+  template/backend-test/               # skeleton: node:test harness (lib/) + _conformance (§9)
+  template/workspace/root/             # Makefile + .gitattributes + .editorconfig (§9)
   new-apicore.sh new-apiservice.sh new-apiclient.sh    # สร้าง base package
   new-storeprisma.sh new-webapi.sh
   new-api-domain.sh                    # scaffold domain slice (grouped)
-  new-api-wire.sh                      # scaffold data repo + route + model
+  new-api-wire.sh                      # scaffold data repo + route + model (auto-chain contract §9)
   new-api-action.sh                    # scaffold action เดี่ยว (command/query) เข้า domain เดิม
+  new-infrastructure.sh                # one-time: infrastructure + backend-test + root Makefile (§9)
+  new-api-contract.sh                  # contract⇄backend-test pair ต่อ action (§9)
   template/workspace/tools/gen-api-domain.sh           # wrapper (ติดไปกับทุก workspace)
   template/workspace/tools/gen-api-wire.sh
   template/workspace/tools/gen-api-action.sh
-  template/workspace/package.json      # มี npm script gen:api-domain / gen:api-wire
+  template/workspace/tools/gen-infra.sh                # wrapper → new-infrastructure.sh
+  template/workspace/tools/gen-api-contract.sh         # wrapper → new-api-contract.sh
+  template/workspace/package.json      # มี npm script gen:api-domain / gen:api-wire / gen:infra / gen:api-contract
 ```
 
 แยกแนวคิด: **base template** = เปลือก package เปล่า (config + shared utils, ไม่มี domain) — `new-api*.sh` ก๊อปมา; **scaffold template** = เนื้อ domain ที่เติมเข้า base ทีหลัง — `new-api-domain/wire.sh` ก๊อป+แทน token
@@ -127,3 +135,59 @@ pnpm gen:api-wire   shared-webapi shared-api demo-shop-data demo-shop-webapi thi
 # core/service/client tsc+jest; store-prisma+webapi ต้อง prisma:generate ก่อน (หรือ make test)
 ```
 หรือใช้ `make test` (docker) ตรวจครบวงรวม prisma v6 generate
+
+---
+
+## 9. infrastructure + backend-test + contract (api-test ระดับ API)
+
+scaffold ชุดที่ 2 (นอกจาก code slice) = **โครงรัน api-test** — black-box out-of-process, runner **`node:test`**,
+data-driven จาก **contract (SSOT)**. ที่มาของ pattern: ยกจากโครง `workspaces/{node-app,infrastructure}` ของ
+**ระบบอ้างอิงเดิม** แล้วเก็บกวาด (สะกด `contract`/`teardown` ให้ถูก · เพิ่ม `_cases.json` · เปลี่ยน jest→node:test ·
+เพิ่ม root Makefile + db scope ladder).
+
+### 9.1 `new-infrastructure.sh <WS> <SERVICE> <DB_SCHEMA> [SCOPE] [DATA_PKG] [API_PKG]` (one-time/system)
+ก๊อป 3 template แล้ว tokenize:
+- `template/infrastructure/` → `workspaces/infrastructure/` (rename path token `__DB_SCHEMA__` → db folder)
+- `template/backend-test/` → `workspaces/backend-test/` (rename `__SERVICE__` ในชื่อไฟล์ conformance)
+- `template/workspace/root/Makefile` → root (มี Makefile อยู่แล้ว → เขียน `Makefile.backend-test.example`) + `.gitattributes`/`.editorconfig`
+
+derive: `DB_UP = upper(DB_SCHEMA, -→_)` · `DB_SCHEMA_NAME = DB_UP` · `DB_NAME = DB_UP_DATA_INTEGRATION` ·
+default `SCOPE=shared-webapi` · `DATA_PKG=<DB_SCHEMA>-data` · `API_PKG=shared-api`. idempotent (skip ถ้ามีแล้ว)
+
+### 9.2 `new-api-contract.sh <WS> <SERVICE> <DOMAIN> [ACTION]` (ต่อ action — "คู่กัน")
+สร้าง pair + domain seed:
+- `infrastructure/contract/<service>/<domain>-api/<action>/` (c1/e1.json + setup/teardown.sql + _cases.json)
+- `backend-test/<service>/<domain>-api/<action>.test.ts` (วน `_cases.json`)
+- ครั้งเดียว/domain: `db/<db-schema>/seed/<domain>-api/{base.sql,base.down.sql}` + **แทรก changeSet** ที่ anchor
+  `# ▼ GEN:DOMAIN-SEED-ANCHOR ▼` ใน `changelog.yaml` (context=seed, label=domain:<domain>-api) ผ่าน awk
+  · ⚠️ ทุก changeSet gen พร้อม **`rollback`** ชี้ `base.down.sql` เสมอ (init/seed skeleton ก็มี `*.down.sql` คู่)
+
+`ACTION` ว่าง = default `create-<domain>` + `get-<domain>` · **method** derive จาก verb
+(`get/list/find/search→get`, `update/edit/patch→put`, `delete/remove→delete`, อื่น→`post`) ·
+db-schema folder auto-detect จาก `find infrastructure/db -name seed` · idempotent (skip existing, changeSet ครั้งเดียว)
+
+### 9.3 auto-chain จาก wire
+`new-api-wire.sh` เรียก `new-api-contract.sh` ท้ายสุด (wire รู้ `WEBAPI_APP`=service + `DOMAIN`) →
+ได้ pair อัตโนมัติในโฟลว์หลัก · **opt-out ด้วย `SKIP_CONTRACT=1`**
+
+### 9.4 token เพิ่ม (นอกจาก §3)
+| token | ความหมาย | ตัวอย่าง |
+|---|---|---|
+| `__SERVICE__` | webapi app (service) | `demo-shop-webapi` |
+| `__DB_SCHEMA__` | db folder (kebab) | `demo-shop` |
+| `__DB_SCHEMA_NAME__` | postgres schema (upper) | `DEMO_SHOP` |
+| `__DB_NAME__` | postgres database | `DEMO_SHOP_DATA_INTEGRATION` |
+| `__SCOPE__` / `__DATA_PKG__` | libs group / data package | `shared-webapi` / `demo-shop-data` |
+| `__ACTION__` / `__VERB__` / `__METHOD__` | action / verb / HTTP method | `create-product` / `create` / `post` |
+
+> ⚠️ ลำดับ sed: `__DB_SCHEMA_NAME__` ก่อน `__DB_SCHEMA__` · `@__WS__` ก่อน `__WS__` (กัน prefix ชน)
+
+### 9.5 verify การแก้ template ชุดนี้
+```bash
+# ในโฟลเดอร์แม่ (workspace + generator = sibling)
+bash workspace-generator/script-generator/new-infrastructure.sh <ws> demo-shop-webapi demo-shop
+bash workspace-generator/script-generator/new-api-contract.sh   <ws> demo-shop-webapi product
+```
+เช็ค: ไม่มี token `__…__` ค้าง · JSON valid (`node -e JSON.parse`) · TS syntax (node:test harness) ·
+changelog มี changeSet ต่อ domain · แล้ว `cd workspaces/backend-test && pnpm install && make api-test`
+(ต้องมี docker + service Dockerfile)

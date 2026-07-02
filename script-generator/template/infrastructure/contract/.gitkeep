@@ -1,0 +1,2 @@
+# contract = SSOT (.json) — gen:api-contract สร้าง <service>/<domain>-api/<action>/ ที่นี่
+# relative-import โดย backend-test (BE) และ frontend (mock) — ก้อนเดียว เสิร์ฟสองฝั่ง

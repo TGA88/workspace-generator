@@ -1,0 +1,24 @@
+{
+  "key": "c1",
+  "desc": "__ACTION__ สำเร็จ",
+  "_note": "action ที่เปลี่ยน state (create/update/delete) ให้เพิ่ม block \"assertDb\" เพื่อ assert row ที่ลง DB จริง (HTTP 200 ไม่ได้แปลว่า persist) — { \"query\": \"SELECT col.. FROM <table> WHERE ..\", \"rowCount\": 1, \"row\": { \"col\": \"val\" } }",
+  "withRequest": {
+    "method": "__METHOD__",
+    "path": "/__DOMAIN_API__/__ACTION__",
+    "headers": { "content-type": "application/json", "authorization": "Bearer test-user", "x-tenant-id": "TENANT_01" },
+    "body": {},
+    "query": {},
+    "params": {}
+  },
+  "withResponse": {
+    "status": 200,
+    "headers": {},
+    "body": {
+      "statusCode": 200,
+      "isSuccess": true,
+      "codeResult": "OK",
+      "message": "OK",
+      "dataResult": {}
+    }
+  }
+}
