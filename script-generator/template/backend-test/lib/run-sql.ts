@@ -27,3 +27,20 @@ export async function runSqlFile(file: string): Promise<void> {
     await client.end();
   }
 }
+
+// queryRows — SELECT ตรงเข้า DB จริง คืน rows (ใช้ assert side-effect เช่น row ที่ create ลง DB จริง)
+// ยิงเข้า schema เดียวกับ setup/teardown (search_path) · params เป็น $1,$2,... (parameterized)
+export async function queryRows<T = Record<string, unknown>>(
+  sql: string,
+  params: unknown[] = [],
+): Promise<T[]> {
+  const client = new pg.Client({ connectionString: DATABASE_URL });
+  await client.connect();
+  try {
+    await client.query(`SET search_path TO "${SCHEMA}"`);
+    const res = await client.query(sql, params);
+    return res.rows as T[];
+  } finally {
+    await client.end();
+  }
+}

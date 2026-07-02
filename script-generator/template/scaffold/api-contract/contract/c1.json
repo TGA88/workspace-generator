@@ -1,6 +1,7 @@
 {
   "key": "c1",
   "desc": "__ACTION__ สำเร็จ",
+  "_note": "action ที่เปลี่ยน state (create/update/delete) ให้เพิ่ม block \"assertDb\" เพื่อ assert row ที่ลง DB จริง (HTTP 200 ไม่ได้แปลว่า persist) — { \"query\": \"SELECT col.. FROM <table> WHERE ..\", \"rowCount\": 1, \"row\": { \"col\": \"val\" } }",
   "withRequest": {
     "method": "__METHOD__",
     "path": "/__DOMAIN_API__/__ACTION__",

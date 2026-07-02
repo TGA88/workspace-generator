@@ -4,7 +4,7 @@
 import { describe, it, before, after } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { httpRequest, runSqlFile, assertContract, loadCases } from '../../lib/index.ts';
+import { httpRequest, runSqlFile, assertContract, assertDbState, loadCases } from '../../lib/index.ts';
 
 const CONTRACT_DIR = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -23,7 +23,8 @@ describe('__ACTION__', () => {
     it(`${c.key} — ${c.desc}`, async () => {
       if (c.setup) await runSqlFile(path.join(CONTRACT_DIR, c.setup)); // ② case-level (เช่น setup.e1.sql)
       const res = await httpRequest(c.withRequest); // ③ ยิงเข้า API จริง
-      assertContract(res, c.withResponse); // ④ assert เทียบ contract
+      assertContract(res, c.withResponse); // ④ assert เทียบ contract (HTTP envelope)
+      if (c.assertDb) await assertDbState(c.assertDb); // ④.5 assert row ที่ลง DB จริง (create/update/delete)
       if (c.teardown) await runSqlFile(path.join(CONTRACT_DIR, c.teardown));
     });
   }
