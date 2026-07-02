@@ -1,0 +1,10 @@
+# build context = workspaces/node-app (compose api service) — กัน host artifacts (mac/darwin)
+# หลุดเข้า image linux: node_modules/dist/generated ต้อง rebuild ใน container เท่านั้น
+**/node_modules
+**/dist
+**/generated
+**/.turbo
+**/coverage
+**/.nx
+**/*.log
+**/*.tsbuildinfo

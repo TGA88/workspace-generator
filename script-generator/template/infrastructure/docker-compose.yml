@@ -43,9 +43,8 @@ services:
     networks:
       - backend-test-net
 
-  # api = artifact ที่ deploy จริง (black-box target) — Dockerfile เป็นของ webapi app
-  # ⚠️ Dockerfile ของ webapi (template ปัจจุบัน) คาดหวัง build output (dist/) — ต้องปรับ build context/
-  #    stage ให้ตรงกับ pipeline ของ service ก่อน `make api-up` จะ build ได้ (เป็นเรื่องของ webapi app)
+  # api = artifact ที่ deploy จริง (black-box target) — multi-stage Dockerfile ของ webapi app
+  # build context = ../node-app (ทั้ง workspace) · healthcheck ให้ `up -d --wait api` รอจน listen ก่อน test
   api:
     build:
       context: ../node-app
@@ -55,9 +54,21 @@ services:
         condition: service_healthy
     environment:
       - PORT=3000
+      # API_PREFIX ว่าง = mount route ที่ root (/<domain>-api/..) ให้ตรง contract path (service-relative)
+      - API_PREFIX=
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/__DB_NAME__?schema=__DB_SCHEMA_NAME__
+      # ไม่ตั้ง OTEL_EXPORTER_OTLP_ENDPOINT → NoOp telemetry provider (dev/test · ดู create-telemetry.ts)
     ports:
       - '3010:3000'
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "require('http').get('http://127.0.0.1:3000/',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"
+      interval: 5s
+      timeout: 5s
+      retries: 30
     networks:
       - backend-test-net
 

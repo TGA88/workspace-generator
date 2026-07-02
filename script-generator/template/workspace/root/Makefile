@@ -26,7 +26,7 @@ up:      ; $(COMPOSE) up -d postgres
 migrate: ; $(LB) update --context-filter=migrate
 init:    ; $(LB) update --context-filter=init
 seed:    ; $(LB) update --context-filter=seed $(if $(DOMAIN),--label-filter="shared OR domain:$(DOMAIN)")
-api-up:  ; $(COMPOSE) up -d api
+api-up:  ; $(COMPOSE) up -d --build --wait api
 down:    ; $(COMPOSE) down -v
 
 # backend-test = standalone package (นอก node-app pnpm workspace) → cd เข้าไปให้ tsx/pg resolve

@@ -50,6 +50,9 @@ cp $GENERATOR_DIR/script-generator/template/workspace/root/.editorconfig $WORKSP
 
 cp $GENERATOR_DIR/script-generator/template/workspace/pnpm-workspace.yaml $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 
+# .dockerignore ที่ node-app root = build context ของ webapi (กัน host node_modules/dist/generated เข้า image)
+cp $GENERATOR_DIR/script-generator/template/workspace/.dockerignore $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
+
 cp -r $GENERATOR_DIR/script-generator/template/workspace/.changeset $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 
 
