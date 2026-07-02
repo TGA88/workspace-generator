@@ -44,21 +44,21 @@ for v in SERVICE DB_SCHEMA SCOPE DATA_PKG API_PKG; do [ -z "${!v}" ] && { echo "
 echo "  [1/5] infrastructure + backend-test"
 ( cd "$PARENT" && bash "$GEN/script-generator/new-infrastructure.sh" "$WS_NAME" "$SERVICE" "$DB_SCHEMA" "$SCOPE" "$DATA_PKG" "$API_PKG" "$GEN" ) | sed 's/^/      /'
 
-# ── Step 2: webapi Dockerfile (nx multi-stage) + node-app .dockerignore (build tooling — ไม่แตะ app source) ──
+# ── Step 2: webapi build Dockerfiles (.build + .nx-build) + node-app .dockerignore (build tooling — ไม่แตะ app source) ──
 # ⚠️ ไม่ patch app.ts / create-telemetry (app config = ของ app-owner) · telemetry+prefix จัดการผ่าน compose/_config
-echo "  [2/5] webapi Dockerfile + .dockerignore"
+# ⚠️ ไม่แตะ `Dockerfile` เดิม (runtime-only ของ CI release→docker:build) — เพิ่มแค่ .build (pnpm · compose default) + .nx-build (nx)
+echo "  [2/5] webapi build Dockerfiles (.build + .nx-build) + .dockerignore"
 APPDIR="$NA/apps/$SERVICE/mcs-fastify"
-DF="$APPDIR/Dockerfile"
-DF_TPL="$GEN/script-generator/template/project/webapi/mcs-fastify/Dockerfile"
 sed_df() { sedi -e "s/demo-exm-webapi/${SERVICE}/g" -e "s/gu-example-system/${WS_NAME}/g" -e "s/exm-data/${DATA_PKG}/g" "$1"; }
-if [ -f "$DF" ] && grep -q 'AS build' "$DF"; then
-  echo "      ! Dockerfile = multi-stage แล้ว, skip"
-elif [ ! -f "$DF" ] || grep -q 'COPY /dist/apps' "$DF"; then
-  cp "$DF_TPL" "$DF"; sed_df "$DF"; echo "      + Dockerfile → nx multi-stage (แทน placeholder)"
-else
-  cp "$DF_TPL" "$APPDIR/Dockerfile.backend-test.example"; sed_df "$APPDIR/Dockerfile.backend-test.example"
-  echo "      ! Dockerfile ถูก customize → เขียน Dockerfile.backend-test.example (merge เอง)"
-fi
+for variant in Dockerfile.build Dockerfile.nx-build; do
+  DF="$APPDIR/$variant"
+  DF_TPL="$GEN/script-generator/template/project/webapi/mcs-fastify/$variant"
+  if [ -f "$DF" ] && grep -q 'AS build' "$DF"; then
+    echo "      ! $variant = multi-stage แล้ว, skip"
+  else
+    cp "$DF_TPL" "$DF"; sed_df "$DF"; echo "      + $variant (multi-stage)"
+  fi
+done
 [ -f "$NA/.dockerignore" ] || { cp "$GEN/script-generator/template/workspace/.dockerignore" "$NA/.dockerignore"; echo "      + node-app/.dockerignore"; }
 
 # ── Step 3: discover domains/actions → contract+test pair (idempotent) ──
@@ -121,7 +121,8 @@ else
 fi
 
 echo "=== [v1.5 migrate] done ==="
-echo "  auto: infra + backend-test (pure harness + per-service _config) + webapi Dockerfile(nx) + .dockerignore + wire migration"
+echo "  auto: infra + backend-test (pure harness + per-service _config) + webapi Dockerfile.build(pnpm)+.nx-build(nx) + .dockerignore + wire migration"
+echo "        (runtime-only Dockerfile ของ CI release→docker:build ไม่ถูกแตะ · compose ใช้ Dockerfile.build)"
 echo "  manual ที่เหลือ (dev):"
 echo "    (1) cd workspaces/node-app && pnpm install   (store-prisma postinstall → prisma generate)"
 echo "    (2) cd workspaces/backend-test && pnpm install"

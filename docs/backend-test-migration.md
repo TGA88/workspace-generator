@@ -88,11 +88,17 @@ scaffold ให้ skeleton ตาม envelope ของ framework (`@inh-lib/co
   + `OTEL_*_EXPORTER=none` → OtelProviderService ทำงาน (ไม่ export จริง) · จะเอา trace จริง = ชี้ endpoint ไป collector
 - **schema case-fold** — postgres fold identifier เป็น lowercase → DB schema name ใช้ lowercase (`demo_shop`)
   ทั้ง DDL/liquibase/prisma `?schema=`/harness ต้องตรงกัน
-- **docker (nx run-many)** — webapi Dockerfile = multi-stage `node:22-bookworm-slim` · build ด้วย **nx scripts ของ repo**
-  `pnpm run build:backend-libs && build:backend-apps` (run-many เลือก project explicit — `nx run <app>:build` ที่พึ่ง `^build`
-  ไม่ build deps ในคอนเทนเนอร์ · nx target-defaults plugin เรียก `pnpm --version`) · **runtime stage ต้อง `apt-get install openssl`**
-  (bookworm-slim ไม่มี → prisma query engine mismatch) · runtime `fastify start dist/src/app.js` (**ไม่ใช่ main.ts**) ·
-  `.dockerignore` (node-app) · compose healthcheck + `make api-up = up -d --build --wait api`
+- **docker — 3 Dockerfile (แยกหน้าที่)** — webapi app dir มี 3 ไฟล์ · migration เพิ่มแค่ 2 ตัว build (ไม่แตะ `Dockerfile` เดิม):
+  | ไฟล์ | build | ใช้เมื่อ |
+  |---|---|---|
+  | `Dockerfile` | **ไม่ build ในคอนเทนเนอร์** — `COPY prebuilt dist → run` (`node:22-alpine`) | CI เดิม: `release` (MS Agent build dist) → `docker:build` · runtime-only ของ **app-owner** — migration ไม่แตะ |
+  | `Dockerfile.build` | **pnpm** `--filter "<app>..."` (topological: core/service/store-prisma → webapi) | **compose default** (`make api-test`) · robust สุด — ไม่พึ่ง nx project-graph ในคอนเทนเนอร์ |
+  | `Dockerfile.nx-build` | **nx** `pnpm run build:backend-libs && build:backend-apps` (run-many เลือก project explicit) | ตัวอย่างตรง Azure/nx pipeline · switch compose มาใช้ได้ (verified ทั้งคู่) |
+  - ทั้ง `.build`/`.nx-build` = multi-stage `node:22-bookworm-slim` · **runtime stage ต้อง `apt-get install openssl`**
+    (bookworm-slim ไม่มี → prisma query engine mismatch) · runtime `fastify start dist/src/app.js` (**ไม่ใช่ main.ts**)
+  - ⚠️ `nx run <app>:build` ที่พึ่ง `^build` **ไม่ build deps** ในคอนเทนเนอร์ (nx target-defaults plugin เรียก `pnpm --version`) →
+    `.nx-build` เลยใช้ run-many scripts ที่ระบุ project ตรง ๆ · `.build` ใช้ pnpm dependency-graph แทน (เลยเป็น compose default)
+  - `.dockerignore` (node-app) กัน host artifacts · compose healthcheck + `make api-up = up -d --build --wait api`
 - **prisma generate** — store-prisma ต้องเป็น `"postinstall": "prisma generate"` (ไม่ใช่ `_postinstall` — underscore ไม่ใช่
   lifecycle hook, ไม่ auto-run) → `pnpm install` generate client ให้ · `nx build` ก็ทำอีกชั้น
 - **run บน host** (dev): `cd apps/<service>/mcs-fastify && pnpm dev` (app ที่ prefix default) · `make test` ใช้ default ใน

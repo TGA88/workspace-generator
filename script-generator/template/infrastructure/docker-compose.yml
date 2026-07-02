@@ -45,10 +45,13 @@ services:
 
   # api = artifact ที่ deploy จริง (black-box target) — multi-stage Dockerfile ของ webapi app
   # build context = ../node-app (ทั้ง workspace) · healthcheck ให้ `up -d --wait api` รอจน listen ก่อน test
+  # Dockerfile.build = pnpm --filter topological (robust สุด, ไม่พึ่ง nx project-graph ในคอนเทนเนอร์)
+  #   · ทางเลือก nx: switch เป็น Dockerfile.nx-build ได้ (ตรง Azure pipeline · verified ทั้งคู่)
+  #   · Dockerfile (ไม่มี suffix) = runtime-only ของ CI release→docker:build — ไม่ใช่ target ของ compose
   api:
     build:
       context: ../node-app
-      dockerfile: apps/__SERVICE__/mcs-fastify/Dockerfile
+      dockerfile: apps/__SERVICE__/mcs-fastify/Dockerfile.build
     depends_on:
       postgres:
         condition: service_healthy
