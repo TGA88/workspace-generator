@@ -23,7 +23,7 @@
     "test:apps": "nx run-many --target=test --projects=*web*",
     "test:frontend-apps": "nx run-many --target=test --projects=*web-*",
     "test:backend-apps": "nx run-many --target=test --projects=*webapi*,*webpub*,*websub*,*webio*",
-    "test:libs": "nx run-many --target=build --projects=@inh-demo-system/*",
+    "test:libs": "nx run-many --target=test --projects=@inh-demo-system/*",
     "test:frontend-libs": "nx run-many --target=test --projects=*/ui*,*/feature*,**/common-functions,@inh-demo-system/*-lib",
     "test:backend-libs": "nx run-many --target=test --projects=**/common-functions*,**/*api-*,**/*-data-store* --exclude=*webapi*,*webpub*,*websub*,*webio*",
     "build": "nx build",

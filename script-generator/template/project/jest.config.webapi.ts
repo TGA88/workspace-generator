@@ -21,6 +21,9 @@ const webApiConfig: Config = {
     '**/plugins/**/*.ts',
     '!**/app.ts',
     '!**/main.ts',
+    // telemetry.ts = bootstrap wiring (createTelemetryProvider + register otel plugin, env-dependent side-effect)
+    // → integration-tested ผ่าน make api-test · exclude จาก unit coverage (แนวเดียวกับ app.ts/main.ts bootstrap)
+    '!**/plugins/telemetry.ts',
     '!**/test/**',
     '!**/__test__/**',
     '!**/dist/**',

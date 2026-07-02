@@ -1,7 +1,7 @@
 # Dockerfile.verify-backend — node-app backend verification **(pnpm --filter variant · default)** · ในคอนเทนเนอร์
 #   make verify-backend  # หรือ: docker build -f workspaces/node-app/Dockerfile.verify-backend workspaces/node-app
-# ตรวจ backend ของ node-app: **libs = lint(tsc+eslint) + unit test** · **apps = lint(tsc+eslint) อย่างเดียว** โดยไม่ต้อง install อะไรลงเครื่อง
-#   · apps ไม่รัน unit test ที่นี่ — unit/coverage ของ app = app-owner (มี coverage gate) · apps ถูกครอบด้วย `make api-test` (integration จริง)
+# ตรวจ backend ของ node-app: **libs + apps = lint(tsc+eslint) + unit test** โดยไม่ต้อง install อะไรลงเครื่อง
+#   · apps unit test = jest coverage gate (webapi collectCoverageFrom=plugins/ · exclude app.ts/main.ts/telemetry.ts bootstrap) · integration จริงไป make api-test
 #   · เลือก package ด้วย pnpm --filter glob (ตรงกับ build:backend-libs/backend-apps) — robust สุด ไม่พึ่ง nx project-graph
 #     (ต่างจาก Dockerfile.verify-nx-backend ที่ใช้ nx run-many แค่ **คำสั่ง verify** — ที่เหลือเหมือนกัน)
 #   · prisma client มากับ pnpm install (store-prisma postinstall) · build fail = lint/tsc/test พัง (เขียว = CMD echo ✅)
@@ -26,7 +26,8 @@ RUN pnpm -r --if-present run prisma:generate
 # ⚠️ exclude app patterns: `*api-*` จับ **webapi** (demo-shop-web`api-`mcs) ด้วย → กันไว้ ไม่งั้น libs test เผลอรัน app jest (ติด coverage gate)
 RUN pnpm --filter "*api-*" --filter "*-data-store*" --filter "*common-functions*" --filter "!*webapi*" --filter "!*webpub*" --filter "!*websub*" --filter "!*webio*" --if-present run lint
 RUN pnpm --filter "*api-*" --filter "*-data-store*" --filter "*common-functions*" --filter "!*webapi*" --filter "!*webpub*" --filter "!*websub*" --filter "!*webio*" --if-present run test
-# ---- verify backend apps — lint อย่างเดียว (unit test/coverage ของ app = app-owner · apps ครอบด้วย make api-test) — glob ตรงกับ build:backend-apps ----
+# ---- verify backend apps (lint + unit test) — glob ตรงกับ build:backend-apps ----
 RUN pnpm --filter "*webapi*" --filter "*webpub*" --filter "*websub*" --filter "*webio*" --if-present run lint
+RUN pnpm --filter "*webapi*" --filter "*webpub*" --filter "*websub*" --filter "*webio*" --if-present run test
 
-CMD ["echo", "✅ node-app backend: libs lint+test + apps lint passed (pnpm --filter)"]
+CMD ["echo", "✅ node-app backend: libs + apps lint+test passed (pnpm --filter)"]

@@ -102,13 +102,14 @@ scaffold ให้ skeleton ตาม envelope ของ framework (`@inh-lib/co
 - **verify layer — `make verify-backend` (in-container lint+tsc+unit test · ไม่ต้องมี DB)** — คนละ layer กับ `api-test`:
   | layer | ทำอะไร | ต้องมี DB? |
   |---|---|---|
-  | `make verify-backend` / `verify-nx-backend` | **node-app**: libs = lint+tsc+**unit test** · apps = lint+tsc (unit ของ app → api-test) · ในคอนเทนเนอร์ | ❌ ไม่ต้อง |
+  | `make verify-backend` / `verify-nx-backend` | **node-app**: libs + apps = lint+tsc+**unit test** ในคอนเทนเนอร์ (integration จริงไป api-test) | ❌ ไม่ต้อง |
   | `make api-test` | **black-box**: compose ยก DB+API จริง แล้วยิง HTTP (contract + assertDb) | ✅ (compose ยกให้) |
   | `make test` | host-side `node:test` (iterate เร็ว ตอน stack ขึ้นแล้ว) | ✅ (ต้อง `api-up` ก่อน) |
   - 2 ไฟล์ที่ **node-app root** (tokenless · glob เดียวกับ `build:backend-*`): `Dockerfile.verify-backend` (**pnpm `--filter`** · default · robust
     ไม่พึ่ง nx graph) + `Dockerfile.verify-nx-backend` (**nx run-many** `lint:backend-libs`&`test:backend-libs`→`*-apps` · ตรง pipeline)
   - migration cp ทั้ง 2 ไฟล์ให้ (idempotent · ไม่ sed) · runtime = `CMD echo ✅` (build-time verify เท่านั้น ไม่ start service)
-  - **apps = lint-only** ที่ verify layer โดยตั้งใจ: unit test/coverage gate ของ app = app-owner (webapi jest มี coverage threshold) · apps correctness ครอบด้วย `make api-test` (integration จริง)
+  - **libs + apps lint+test**: webapi jest `collectCoverageFrom=plugins/` (exclude `app.ts`/`main.ts`/`telemetry.ts` bootstrap) → scaffold มี `support.test.ts`+`sensible.test.ts` ผ่าน gate 80% · integration จริงไป `make api-test`
+  - ⚠️ `*:backend-libs` glob `**/*api-*` จับ webapi app ด้วย → `--exclude=*webapi*,*webpub*,*websub*,*webio*` (template pkg.json + init-system + migration patch) · pnpm variant กันด้วย `--filter "!*webapi*"`
 - **prisma generate** — store-prisma ต้องเป็น `"postinstall": "prisma generate"` (ไม่ใช่ `_postinstall` — underscore ไม่ใช่
   lifecycle hook, ไม่ auto-run) → `pnpm install` generate client ให้ · `nx build` ก็ทำอีกชั้น
 - **run บน host** (dev): `cd apps/<service>/mcs-fastify && pnpm dev` (app ที่ prefix default) · `make test` ใช้ default ใน
