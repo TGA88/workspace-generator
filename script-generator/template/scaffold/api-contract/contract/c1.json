@@ -4,7 +4,7 @@
   "withRequest": {
     "method": "__METHOD__",
     "path": "/__DOMAIN_API__/__ACTION__",
-    "headers": { "content-type": "application/json", "x-tenant-id": "TENANT_01" },
+    "headers": { "content-type": "application/json", "authorization": "Bearer test-user", "x-tenant-id": "TENANT_01" },
     "body": {},
     "query": {},
     "params": {}
@@ -15,8 +15,8 @@
     "body": {
       "statusCode": 200,
       "isSuccess": true,
-      "codeResult": "SUCCESS",
-      "message": "",
+      "codeResult": "OK",
+      "message": "OK",
       "dataResult": {}
     }
   }

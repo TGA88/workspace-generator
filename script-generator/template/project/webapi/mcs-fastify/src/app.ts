@@ -49,7 +49,10 @@ const app: FastifyPluginAsync<AppOptions> = async (
     dir: join(__dirname, 'routes'),
     options: opts,
     ignoreFilter: /endpoint\.ts/,
-    prefix: process.env.API_PREFIX ? process.env.API_PREFIX : '/demo-exm-webapi',
+    // ?? (not ?:) so an explicitly-set empty API_PREFIX means "no prefix" — the
+    // backend-test harness runs the service with API_PREFIX='' so contract paths
+    // stay service-relative (/product-api/...) not /<service>/product-api/...
+    prefix: process.env.API_PREFIX ?? '/demo-exm-webapi',
   });
 };
 
