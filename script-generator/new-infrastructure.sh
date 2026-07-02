@@ -26,8 +26,10 @@ API_PKG=${API_PKG:-shared-api}
 
 # derive db names (ARCH-STD-001: schema = [Company]_[Platform]_[System] — demo ใช้ system upper เป็น placeholder)
 DB_UP="$(echo "$DB_SCHEMA" | tr 'a-z-' 'A-Z_')"          # demo-shop -> DEMO_SHOP
-DB_SCHEMA_NAME="${DB_UP}"                                 # postgres schema
-DB_NAME="${DB_UP}_DATA_INTEGRATION"                       # postgres database
+# schema = lowercase: postgres fold-case identifier ที่ไม่ quote (CREATE SCHEMA/DDL) → ถ้าใช้ UPPER
+# แล้ว prisma/harness อ้าง schema แบบ quote จะ mismatch (หา "DEMO_SHOP" ไม่เจอ เพราะจริงเป็น demo_shop)
+DB_SCHEMA_NAME="$(echo "$DB_SCHEMA" | tr 'a-z-' 'a-z_')"  # demo-shop -> demo_shop (postgres schema)
+DB_NAME="${DB_UP}_DATA_INTEGRATION"                       # postgres database (POSTGRES_DB คงเคสได้)
 
 TPL="$GENERATOR_DIR/script-generator/template"
 ROOT="$WORKSPACE"                                         # git root
