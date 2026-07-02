@@ -3,6 +3,7 @@ script to create pnpm workspace boilerplate
 
 ## workspace-generator version compatibility
 ```
+- >= 1.5.0 backend-test + infrastructure layer: black-box api-test (node:test) + contract SSOT + make api-test (ดู section ถัดไป)
 - >= 1.4.0 dev-condition export strategy: lint/test/build ไม่ต้อง build local dependency ก่อน (ดู section ถัดไป)
 - >= 1.2.0 compatible with nodejs >= 22.x
 - < 1.2.0 compatible with nodejs <= 20.x
@@ -10,6 +11,7 @@ script to create pnpm workspace boilerplate
 
 ## สารบัญ
 
+- [Backend-Test & Infrastructure (v1.5)](#backend-test--infrastructure-v15)
 - [Export Strategy & Build System (v1.4)](#export-strategy--build-system-v14)
 - [Workspace](#workspace) — สร้าง / update config / init system
 - [Storybook host](#storybook-host)
@@ -20,6 +22,28 @@ script to create pnpm workspace boilerplate
 - [Other (troubleshooting)](#other)
 
 > 🧭 **เพิ่งเริ่ม?** flow ปกติ: สร้าง workspace → init system → update config → สร้าง base API package (core/service/client/store-prisma/webapi) → เติม domain/endpoint ด้วย **scaffolding** (`pnpm gen:api-*`) ดู [API Project › scaffolding](#scaffolding-เพิ่ม-api-domain-unified-route-pattern)
+
+## Backend-Test & Infrastructure (v1.5)
+
+ตั้งแต่ **v1.5** scaffold เพิ่ม `workspaces/infrastructure/` (contract SSOT + db init/seed + docker-compose +
+liquibase) + `workspaces/backend-test/` (node:test **black-box** harness) + root `Makefile` (`make api-test`)
+→ ยิง HTTP เข้า **service จริง + DB จริง** (out-of-process, local == CI) และ assert ได้ทั้ง **HTTP envelope + DB record**
+
+| | เอกสาร | เนื้อหา |
+|---|---|---|
+| 🧪 | [backend-test-migration.md](./docs/backend-test-migration.md) | v1.5 = อะไร/ทำไม + **migrate workspace เดิม** + แก้ contract ให้ meaningful + gotcha (auth/envelope/telemetry/docker) |
+
+**สรุปสั้น ๆ:** 1 action = 1 test file (data-driven จาก contract) · contract (`c*/e*.json`) = **SSOT** เสิร์ฟทั้ง
+BE assert + FE mock · setup/teardown ราย **action** และราย **case** · `assertDb` ตรวจ side-effect จริง ·
+`make api-test` = up → migrate → init → seed → api-up (docker build + wait healthy) → test → down
+
+**Migrate workspace เดิม (สร้างด้วย version < 1.5)**
+```bash
+# ถ้ายัง < 1.4 รัน export-strategy migration ก่อน (ดู section ถัดไป) แล้วค่อย:
+bash workspace-generator/script-generator/migrate/apply-backend-test-infra.sh <ws> [SERVICE] [DB_SCHEMA]
+# แล้ว: cd workspaces/backend-test && pnpm install  →  make api-test  (verify)
+```
+> รายละเอียด + gotcha ที่เจอจริง (API_PREFIX='', envelope OK/PARSE_FAIL, NoOp telemetry, prisma bookworm engine) อยู่ใน [docs/backend-test-migration.md](./docs/backend-test-migration.md)
 
 ## Export Strategy & Build System (v1.4)
 
