@@ -21,6 +21,7 @@ databaseChangeLog:
   #           - sqlFile:
   #               path: prisma/migrations/0001_init/down.sql
   #               relativeToChangelogFile: false
+  # ▼ GEN:MIGRATE-ANCHOR ▼ (อย่าลบ — จุด anchor ให้ migration แทรก migrate changeSet ก่อน init)
 
   # ── init (reference/lookup — production-like) ────────────────────
   - changeSet:
