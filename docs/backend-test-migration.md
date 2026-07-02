@@ -93,6 +93,7 @@ scaffold ให้ skeleton ตาม envelope ของ framework (`@inh-lib/co
 
 ## ดูต่อ
 
+- [migration-guide.md](./migration-guide.md) — **ladder อัปข้ามหลาย version → ล่าสุด** (เอกสารนี้ = rung 1.4→1.5)
 - [export-strategy.md](./export-strategy.md) — v1.4 dual-condition exports (prereq ของ v1.5)
 - [backend-structure.md](./backend-structure.md) — โครง core/service/client + DI + ResultV2
 - [api-scaffolding.user-guide.md](./api-scaffolding.user-guide.md) — เพิ่ม domain/action (`gen:api-*`)
