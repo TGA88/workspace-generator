@@ -2,32 +2,30 @@
 # build context = workspaces/node-app (ดู docker-compose api.build.context) · .dockerignore กัน host artifacts
 # bookworm-slim (debian, openssl3) ให้ตรง prisma binaryTarget debian-openssl-3.0.x
 #
-# ⚠️ import ข้าม workspace resolve ด้วย require -> dist (ไม่ใช่ development condition) → ต้อง build ทุก lib
-#    ที่ webapi พึ่ง (core/service/store-prisma) ก่อน แล้ว tsc webapi → dist/src/app.js
-# ⚠️ ชื่อ package (@gu-example-system/..) / service (demo-exm-webapi) / data (exm-data) = placeholder
-#    ที่ new-webapi.sh sed แทน · filter สมมติ API_PKG=shared-api (default) — ถ้าใช้ชื่ออื่นต้องแก้ filter
+# build ด้วย **nx scripts ของ repo** (run-many, เลือก project explicit): build:backend-libs (core/service/store-prisma)
+#   ก่อน แล้ว build:backend-apps (webapi) · store-prisma build รวม `prisma:generate` → prisma client มาพร้อม
+#   (⚠️ `nx run <app>:build` ที่พึ่ง `^build` ไม่ build deps ในคอนเทนเนอร์ — ใช้ build:backend-libs/apps ที่ระบุ project ตรง ๆ)
+#   · demo-exm-webapi = service placeholder (new-webapi.sh sed แทน)
 
 # ---------- build ----------
 FROM node:22-bookworm-slim AS build
-RUN npm install -g pnpm@10.4.1
+RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates bash git \
+  && rm -rf /var/lib/apt/lists/*
+RUN corepack enable
 WORKDIR /app
 
 # copy ทั้ง workspace (source เท่านั้น — node_modules/dist/generated ถูก .dockerignore กันไว้)
 COPY . .
 
 RUN pnpm install --no-frozen-lockfile
-
-# prisma client (linux engine ของ bookworm) — ต้องก่อน build store-prisma (tsup bundle dbclient)
-RUN pnpm --filter @gu-example-system/exm-data-store-prisma prisma:generate
-
-# build libs (tsup) ตามลำดับ dependency → dist ต่อ subpath (require resolve) แล้ว tsc webapi
-RUN pnpm --filter @gu-example-system/shared-api-core build \
- && pnpm --filter @gu-example-system/exm-data-store-prisma exec tsup --config ../../../../tsup.lib.config.ts \
- && pnpm --filter @gu-example-system/shared-api-service build \
- && pnpm --filter demo-exm-webapi-mcs-fastify build
+# nx run-many (repo scripts): backend libs (**/*api-*, **/*-data-store*) ก่อน แล้ว backend apps (*webapi*)
+RUN NX_DAEMON=false pnpm run build:backend-libs && NX_DAEMON=false pnpm run build:backend-apps
 
 # ---------- runtime ----------
 FROM node:22-bookworm-slim AS runtime
+# openssl = prisma query engine ต้องใช้ (bookworm-slim ไม่มีมาให้) — ไม่งั้น engine mismatch (openssl 3.0.x)
+RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates \
+  && rm -rf /var/lib/apt/lists/*
 ENV NODE_ENV=production
 WORKDIR /app
 # copy ทั้ง tree ที่ build แล้ว (pnpm symlink node_modules + dist + generated engine คงโครง path เดียวกัน)

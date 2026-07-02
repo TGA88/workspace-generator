@@ -54,10 +54,15 @@ services:
         condition: service_healthy
     environment:
       - PORT=3000
-      # API_PREFIX ว่าง = mount route ที่ root (/<domain>-api/..) ให้ตรง contract path (service-relative)
-      - API_PREFIX=
+      # app mount route ที่ prefix default (/__SERVICE__) — ไม่ set API_PREFIX (คง routing ของ app-owner ไว้)
+      # backend-test harness prepend prefix เดียวกันผ่าน _config.ts (TARGET.prefix) → contract คง service-relative
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/__DB_NAME__?schema=__DB_SCHEMA_NAME__
-      # ไม่ตั้ง OTEL_EXPORTER_OTLP_ENDPOINT → NoOp telemetry provider (dev/test · ดู create-telemetry.ts)
+      # telemetry = env config ของ app-owner · ตั้ง OTEL endpoint → OtelProviderService (Console provider พังใน
+      # unified-telemetry-core@0.3.4: getSpanMetadata throw) · exporter=none = ไม่ export จริง (backend-test ไม่ต้องมี collector)
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - OTEL_TRACES_EXPORTER=none
+      - OTEL_METRICS_EXPORTER=none
+      - OTEL_LOGS_EXPORTER=none
     ports:
       - '3010:3000'
     healthcheck:

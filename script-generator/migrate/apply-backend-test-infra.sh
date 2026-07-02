@@ -41,11 +41,28 @@ echo "  derived: service=$SERVICE db-schema=$DB_SCHEMA scope=$SCOPE data=$DATA_P
 for v in SERVICE DB_SCHEMA SCOPE DATA_PKG API_PKG; do [ -z "${!v}" ] && { echo "Error: derive $v ไม่ได้"; exit 1; }; done
 
 # ── Step 1: infrastructure + backend-test + root Makefile (idempotent) ──
-echo "  [1/4] infrastructure + backend-test"
+echo "  [1/5] infrastructure + backend-test"
 ( cd "$PARENT" && bash "$GEN/script-generator/new-infrastructure.sh" "$WS_NAME" "$SERVICE" "$DB_SCHEMA" "$SCOPE" "$DATA_PKG" "$API_PKG" "$GEN" ) | sed 's/^/      /'
 
-# ── Step 2: discover domains/actions → contract+test pair (idempotent) ──
-echo "  [2/4] backfill contract+test pairs (จาก core domains ที่มี)"
+# ── Step 2: webapi Dockerfile (nx multi-stage) + node-app .dockerignore (build tooling — ไม่แตะ app source) ──
+# ⚠️ ไม่ patch app.ts / create-telemetry (app config = ของ app-owner) · telemetry+prefix จัดการผ่าน compose/_config
+echo "  [2/5] webapi Dockerfile + .dockerignore"
+APPDIR="$NA/apps/$SERVICE/mcs-fastify"
+DF="$APPDIR/Dockerfile"
+DF_TPL="$GEN/script-generator/template/project/webapi/mcs-fastify/Dockerfile"
+sed_df() { sedi -e "s/demo-exm-webapi/${SERVICE}/g" -e "s/gu-example-system/${WS_NAME}/g" -e "s/exm-data/${DATA_PKG}/g" "$1"; }
+if [ -f "$DF" ] && grep -q 'AS build' "$DF"; then
+  echo "      ! Dockerfile = multi-stage แล้ว, skip"
+elif [ ! -f "$DF" ] || grep -q 'COPY /dist/apps' "$DF"; then
+  cp "$DF_TPL" "$DF"; sed_df "$DF"; echo "      + Dockerfile → nx multi-stage (แทน placeholder)"
+else
+  cp "$DF_TPL" "$APPDIR/Dockerfile.backend-test.example"; sed_df "$APPDIR/Dockerfile.backend-test.example"
+  echo "      ! Dockerfile ถูก customize → เขียน Dockerfile.backend-test.example (merge เอง)"
+fi
+[ -f "$NA/.dockerignore" ] || { cp "$GEN/script-generator/template/workspace/.dockerignore" "$NA/.dockerignore"; echo "      + node-app/.dockerignore"; }
+
+# ── Step 3: discover domains/actions → contract+test pair (idempotent) ──
+echo "  [3/5] backfill contract+test pairs (จาก core domains ที่มี)"
 CORE="$NA/libs/$SCOPE/$API_PKG/core/src"
 for d in "$CORE"/*-api/; do
   [ -d "$d" ] || continue
@@ -57,8 +74,8 @@ for d in "$CORE"/*-api/; do
   done
 done
 
-# ── Step 3: wire real prisma migrations into infra changelog (migrate context) ──
-echo "  [3/4] wire prisma migrations → changelog (context=migrate)"
+# ── Step 4: wire real prisma migrations into infra changelog (migrate context) ──
+echo "  [4/5] wire prisma migrations → changelog (context=migrate)"
 CHANGELOG="$WS_ROOT/workspaces/infrastructure/liquibase/changelog.yaml"
 MIGDIR="$STORE/prisma/migrations"
 if [ ! -f "$CHANGELOG" ]; then echo "      ! ไม่พบ changelog.yaml — ข้าม"; else
@@ -93,8 +110,8 @@ if [ ! -f "$CHANGELOG" ]; then echo "      ! ไม่พบ changelog.yaml — 
   fi
 fi
 
-# ── Step 4: bump template-version ──
-echo "  [4/4] template-version"
+# ── Step 5: bump template-version ──
+echo "  [5/5] template-version"
 VERFILE="$NA/template-version"
 if [ -f "$VERFILE" ]; then
   CUR="$(cat "$VERFILE" 2>/dev/null | tr -d '[:space:]')"
@@ -104,6 +121,11 @@ else
 fi
 
 echo "=== [v1.5 migrate] done ==="
-echo "  next: (1) cd workspaces/backend-test && pnpm install"
-echo "        (2) แก้ envelope (body/headers/auth) ให้ตรง action จริง"
-echo "        (3) make api-test  (bring-up สด → node:test → down)"
+echo "  auto: infra + backend-test (pure harness + per-service _config) + webapi Dockerfile(nx) + .dockerignore + wire migration"
+echo "  manual ที่เหลือ (dev):"
+echo "    (1) cd workspaces/node-app && pnpm install   (store-prisma postinstall → prisma generate)"
+echo "    (2) cd workspaces/backend-test && pnpm install"
+echo "    (3) แก้ contract envelope (body/headers/auth) + assertDb ให้ตรง action จริง (skeleton → meaningful)"
+echo "    (4) เพิ่ม endpoint/action นอกเหนือที่ core มี (ถ้าต้องการ) ด้วย gen:api-action + wire"
+echo "    (5) make api-test  (bring-up สด → node:test → down)"
+echo "  telemetry: compose api ตั้ง OTEL env ให้แล้ว (Console provider พังใน core@0.3.4) · prefix: _config.ts (TARGET.prefix)"

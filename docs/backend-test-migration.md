@@ -73,21 +73,30 @@ scaffold ให้ skeleton ตาม envelope ของ framework (`@inh-lib/co
 
 ---
 
-## gotcha (เจอจริงตอน validate กับ demo-shop-system)
+## harness design + gotcha
 
-- **`API_PREFIX=''`** — service mount route ที่ `/<domain>-api/..` (contract path เป็น service-relative
-  เพราะ folder จัดกลุ่มต่อ service แล้ว) · app.ts ใช้ `process.env.API_PREFIX ?? '<default>'` (**`??` ไม่ใช่ `? :`** —
-  ไม่งั้น '' เป็น falsy แล้ว fallback) · compose api ตั้ง `API_PREFIX=` (ว่าง)
-- **telemetry** — `unified-telemetry-core@0.3.4` `ConsoleUnifiedTelemetryProvider` (dev-default) มีบั๊ก
-  `ConsoleSpan.getSpanMetadata()` throw → endpoint 500 · `create-telemetry.ts` ใช้ **`NoOpUnifiedTelemetryProvider`**
-  เมื่อไม่มี OTEL endpoint (จะเอา trace จริง = ตั้ง `OTEL_EXPORTER_OTLP_ENDPOINT`)
+- **pure harness + per-service `_config.ts`** — `backend-test/lib/*` เป็น pure (รับ config เป็น **parameter** ไม่แตะ
+  `process.env`) · **test file เป็นคนกำหนด** config โดย import `<service>/_config.ts` (`TARGET {baseUrl,prefix}` +
+  `DB {databaseUrl,schema}` ที่อ่าน env + default ต่อ service) แล้วส่งเข้า lib · backend-test = project เดียวทดสอบหลาย
+  service → **แต่ละ service คนละ `_config.ts`** (baseUrl/prefix/schema ต่างกัน) · override ได้ด้วย env ตอน run
+- **route prefix — ไม่แตะ app source** — คง `app.ts` (`process.env.API_PREFIX ? .. : '/<service>'`) ของ app-owner ไว้ ·
+  ⚠️ `@fastify/autoload` mount route ตาม **folder** (`/<domain>-api/<action>`) — **ไม่ apply prefix ของ app.ts** →
+  local app อยู่ที่ `/product-api/..` (ไม่มี service prefix) · `_config` `TARGET.prefix` **default `''`** (ยิงตรง local) ·
+  harness prepend `TARGET.prefix` + contract path (service-relative) → ถ้ายิงผ่าน gateway ที่มี prefix ค่อยตั้ง `API_PREFIX`
+- **telemetry — env (ไม่แตะ app source)** — `unified-telemetry-core@0.3.4` `ConsoleUnifiedTelemetryProvider` (dev-default)
+  บั๊ก `ConsoleSpan.getSpanMetadata()` throw → endpoint 500 · **แก้ที่ env:** compose `api` ตั้ง `OTEL_EXPORTER_OTLP_ENDPOINT`
+  + `OTEL_*_EXPORTER=none` → OtelProviderService ทำงาน (ไม่ export จริง) · จะเอา trace จริง = ชี้ endpoint ไป collector
 - **schema case-fold** — postgres fold identifier เป็น lowercase → DB schema name ใช้ lowercase (`demo_shop`)
   ทั้ง DDL/liquibase/prisma `?schema=`/harness ต้องตรงกัน
-- **docker** — webapi Dockerfile = multi-stage `node:22-bookworm-slim` (prisma binaryTarget `debian-openssl-3.0.x`) ·
-  build ทุก lib (require → dist) ก่อน tsc webapi · runtime `fastify start dist/src/app.js` (**ไม่ใช่ main.ts** —
-  main.ts ไม่ `.listen()` · fastify-cli boot app plugin เอง) · `.dockerignore` (node-app) กัน host artifacts ·
-  compose api มี healthcheck + `make api-up` = `up -d --build --wait api` (รอ healthy ก่อน test)
-- **run บน host** (dev): `cd apps/<service>/mcs-fastify && DATABASE_URL=..5433..?schema=<schema> PORT=3010 API_PREFIX='' pnpm dev`
+- **docker (nx run-many)** — webapi Dockerfile = multi-stage `node:22-bookworm-slim` · build ด้วย **nx scripts ของ repo**
+  `pnpm run build:backend-libs && build:backend-apps` (run-many เลือก project explicit — `nx run <app>:build` ที่พึ่ง `^build`
+  ไม่ build deps ในคอนเทนเนอร์ · nx target-defaults plugin เรียก `pnpm --version`) · **runtime stage ต้อง `apt-get install openssl`**
+  (bookworm-slim ไม่มี → prisma query engine mismatch) · runtime `fastify start dist/src/app.js` (**ไม่ใช่ main.ts**) ·
+  `.dockerignore` (node-app) · compose healthcheck + `make api-up = up -d --build --wait api`
+- **prisma generate** — store-prisma ต้องเป็น `"postinstall": "prisma generate"` (ไม่ใช่ `_postinstall` — underscore ไม่ใช่
+  lifecycle hook, ไม่ auto-run) → `pnpm install` generate client ให้ · `nx build` ก็ทำอีกชั้น
+- **run บน host** (dev): `cd apps/<service>/mcs-fastify && pnpm dev` (app ที่ prefix default) · `make test` ใช้ default ใน
+  `_config.ts` (localhost:3010 + DB 5433) · override = ตั้ง env (`API_BASE_URL`/`DATABASE_URL`/..)
 
 ---
 

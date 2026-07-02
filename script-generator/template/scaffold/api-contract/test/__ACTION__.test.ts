@@ -5,6 +5,7 @@ import { describe, it, before, after } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { httpRequest, runSqlFile, assertContract, assertDbState, loadCases } from '../../lib/index.ts';
+import { TARGET, DB } from '../_config.ts'; // per-service config (baseUrl/prefix/db) — test file เป็นคนกำหนด
 
 const CONTRACT_DIR = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -13,19 +14,19 @@ const CONTRACT_DIR = path.resolve(
 
 describe('__ACTION__', () => {
   before(async () => {
-    await runSqlFile(path.join(CONTRACT_DIR, 'setup.sql')); // ① action — once/ไฟล์
+    await runSqlFile(path.join(CONTRACT_DIR, 'setup.sql'), DB); // ① action — once/ไฟล์
   });
   after(async () => {
-    await runSqlFile(path.join(CONTRACT_DIR, 'teardown.sql')); // ⑤ action — once
+    await runSqlFile(path.join(CONTRACT_DIR, 'teardown.sql'), DB); // ⑤ action — once
   });
 
   for (const c of loadCases(CONTRACT_DIR)) {
     it(`${c.key} — ${c.desc}`, async () => {
-      if (c.setup) await runSqlFile(path.join(CONTRACT_DIR, c.setup)); // ② case-level (เช่น setup.e1.sql)
-      const res = await httpRequest(c.withRequest); // ③ ยิงเข้า API จริง
+      if (c.setup) await runSqlFile(path.join(CONTRACT_DIR, c.setup), DB); // ② case-level (เช่น setup.e1.sql)
+      const res = await httpRequest(c.withRequest, TARGET); // ③ ยิงเข้า API จริง (baseUrl+prefix จาก _config)
       assertContract(res, c.withResponse); // ④ assert เทียบ contract (HTTP envelope)
-      if (c.assertDb) await assertDbState(c.assertDb); // ④.5 assert row ที่ลง DB จริง (create/update/delete)
-      if (c.teardown) await runSqlFile(path.join(CONTRACT_DIR, c.teardown));
+      if (c.assertDb) await assertDbState(c.assertDb, DB); // ④.5 assert row ที่ลง DB จริง (create/update/delete)
+      if (c.teardown) await runSqlFile(path.join(CONTRACT_DIR, c.teardown), DB);
     });
   }
 });

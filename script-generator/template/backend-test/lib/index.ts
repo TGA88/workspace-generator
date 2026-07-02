@@ -1,7 +1,9 @@
-// harness สำหรับ backend-test (node:test) — ยิง HTTP + รัน setup/teardown sql + assert contract
+// harness สำหรับ backend-test (node:test) — pure lib: รับ config เป็น param (Target/DbConfig)
+// test file เป็นคนอ่าน env + กำหนดค่า แล้วส่งเข้า lib (lib ไม่แตะ process.env)
 export { httpRequest } from './http.ts';
-export type { WithRequest, HttpResult } from './http.ts';
+export type { WithRequest, HttpResult, Target } from './http.ts';
 export { runSqlFile, queryRows } from './run-sql.ts';
+export type { DbConfig } from './run-sql.ts';
 export { assertContract } from './assert-contract.ts';
 export type { WithResponse } from './assert-contract.ts';
 export { assertDbState } from './assert-db.ts';

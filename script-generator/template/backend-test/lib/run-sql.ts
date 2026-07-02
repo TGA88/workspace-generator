@@ -1,12 +1,11 @@
-// runSqlFile — รัน .sql (setup/teardown ราย action/case) เข้ากับ DB จริง
-// action/case-level เท่านั้น — migrate/init/seed(shared/tenant/domain) โหลดที่ bring-up ผ่าน liquibase
+// runSqlFile / queryRows — เข้าถึง DB จริง (setup/teardown ราย action/case + assert DB)
+// lib = pure: รับ db config เป็น parameter · ไม่แตะ process.env (test file เป็นคนกำหนด)
+// migrate/init/seed(shared/tenant/domain) โหลดที่ bring-up ผ่าน liquibase (นอก lib นี้)
 import { readFile } from 'node:fs/promises';
 import pg from 'pg';
 
-const DATABASE_URL =
-  process.env.DATABASE_URL ??
-  'postgresql://postgres:postgres@localhost:5433/__DB_NAME__';
-const SCHEMA = process.env.DB_SCHEMA_NAME ?? '__DB_SCHEMA_NAME__';
+// DbConfig = ปลายทาง DB (ต่าง service/schema คนละค่า) · schema = search_path
+export type DbConfig = { databaseUrl: string; schema: string };
 
 function isEffectivelyEmpty(sql: string): boolean {
   return sql
@@ -14,14 +13,14 @@ function isEffectivelyEmpty(sql: string): boolean {
     .every((l) => l.trim() === '' || l.trim().startsWith('--'));
 }
 
-export async function runSqlFile(file: string): Promise<void> {
+export async function runSqlFile(file: string, db: DbConfig): Promise<void> {
   const sql = (await readFile(file, 'utf8')).trim();
   if (!sql || isEffectivelyEmpty(sql)) return; // skeleton/comment-only → no-op
 
-  const client = new pg.Client({ connectionString: DATABASE_URL });
+  const client = new pg.Client({ connectionString: db.databaseUrl });
   await client.connect();
   try {
-    await client.query(`SET search_path TO "${SCHEMA}"`);
+    await client.query(`SET search_path TO "${db.schema}"`);
     await client.query(sql);
   } finally {
     await client.end();
@@ -29,15 +28,16 @@ export async function runSqlFile(file: string): Promise<void> {
 }
 
 // queryRows — SELECT ตรงเข้า DB จริง คืน rows (ใช้ assert side-effect เช่น row ที่ create ลง DB จริง)
-// ยิงเข้า schema เดียวกับ setup/teardown (search_path) · params เป็น $1,$2,... (parameterized)
+// params เป็น $1,$2,... (parameterized)
 export async function queryRows<T = Record<string, unknown>>(
   sql: string,
+  db: DbConfig,
   params: unknown[] = [],
 ): Promise<T[]> {
-  const client = new pg.Client({ connectionString: DATABASE_URL });
+  const client = new pg.Client({ connectionString: db.databaseUrl });
   await client.connect();
   try {
-    await client.query(`SET search_path TO "${SCHEMA}"`);
+    await client.query(`SET search_path TO "${db.schema}"`);
     const res = await client.query(sql, params);
     return res.rows as T[];
   } finally {

@@ -1,5 +1,5 @@
 // httpRequest — ยิง HTTP เข้า service ที่รันจริง (out-of-process) จาก contract.withRequest
-// ใช้ global fetch (Node 18+) · base URL จาก env API_BASE_URL (default = compose api port)
+// lib = pure: รับ target (baseUrl+prefix) เป็น parameter · ไม่แตะ process.env (test file เป็นคนกำหนด)
 export type WithRequest = {
   method: string;
   path: string;
@@ -11,10 +11,12 @@ export type WithRequest = {
 
 export type HttpResult = { status: number; headers: Record<string, string>; body: unknown };
 
-const BASE_URL = process.env.API_BASE_URL ?? 'http://localhost:3010';
+// Target = ปลายทางของ service (ต่าง service คนละ baseUrl/prefix) · prefix = mount prefix ของ app (เช่น /demo-shop-webapi)
+// contract.path เป็น service-relative (/product-api/..) → prepend prefix ให้ตรง mount จริง
+export type Target = { baseUrl: string; prefix?: string };
 
-export async function httpRequest(req: WithRequest): Promise<HttpResult> {
-  const url = new URL(req.path, BASE_URL);
+export async function httpRequest(req: WithRequest, target: Target): Promise<HttpResult> {
+  const url = new URL((target.prefix ?? '') + req.path, target.baseUrl);
   for (const [k, v] of Object.entries(req.query ?? {})) url.searchParams.set(k, String(v));
 
   const method = (req.method ?? 'get').toUpperCase();
