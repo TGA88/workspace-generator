@@ -62,6 +62,7 @@ migrate/
 | **→ 1.4.0** | `migration-v1.4.0.mjs` | dual-condition exports (lint/test/build ไม่ต้อง build local dep ก่อน) | [export-strategy.md](./export-strategy.md) |
 | **→ 1.5.0** | `migration-v1.5.0.sh` | backend-test + infrastructure layer (`make api-test`, contract SSOT) | [backend-test-migration.md](./backend-test-migration.md) |
 | **→ 1.5.1** | `migration-v1.5.1.sh` | re-sync generic infra (verify Dockerfiles + `tools/` + conventions) | (นี่ = แค่เรียก `lib/sync-infra.sh`) |
+| **→ 1.5.2** | `migration-v1.5.2.sh` | ship `WORKSPACE.md` (operational cheat sheet + ลิงก์ Developer Handbook) · **force-sync ผ่าน `lib/sync-infra`** (generator-owned · ไม่ชน README ของโปรเจกต์) | — |
 | _→ 1.6.0_ | _(ออกเมื่อมีรุ่นใหม่ — เพิ่มไฟล์ `migration-v1.6.0.sh`)_ | — | — |
 
 > driver ค้นไฟล์ `migration-v*` เอง เรียงด้วย semver — **เพิ่มไฟล์ = เพิ่ม rung** (ไม่ต้องแก้ driver)

@@ -7,6 +7,14 @@
 
 ---
 
+## [1.5.2] — 2026-07-03
+**Docs: wire Developer Handbook + ship workspace WORKSPACE.md**
+
+- **ship `WORKSPACE.md`** (operational cheat sheet: setup · `make` test · `pnpm gen:api-*` · migrate · ลิงก์ handbook) เข้า workspace — **generator-owned** เข้า `sync-infra` manifest → **force-sync ทุก workspace** (ไม่ชน `README.md` ของโปรเจกต์) · `migration-v1.5.2.sh` เรียก sync-infra · create-workspace วาง `WORKSPACE.md` + `README.md` (pointer สั้น) ให้ workspace ใหม่
+- **README (generator)** — เพิ่ม `🧭 หาอะไรอยู่?` map + section `🧪 รัน test (make)` + ลิงก์ **[Developer Handbook](https://bebestdev.com/developer-handbook/)** (architecture/coding/testing methodology) · แบ่งบทบาทชัด: handbook = "เขียน/ทำไม" · repo = "ใช้/รัน + migration + contribute"
+- **staleness** — `docs/backend-test-migration.md`: ref ภายนอก → URL handbook จริง · เกลา "driver bump template-version"
+- 📖 [migration-guide](./docs/migration-guide.md)
+
 ## [1.5.1] — 2026-07-03
 **Migration system + generic infra sync**
 

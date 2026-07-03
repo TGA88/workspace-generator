@@ -76,8 +76,8 @@ workspace-generator/
 3. เขียน `migrate/migration-v1.5.2.sh` ที่ **เรียก `lib/sync-infra.sh`** (ดู `migration-v1.5.1.sh` เป็นแบบ)
 4. เพิ่ม entry ใน CHANGELOG
 
-> **`lib/sync-infra.sh` sync อะไร** (generator-owned · tokenless): node-app `.dockerignore` · `Dockerfile.verify-backend` · `Dockerfile.verify-nx-backend` · `tools/` (recursive) · git-root `.gitattributes` · `.editorconfig` ·
-> **ไม่แตะ** (workspace แก้เอง/มี token): `.gitignore` · `nx.json` · `tsconfig.base.json` · `pnpm-workspace.yaml` · `package.json` · `Makefile`
+> **`lib/sync-infra.sh` sync อะไร** (generator-owned · tokenless): node-app `.dockerignore` · `Dockerfile.verify-backend` · `Dockerfile.verify-nx-backend` · `tools/` (recursive) · git-root `.gitattributes` · `.editorconfig` · `WORKSPACE.md` ·
+> **ไม่แตะ** (workspace แก้เอง/มี token): `README.md` (ของโปรเจกต์ · seed ครั้งเดียวตอน create) · `.gitignore` · `nx.json` · `tsconfig.base.json` · `pnpm-workspace.yaml` · `package.json` · `Makefile`
 
 ### 3.4 ทดสอบ migration ก่อนออก
 

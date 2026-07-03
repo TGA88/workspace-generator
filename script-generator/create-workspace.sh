@@ -48,6 +48,10 @@ cp $GENERATOR_DIR/script-generator/template/workspace/.gitignore $WORKSPACE_DIR
 cp $GENERATOR_DIR/script-generator/template/workspace/root/.gitattributes $WORKSPACE_DIR
 cp $GENERATOR_DIR/script-generator/template/workspace/root/.editorconfig $WORKSPACE_DIR
 
+# WORKSPACE.md = operational cheat sheet (generator ดูแล · force-sync ตอน migrate) + README.md = pointer สั้น (ของโปรเจกต์ · แก้ได้)
+cp $GENERATOR_DIR/script-generator/template/workspace/root/WORKSPACE.md $WORKSPACE_DIR
+cp $GENERATOR_DIR/script-generator/template/workspace/root/README.md $WORKSPACE_DIR
+
 cp $GENERATOR_DIR/script-generator/template/workspace/pnpm-workspace.yaml $WORKSPACE_DIR/workspaces/$SYSTEM_DIR
 
 # .dockerignore ที่ node-app root = build context ของ webapi (กัน host node_modules/dist/generated เข้า image)

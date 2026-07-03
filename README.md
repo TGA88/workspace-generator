@@ -3,7 +3,18 @@
 > Generator สร้าง **pnpm monorepo** (Nx · Fastify · Next.js) แบบ scaffold ครบวงจร:
 > backend API (core/service/client/store-prisma/webapi) · frontend (Next.js/Storybook) · infra + black-box test
 >
-> **เวอร์ชันล่าสุด: v1.5.1** · ต้องใช้ **Node 22+** · 📜 [Changelog](./CHANGELOG.md) · ⬆️ [Migration guide](./docs/migration-guide.md) · 🤝 [Contributing](./CONTRIBUTING.md)
+> **เวอร์ชันล่าสุด: v1.5.2** · ต้องใช้ **Node 22+** · 📘 [Developer Handbook](https://bebestdev.com/developer-handbook/) · 📜 [Changelog](./CHANGELOG.md) · ⬆️ [Migration guide](./docs/migration-guide.md) · 🤝 [Contributing](./CONTRIBUTING.md)
+
+## 🧭 หาอะไรอยู่?
+
+| อยากได้ | ไปที่ |
+|---|---|
+| เข้าใจ **สถาปัตยกรรม / เขียนโค้ดต่อ layer / วิธีเขียน test** (methodology) | 📘 **[Developer Handbook](https://bebestdev.com/developer-handbook/)** (เว็บ · อ่านง่าย) |
+| **สร้าง workspace · ใช้ generator (CLI) · รัน test** | README นี้ (↓ Quick Start · 🧪 Test) |
+| **อัป (migrate) workspace เป็นเวอร์ชันใหม่** | [docs/migration-guide.md](./docs/migration-guide.md) |
+| **พัฒนา generator เอง (contribute)** | [CONTRIBUTING.md](./CONTRIBUTING.md) |
+
+> 📘 handbook = "**เขียนโค้ด / ทำไม**" (methodology + architecture) · repo นี้ = "**ใช้ / รันยังไง**" (เครื่องมือ + คำสั่ง) — คู่กัน ไม่ซ้ำ
 
 ## ✨ ทำอะไรได้บ้าง
 
@@ -32,6 +43,16 @@ bash workspace-generator/script-generator/migrate/apply-migration.sh <ws>       
 ```
 > driver ไล่ทุก version ที่ค้างให้เอง · `--to` / retry-เมื่อพัง / audit log → **[docs/migration-guide.md](./docs/migration-guide.md)**
 
+## 🧪 รัน test (workspace ที่ gen มา มีเครื่องพร้อม)
+
+workspace-generator สร้าง `Makefile` + `workspaces/infrastructure/` + `workspaces/backend-test/` ให้ = **เครื่องมือรัน api-test ตามที่ handbook สอน** · รันจาก git root ของ workspace:
+```bash
+make api-test          # black-box: compose ยก DB+API จริง → ยิง HTTP (contract + assertDb) → down -v
+make verify-backend    # in-container: lint + tsc + unit test (ไม่ต้องมี DB) · nx variant = make verify-nx-backend
+make test              # host node:test เร็ว (ต้อง make api-up ให้ stack ขึ้นก่อน)
+```
+> **วิธีเขียน contract & test (methodology) → 📘 [handbook › Backend Testing](https://bebestdev.com/developer-handbook/backend-testing.html)** · เพิ่ม endpoint → `pnpm gen:api-*` (ดู [§API Project](#api-project))
+
 ## 📚 เอกสาร
 
 | เอกสาร | เนื้อหา |
@@ -44,6 +65,11 @@ bash workspace-generator/script-generator/migrate/apply-migration.sh <ws>       
 | [api-scaffolding · user](./docs/api-scaffolding.user-guide.md) · [developer](./docs/api-scaffolding.developer-guide.md) | เพิ่ม API domain/action + แก้ template ของ generator |
 | [why-this-architecture](./docs/why-this-architecture.md) | ทำไม template ถึง "ดูเยอะ" — เหตุผลเชิงสถาปัตยกรรม |
 | 🤝 [CONTRIBUTING](./CONTRIBUTING.md) | พัฒนา generator: โครง repo · **เพิ่ม migration/version** · release |
+
+> 📘 **doc ฝั่ง architecture/coding มีฉบับเว็บ (อ่านง่าย) ใน [Developer Handbook](https://bebestdev.com/developer-handbook/)** — เช่น
+> [why-this-architecture](https://bebestdev.com/developer-handbook/why-this-architecture.html) · [export-strategy](https://bebestdev.com/developer-handbook/export-strategy.html) · [frontend-structure](https://bebestdev.com/developer-handbook/frontend-structure.html) · [frontend-dev-workflow](https://bebestdev.com/developer-handbook/frontend-dev-workflow.html) · [backend-structure](https://bebestdev.com/developer-handbook/backend-structure.html) · [api-scaffolding](https://bebestdev.com/developer-handbook/api-scaffolding.user-guide.html)
+> — และมีเนื้อหาเชิงลึกที่ repo นี้ไม่มี (feature-playbook · backend layer-by-layer · testing per-layer · DB architecture standard) ·
+> ส่วน **migration / contributing / การรัน (make/CLI)** = อยู่ใน repo นี้ (handbook ไม่มี)
 
 ## 📜 ประวัติเวอร์ชัน
 
