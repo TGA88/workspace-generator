@@ -1,14 +1,15 @@
 #!/bin/bash
-# Migration v1.4 → v1.5 : add backend-test + infrastructure layer to an EXISTING workspace.
+# migration-v1.5.0.sh — Migration → v1.5.0 : add backend-test + infrastructure layer to a workspace.
 # full-auto + idempotent — orchestrates new-infrastructure.sh + new-api-contract.sh, wires prisma
-# migrations into the infra changelog, bumps template-version.
+# migrations into the infra changelog.
 #
-# usage: bash apply-backend-test-infra.sh <WORKSPACE_ROOT> [SERVICE] [DB_SCHEMA]
+# ⚙️ ปกติรันผ่าน driver: `bash apply-migration.sh <ws>` (driver จัดลำดับ + bump template-version + เขียน log ให้)
+#    รันตรงก็ได้ (ไม่ bump version/ไม่ log): bash migration-v1.5.0.sh <WORKSPACE_ROOT> [SERVICE] [DB_SCHEMA]
 #   WORKSPACE_ROOT = git root of the target workspace (มี workspaces/node-app)
 #   [SERVICE]      = webapi app (default: auto-detect apps/*/mcs-fastify)
 #   [DB_SCHEMA]    = db-schema folder (default: <data-pkg> ตัด -data · เช่น demo-shop)
 #
-# ⚠️ workspace < 1.4 ควรรัน apply-export-strategy.mjs ก่อน (นำ workspace ขึ้น 1.4 semantics) แล้วค่อยตัวนี้
+# ⚠️ ต้องผ่าน migration-v1.4.0 (export-strategy) มาก่อน — driver จัดลำดับให้ (rung นี้พึ่ง semantics 1.4)
 set -e
 sedi() { if sed --version >/dev/null 2>&1; then sed -i "$@"; else sed -i '' "$@"; fi; }
 
@@ -41,13 +42,13 @@ echo "  derived: service=$SERVICE db-schema=$DB_SCHEMA scope=$SCOPE data=$DATA_P
 for v in SERVICE DB_SCHEMA SCOPE DATA_PKG API_PKG; do [ -z "${!v}" ] && { echo "Error: derive $v ไม่ได้"; exit 1; }; done
 
 # ── Step 1: infrastructure + backend-test + root Makefile (idempotent) ──
-echo "  [1/5] infrastructure + backend-test"
+echo "  [1/4] infrastructure + backend-test"
 ( cd "$PARENT" && bash "$GEN/script-generator/new-infrastructure.sh" "$WS_NAME" "$SERVICE" "$DB_SCHEMA" "$SCOPE" "$DATA_PKG" "$API_PKG" "$GEN" ) | sed 's/^/      /'
 
-# ── Step 2: webapi build Dockerfiles (.build + .nx-build) + node-app verify Dockerfiles + .dockerignore (build tooling — ไม่แตะ app source) ──
+# ── Step 2: webapi build Dockerfiles (.build + .nx-build · token → sed) + generic infra re-sync (lib/sync-infra.sh) ──
 # ⚠️ ไม่ patch app.ts / create-telemetry (app config = ของ app-owner) · telemetry+prefix จัดการผ่าน compose/_config
 # ⚠️ ไม่แตะ `Dockerfile` เดิม (runtime-only ของ CI release→docker:build) — เพิ่มแค่ .build (pnpm · compose default) + .nx-build (nx)
-echo "  [2/5] webapi build Dockerfiles (.build + .nx-build) + node-app verify Dockerfiles + .dockerignore"
+echo "  [2/4] webapi build Dockerfiles (.build + .nx-build) + generic infra re-sync"
 APPDIR="$NA/apps/$SERVICE/mcs-fastify"
 sed_df() { sedi -e "s/demo-exm-webapi/${SERVICE}/g" -e "s/gu-example-system/${WS_NAME}/g" -e "s/exm-data/${DATA_PKG}/g" "$1"; }
 for variant in Dockerfile.build Dockerfile.nx-build; do
@@ -59,11 +60,9 @@ for variant in Dockerfile.build Dockerfile.nx-build; do
     cp "$DF_TPL" "$DF"; sed_df "$DF"; echo "      + $variant (multi-stage)"
   fi
 done
-[ -f "$NA/.dockerignore" ] || { cp "$GEN/script-generator/template/workspace/.dockerignore" "$NA/.dockerignore"; echo "      + node-app/.dockerignore"; }
-# node-app verify Dockerfiles (in-container lint+tsc+unit test · make verify-backend / verify-nx-backend · tokenless → cp ตรง ไม่ sed)
-for vf in Dockerfile.verify-backend Dockerfile.verify-nx-backend; do
-  [ -f "$NA/$vf" ] || { cp "$GEN/script-generator/template/workspace/$vf" "$NA/$vf"; echo "      + node-app/$vf"; }
-done
+# tokenless generic infra (.dockerignore · verify Dockerfiles · tools/ · root .gitattributes/.editorconfig) → force-sync
+# แทน guard `[ -f ] ||` เดิม (ที่ cp เฉพาะตอนไม่มี → template ใหม่ไม่ถึง workspace เดิม) · sync-infra เขียนทับให้ตรง template
+bash "$SCRIPT_DIR/lib/sync-infra.sh" "$WS_ROOT" --quiet | sed 's/^/      /'
 # patch *:backend-libs scripts → --exclude apps (glob **/*api-* จับ webapi app ด้วย → test:backend-libs/verify-nx-backend เผลอรัน app jest ติด coverage gate)
 # idempotent · npm pkg set เขียนค่ามาตรฐาน (single-quote = literal glob ไม่ให้ shell expand)
 if [ -f "$NA/package.json" ]; then
@@ -75,7 +74,7 @@ if [ -f "$NA/package.json" ]; then
 fi
 
 # ── Step 3: discover domains/actions → contract+test pair (idempotent) ──
-echo "  [3/5] backfill contract+test pairs (จาก core domains ที่มี)"
+echo "  [3/4] backfill contract+test pairs (จาก core domains ที่มี)"
 CORE="$NA/libs/$SCOPE/$API_PKG/core/src"
 for d in "$CORE"/*-api/; do
   [ -d "$d" ] || continue
@@ -88,7 +87,7 @@ for d in "$CORE"/*-api/; do
 done
 
 # ── Step 4: wire real prisma migrations into infra changelog (migrate context) ──
-echo "  [4/5] wire prisma migrations → changelog (context=migrate)"
+echo "  [4/4] wire prisma migrations → changelog (context=migrate)"
 CHANGELOG="$WS_ROOT/workspaces/infrastructure/liquibase/changelog.yaml"
 MIGDIR="$STORE/prisma/migrations"
 if [ ! -f "$CHANGELOG" ]; then echo "      ! ไม่พบ changelog.yaml — ข้าม"; else
@@ -123,18 +122,9 @@ if [ ! -f "$CHANGELOG" ]; then echo "      ! ไม่พบ changelog.yaml — 
   fi
 fi
 
-# ── Step 5: bump template-version ──
-echo "  [5/5] template-version"
-VERFILE="$NA/template-version"
-if [ -f "$VERFILE" ]; then
-  CUR="$(cat "$VERFILE" 2>/dev/null | tr -d '[:space:]')"
-  if [ "$CUR" = "1.5.0" ]; then echo "      ! already 1.5.0"; else echo "1.5.0" > "$VERFILE"; echo "      + template-version ${CUR:-?} → 1.5.0"; fi
-else
-  echo "1.5.0" > "$VERFILE"; echo "      + template-version (new) → 1.5.0"
-fi
-
-echo "=== [v1.5 migrate] done ==="
-echo "  auto: infra + backend-test (pure harness + per-service _config) + webapi Dockerfile.build(pnpm)+.nx-build(nx) + node-app verify-backend(pnpm)+verify-nx-backend(nx) + .dockerignore + wire migration"
+# NOTE: ไม่ bump template-version ที่นี่ — driver (apply-migration.sh) เขียน = 1.5.0 + log ให้หลัง rung นี้สำเร็จ
+echo "=== [migration-v1.5.0] done ==="
+echo "  auto: infra + backend-test (pure harness + per-service _config) + webapi Dockerfile.build(pnpm)+.nx-build(nx) + generic infra re-sync (sync-infra: verify Dockerfiles + .dockerignore + tools/ + conventions) + wire migration"
 echo "        (runtime-only Dockerfile ของ CI release→docker:build ไม่ถูกแตะ · compose ใช้ Dockerfile.build · verify: make verify-backend)"
 echo "  manual ที่เหลือ (dev):"
 echo "    (1) cd workspaces/node-app && pnpm install   (store-prisma postinstall → prisma generate)"

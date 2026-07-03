@@ -1,8 +1,9 @@
-// apply-export-strategy.mjs — migrate workspace ที่ generate ด้วย version < 1.4
-// ให้ใช้ dev-condition export strategy: lint/test/build ไม่ต้อง build local dependency ก่อน
+// migration-v1.4.0.mjs — Migration → v1.4.0 : dev-condition export strategy
+// (lint/test/build ไม่ต้อง build local dependency ก่อน)
 //
-// วิธีใช้:  node workspace-generator/script-generator/migrate/apply-export-strategy.mjs <path-to-node-app>
-// ตัวอย่าง: node workspace-generator/script-generator/migrate/apply-export-strategy.mjs my-system/workspaces/node-app
+// ⚙️ ปกติรันผ่าน driver: `bash apply-migration.sh <ws>` (driver จัดลำดับ + bump template-version + เขียน log ให้)
+//    รันตรงก็ได้: node migration-v1.4.0.mjs <WORKSPACE_ROOT | path-to-node-app>
+//    รับได้ทั้ง git root (มี workspaces/node-app) และ path ของ node-app ตรง ๆ
 //
 // สิ่งที่ทำ:
 // 1. nx.json: เอา ^build ออกจาก lint/test/build (คงไว้ที่ serve/release)
@@ -14,9 +15,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const ROOT = process.argv[2];
+// รับได้ทั้ง git root (มี workspaces/node-app) และ path ของ node-app โดยตรง (driver ส่ง git root มา)
+let ROOT = process.argv[2];
+if (ROOT && fs.existsSync(path.join(ROOT, 'workspaces', 'node-app', 'pnpm-workspace.yaml'))) {
+  ROOT = path.join(ROOT, 'workspaces', 'node-app');
+}
 if (!ROOT || !fs.existsSync(path.join(ROOT, 'pnpm-workspace.yaml'))) {
-  console.error('usage: node apply-export-strategy.mjs <path-to-node-app (มี pnpm-workspace.yaml)>');
+  console.error('usage: node migration-v1.4.0.mjs <WORKSPACE_ROOT | path-to-node-app (มี pnpm-workspace.yaml)>');
   process.exit(1);
 }
 const P = (...p) => path.join(ROOT, ...p);

@@ -1,97 +1,63 @@
-# workspace-generator (Support Node V22.x above)
-script to create pnpm workspace boilerplate
+# workspace-generator
 
-## workspace-generator version compatibility
+> Generator สร้าง **pnpm monorepo** (Nx · Fastify · Next.js) แบบ scaffold ครบวงจร:
+> backend API (core/service/client/store-prisma/webapi) · frontend (Next.js/Storybook) · infra + black-box test
+>
+> **เวอร์ชันล่าสุด: v1.5.1** · ต้องใช้ **Node 22+** · 📜 [Changelog](./CHANGELOG.md) · ⬆️ [Migration guide](./docs/migration-guide.md) · 🤝 [Contributing](./CONTRIBUTING.md)
+
+## ✨ ทำอะไรได้บ้าง
+
+- **Scaffold workspace** — pnpm + Nx monorepo (`create-workspace` + `init-system`)
+- **API scaffolding** — คำสั่งเดียวได้ domain/action ครบชั้น (`pnpm gen:api-*`) + wire route/prisma
+- **Backend test (black-box)** — `make api-test` ยิง HTTP เข้า service+DB จริง (contract = SSOT) · in-container `make verify-backend`
+- **Frontend** — Next.js web + feature-lib + ui-components + Storybook host
+- **Migration** — อัป workspace เดิมขึ้นล่าสุด **คำสั่งเดียว** (driver)
+
+## 🚀 เริ่มต้น (สร้าง workspace ใหม่)
+
+> วาง `workspace-generator/` ไว้ระดับเดียวกับโฟลเดอร์ที่จะสร้าง workspace
+
+```bash
+bash workspace-generator/script-generator/create-workspace.sh gu-example-system node-app        # 1) สร้าง monorepo
+bash workspace-generator/script-generator/init-system.sh gu-example-system node-app             # 2) init (ตอบ skip-now)
+bash workspace-generator/script-generator/update-workspace-config.sh gu-example-system node-app # 3) update config
 ```
-- >= 1.5.0 backend-test + infrastructure layer: black-box api-test (node:test) + contract SSOT + make api-test (ดู section ถัดไป)
-- >= 1.4.0 dev-condition export strategy: lint/test/build ไม่ต้อง build local dependency ก่อน (ดู section ถัดไป)
-- >= 1.2.0 compatible with nodejs >= 22.x
-- < 1.2.0 compatible with nodejs <= 20.x
+> จากนั้นสร้าง base API package แล้วเติม domain/endpoint ด้วย **scaffolding** (`pnpm gen:api-*`) — ดู [§API Project](#api-project)
+
+## ⬆️ อัป workspace เดิม → ล่าสุด
+
+```bash
+bash workspace-generator/script-generator/migrate/apply-migration.sh <ws> --dry-run   # ดูแผนก่อน (ไม่แตะจริง)
+bash workspace-generator/script-generator/migrate/apply-migration.sh <ws>             # รันจริง (ไล่ทุก version ที่ค้าง)
 ```
+> driver ไล่ทุก version ที่ค้างให้เอง · `--to` / retry-เมื่อพัง / audit log → **[docs/migration-guide.md](./docs/migration-guide.md)**
 
-## สารบัญ
+## 📚 เอกสาร
 
-- [Backend-Test & Infrastructure (v1.5)](#backend-test--infrastructure-v15)
-- [Export Strategy & Build System (v1.4)](#export-strategy--build-system-v14)
-- [Workspace](#workspace) — สร้าง / update config / init system
+| เอกสาร | เนื้อหา |
+|---|---|
+| [migration-guide](./docs/migration-guide.md) | **อัป workspace เดิม → ล่าสุด** (driver · ladder · audit log) |
+| [backend-test-migration](./docs/backend-test-migration.md) | backend-test + infra layer (`make api-test` · contract SSOT) + gotcha |
+| [export-strategy](./docs/export-strategy.md) | dual-condition exports + build system (dev tooling ไม่ต้อง build dep ก่อน) |
+| [backend-structure](./docs/backend-structure.md) | โครง backend API (core/service/client + DI + ResultV2) |
+| [frontend-structure](./docs/frontend-structure.md) · [frontend-dev-workflow](./docs/frontend-dev-workflow.md) | โครง + workflow ฝั่ง frontend |
+| [api-scaffolding · user](./docs/api-scaffolding.user-guide.md) · [developer](./docs/api-scaffolding.developer-guide.md) | เพิ่ม API domain/action + แก้ template ของ generator |
+| [why-this-architecture](./docs/why-this-architecture.md) | ทำไม template ถึง "ดูเยอะ" — เหตุผลเชิงสถาปัตยกรรม |
+| 🤝 [CONTRIBUTING](./CONTRIBUTING.md) | พัฒนา generator: โครง repo · **เพิ่ม migration/version** · release |
+
+## 📜 ประวัติเวอร์ชัน
+
+ดู **[CHANGELOG.md](./CHANGELOG.md)** — ทุกเวอร์ชัน + link migration ต่อรุ่น · README เก่า: [v1.4](./README_v1_4.md) · [v1.3](./README_v1_3.md)
+
+## สารบัญ (reference)
+
+- [Workspace](#workspace) — create / update config / init system
 - [Storybook host](#storybook-host)
 - [System Workspace](#system-workspace)
-  - [Frontend Project](#frontend-project) — web, frontend-lib-modules, feature, ui-components, ui-state, web-config
-  - [API Project](#api-project) — **scaffolding (เพิ่ม API)** + base package (core/service/client/store-prisma/webapi)
-  - [Global Packages](#global-packages) — ui-common, functions, base-types, fastify-plugins
+  - [Frontend Project](#frontend-project) — web · frontend-lib-modules · feature · ui-components · ui-state · web-config
+  - [API Project](#api-project) — **scaffolding** + base package (core/service/client/store-prisma/webapi)
+  - [Global Packages](#global-packages) — ui-common · functions · base-types · fastify-plugins
 - [Other (troubleshooting)](#other)
-
-> 🧭 **เพิ่งเริ่ม?** flow ปกติ: สร้าง workspace → init system → update config → สร้าง base API package (core/service/client/store-prisma/webapi) → เติม domain/endpoint ด้วย **scaffolding** (`pnpm gen:api-*`) ดู [API Project › scaffolding](#scaffolding-เพิ่ม-api-domain-unified-route-pattern)
-
-## Backend-Test & Infrastructure (v1.5)
-
-ตั้งแต่ **v1.5** scaffold เพิ่ม `workspaces/infrastructure/` (contract SSOT + db init/seed + docker-compose +
-liquibase) + `workspaces/backend-test/` (node:test **black-box** harness) + root `Makefile` (`make api-test`)
-→ ยิง HTTP เข้า **service จริง + DB จริง** (out-of-process, local == CI) และ assert ได้ทั้ง **HTTP envelope + DB record**
-
-| | เอกสาร | เนื้อหา |
-|---|---|---|
-| 🪜 | [migration-guide.md](./docs/migration-guide.md) | **อัป workspace เดิมข้ามหลาย version → ล่าสุด** (ladder + idempotent + version marker `template-version`) |
-| 🧪 | [backend-test-migration.md](./docs/backend-test-migration.md) | v1.5 = อะไร/ทำไม + **migrate workspace เดิม** + แก้ contract ให้ meaningful + gotcha (auth/envelope/telemetry/docker) |
-
-**สรุปสั้น ๆ:** 1 action = 1 test file (data-driven จาก contract) · contract (`c*/e*.json`) = **SSOT** เสิร์ฟทั้ง
-BE assert + FE mock · setup/teardown ราย **action** และราย **case** · `assertDb` ตรวจ side-effect จริง ·
-`make api-test` = up → migrate → init → seed → api-up (docker build + wait healthy) → test → down
-
-**Migrate workspace เดิม (สร้างด้วย version < 1.5)**
-```bash
-# ถ้ายัง < 1.4 รัน export-strategy migration ก่อน (ดู section ถัดไป) แล้วค่อย:
-bash workspace-generator/script-generator/migrate/apply-backend-test-infra.sh <ws> [SERVICE] [DB_SCHEMA]
-# แล้ว: cd workspaces/backend-test && pnpm install  →  make api-test  (verify)
-```
-> รายละเอียด + gotcha ที่เจอจริง (API_PREFIX='', envelope OK/PARSE_FAIL, NoOp telemetry, prisma bookworm engine) อยู่ใน [docs/backend-test-migration.md](./docs/backend-test-migration.md)
-
-## Export Strategy & Build System (v1.4)
-
-**เอกสารที่เกี่ยวข้อง**
-
-| | เอกสาร | เนื้อหา |
-|---|---|---|
-| 📖 | [export-strategy.md](./docs/export-strategy.md) | กลไก export เต็ม + config ครบทุกจุด + troubleshooting |
-| 🤔 | [why-this-architecture.md](./docs/why-this-architecture.md) | ทำไม template ถึง "ดูเยอะ" — เหตุผลเบื้องหลังสำหรับทีม |
-| 🎨 | [frontend-structure.md](./docs/frontend-structure.md) | จัดโครง frontend lib (feature / ui-components / ui-functions / ui-state-&lt;vendor&gt;, boundary, promotion) |
-| 🧪 | [frontend-dev-workflow.md](./docs/frontend-dev-workflow.md) | ขั้นตอนพัฒนา frontend — Storybook vs Next.js, storybook-host scripts, mock (MSW / fe-client) |
-| 🧩 | [backend-structure.md](./docs/backend-structure.md) | จัดโครง backend API (unified-route: core/service/client + DI + ResultV2 + telemetry, grouped vs promoted) |
-| 🚀 | [api-scaffolding.user-guide.md](./docs/api-scaffolding.user-guide.md) | เพิ่ม backend API ตั้งแต่ศูนย์ — scaffolding `gen:api-domain/wire/action/promote/demote` |
-| 🛠️ | [api-scaffolding.developer-guide.md](./docs/api-scaffolding.developer-guide.md) | แก้ template/scaffolding ของ generator เอง (developer guide) |
-
-> README ฉบับก่อนหน้า: [README_v1_4.md](./README_v1_4.md) (v1.4) · [README_v1_3.md](./README_v1_3.md) (v1.3) · **อัปข้ามหลาย version → [docs/migration-guide.md](./docs/migration-guide.md)**
-
-**สรุปสั้น ๆ:** ตั้งแต่ v1.4 ทุก lib template ใช้ **dual-condition exports** เพื่อให้:
-
-- **dev tooling** (lint / test / build) รันได้ทันที — ไม่ต้อง build local dependency ก่อน
-- **production** ยังใช้ `dist` ตามเดิมทุกประการ
-- ทำได้โดยเพิ่ม custom condition `development` ชี้ไปที่ source แล้ววางไว้ **บนสุด** ของทุก exports entry และเปิด condition นี้เฉพาะ dev tooling
-
-```jsonc
-"exports": {
-  "./command/*": {
-    "development": "./src/command/*/index.ts",   // dev tooling (tsc/jest) เห็น src ตรงๆ — ต้องอยู่บนสุดเสมอ
-    "import": "./dist/command/*/index.mjs",      // Node runtime / release ใช้ dist เหมือนเดิม
-    "require": "./dist/command/*/index.js",
-    "types": "./dist/command/*/index.d.ts"
-  }
-}
-```
-
-condition `development` ถูกเปิดที่ **3 จุด**:
-
-- **tsc** — ผ่าน `customConditions` (ใน tsconfig base)
-- **jest** — ผ่าน `customExportConditions`
-- **nx.json** — เอา `^build` ออกจาก lint/test/build (คงไว้ที่ serve/release; ส่วน app จะ override `^build` กลับใน package.json ของตัวเอง)
-
-> รายละเอียดของแต่ละจุด + ตัวอย่าง config เต็ม, ตาราง nx targets, กฎที่ต้องรักษา และ troubleshooting อยู่ใน [docs/export-strategy.md](./docs/export-strategy.md)
-
-**Migrate workspace เดิม (สร้างด้วย version < 1.4)**
-```bash
-node workspace-generator/script-generator/migrate/apply-export-strategy.mjs <path>/workspaces/node-app
-# จากนั้นตรวจ diff, ลบ dist ทั้งหมด แล้วลอง lint/test ของ project ที่มี local dependency เพื่อยืนยัน
-```
 
 ## workspace
 คือ location ในการจัดเก็บ source code แบ่งตาม programming language เช่น node-app, python-app, springboot-app และ infrastructure สำหรับ เตรียม environment ในการรัน app

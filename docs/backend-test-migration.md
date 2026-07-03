@@ -24,21 +24,17 @@
 
 ## Migrate workspace เดิม → v1.5
 
-**full-auto + idempotent** (รันซ้ำได้ ไม่พัง):
+**full-auto + idempotent** (รันซ้ำได้ ไม่พัง) — ใช้ driver `apply-migration.sh` (จัดลำดับ + version + log ให้):
 
 ```bash
-# ⚠️ workspace ที่ยัง < 1.4 → รัน export-strategy migration ก่อน (นำขึ้น 1.4 semantics)
-node workspace-generator/script-generator/migrate/apply-export-strategy.mjs <ws>/workspaces/node-app
-
-# แล้วค่อย v1.5 layer (WORKSPACE_ROOT = git root ที่มี workspaces/node-app)
-bash workspace-generator/script-generator/migrate/apply-backend-test-infra.sh <ws> [SERVICE] [DB_SCHEMA]
-#   [SERVICE]   default = auto-detect apps/*/mcs-fastify
-#   [DB_SCHEMA] default = <data-pkg> ตัด -data (เช่น demo-shop-data → demo-shop)
+# driver ไล่ทุก version ที่ค้างให้เอง (< 1.4 → 1.4.0 export-strategy ก่อน แล้ว → 1.5.0 backend-test เอง ตามลำดับ)
+bash workspace-generator/script-generator/migrate/apply-migration.sh <ws> --to 1.5    # หยุดที่ 1.5 patch ล่าสุด
+#   <ws> = git root ที่มี workspaces/node-app · driver รัน migration-v1.5.0.sh (auto-detect SERVICE + DB_SCHEMA)
 ```
 
-script นี้ทำให้อัตโนมัติ: scaffold `infrastructure/` + `backend-test/` + merge root Makefile · discover
+`migration-v1.5.0.sh` ทำให้อัตโนมัติ: scaffold `infrastructure/` + `backend-test/` + merge root Makefile · discover
 domain/action เดิมใน core → backfill contract⇄test pair ต่อ action · wire prisma migrations เข้า
-`changelog.yaml` (context=migrate) · bump `template-version` → 1.5.0
+`changelog.yaml` (context=migrate) · แล้ว driver bump `template-version` → 1.5.0 + เขียน log ให้
 
 **prereq หลัง migrate:**
 ```bash
@@ -107,7 +103,7 @@ scaffold ให้ skeleton ตาม envelope ของ framework (`@inh-lib/co
   | `make test` | host-side `node:test` (iterate เร็ว ตอน stack ขึ้นแล้ว) | ✅ (ต้อง `api-up` ก่อน) |
   - 2 ไฟล์ที่ **node-app root** (tokenless · glob เดียวกับ `build:backend-*`): `Dockerfile.verify-backend` (**pnpm `--filter`** · default · robust
     ไม่พึ่ง nx graph) + `Dockerfile.verify-nx-backend` (**nx run-many** `lint:backend-libs`&`test:backend-libs`→`*-apps` · ตรง pipeline)
-  - migration cp ทั้ง 2 ไฟล์ให้ (idempotent · ไม่ sed) · runtime = `CMD echo ✅` (build-time verify เท่านั้น ไม่ start service)
+  - migration re-sync ทั้ง 2 ไฟล์ผ่าน `lib/sync-infra.sh` (force copy-if-different · ไม่ sed → เขียนทับให้ตรง template) · runtime = `CMD echo ✅` (build-time verify เท่านั้น ไม่ start service)
   - **libs + apps lint+test**: webapi jest `collectCoverageFrom=plugins/` (exclude `app.ts`/`main.ts`/`telemetry.ts` bootstrap) → scaffold มี `support.test.ts`+`sensible.test.ts` ผ่าน gate 80% · integration จริงไป `make api-test`
   - ⚠️ `*:backend-libs` glob `**/*api-*` จับ webapi app ด้วย → `--exclude=*webapi*,*webpub*,*websub*,*webio*` (template pkg.json + init-system + migration patch) · pnpm variant กันด้วย `--filter "!*webapi*"`
 - **prisma generate** — store-prisma ต้องเป็น `"postinstall": "prisma generate"` (ไม่ใช่ `_postinstall` — underscore ไม่ใช่

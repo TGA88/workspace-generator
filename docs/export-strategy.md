@@ -256,10 +256,12 @@ resolver จะลองไฟล์ตามลำดับใน array — `.t
 
 ## 9. Migrate workspace เดิม
 
-workspace ที่ generate ด้วย version < 1.4 ใช้ codemod นี้ปรับให้เป็น strategy ใหม่ได้ (idempotent — รันซ้ำได้):
+workspace ที่ generate ด้วย version < 1.4 ใช้ codemod นี้ปรับให้เป็น strategy ใหม่ได้ (idempotent — รันซ้ำได้) ·
+เป็น rung แรกของ migration ladder (`migration-v1.4.0.mjs`) — รันผ่าน driver ได้เลย:
 
 ```bash
-node workspace-generator/script-generator/migrate/apply-export-strategy.mjs <path>/workspaces/node-app
+bash workspace-generator/script-generator/migrate/apply-migration.sh <ws> --to 1.4.0
+# หรือรันตรง (ไม่ผ่าน driver = ไม่ bump version/log): node migration-v1.4.0.mjs <ws>
 ```
 
 มันจะ: เอา `^build` ออกจาก nx.json, เพิ่ม `customConditions` ใน tsconfig base + apps, เพิ่ม `customExportConditions` ใน jest ทุกไฟล์, เพิ่ม `development` + `sideEffects` ในทุก lib ที่มี exports, ใส่ override ให้ apps, และปิด minify ใน tsup
