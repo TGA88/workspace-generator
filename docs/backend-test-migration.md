@@ -1,5 +1,8 @@
 # Backend-Test & Infrastructure Layer (v1.5)
 
+> เอกสารนี้ = **migration + gotcha** (rung 1.4→1.5) · **methodology / วิธีเขียน contract & test (ฉบับเว็บ อ่านง่าย)** อยู่ที่
+> 📘 [Developer Handbook › Backend Test & Infra](https://bebestdev.com/developer-handbook/backend-test-infrastructure.html)
+
 ตั้งแต่ **v1.5** workspace-generator scaffold เพิ่ม **2 workspace + 1 root entrypoint** เพื่อทำ
 **black-box API testing** (ยิง HTTP เข้า service จริง + DB จริง, out-of-process) แบบ local == CI:
 
@@ -9,7 +12,7 @@
 | `workspaces/backend-test/` | node:test harness (standalone package) | 1 action = 1 file, data-driven จาก contract, assert HTTP + **DB record** |
 | root `Makefile` | git root | `make api-test` = up → migrate → init → seed → api-up → test → down (สด/รอบ) |
 
-> spec เต็ม: `developer-handbook/docs/backend-test-project-structure.md` (§8) + DB strategy `db-architecture-standard.md` (ARCH-STD-001)
+> spec เต็ม (เว็บ): 📘 [handbook › Backend Test & Infra](https://bebestdev.com/developer-handbook/backend-test-infrastructure.html) + DB strategy [handbook › DB Architecture Standard](https://bebestdev.com/developer-handbook/db-architecture-standard.html) (ARCH-STD-001)
 
 ---
 
@@ -34,7 +37,7 @@ bash workspace-generator/script-generator/migrate/apply-migration.sh <ws> --to 1
 
 `migration-v1.5.0.sh` ทำให้อัตโนมัติ: scaffold `infrastructure/` + `backend-test/` + merge root Makefile · discover
 domain/action เดิมใน core → backfill contract⇄test pair ต่อ action · wire prisma migrations เข้า
-`changelog.yaml` (context=migrate) · แล้ว driver bump `template-version` → 1.5.0 + เขียน log ให้
+`changelog.yaml` (context=migrate) · **หลัง script สำเร็จ driver** (ไม่ใช่ตัว script) จะ bump `template-version` → 1.5.0 + เขียน log ให้
 
 **prereq หลัง migrate:**
 ```bash

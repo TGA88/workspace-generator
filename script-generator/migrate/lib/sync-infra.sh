@@ -14,9 +14,9 @@
 #
 # ── manifest (เขียนทับได้ = generator-owned "read-only tooling/convention") ───────
 #   node-app : .dockerignore · Dockerfile.verify-backend · Dockerfile.verify-nx-backend · tools/ (recursive)
-#   git-root : .gitattributes · .editorconfig
+#   git-root : .gitattributes · .editorconfig · WORKSPACE.md (operational cheat sheet — generator ดูแล 100%)
 # EXCLUDE (workspace แก้รายตัว หรือมี token → ห้าม cp ทับ):
-#   .gitignore (สะสม entry เอง) · tsup.lib.config.ts (ปรับ build) · nx.json · tsconfig.base.json (paths) ·
+#   README.md (ของโปรเจกต์ — seed ครั้งเดียวตอน create) · .gitignore (สะสม entry เอง) · tsup.lib.config.ts (ปรับ build) · nx.json · tsconfig.base.json (paths) ·
 #   pnpm-workspace.yaml · package.json (scripts) · Makefile (__WS__/__SERVICE__)
 #   → Makefile + package.json เป็นงานของ new-infrastructure.sh + `npm pkg set` (มี token / ต้อง merge ไม่ใช่ cp)
 #
@@ -68,7 +68,8 @@ NA_DIRS="tools"
 # ROOT-level: src = ใต้ $TPL/root/ , dest = ใต้ $WS_ROOT/
 ROOT_FILES="\
 .gitattributes:.gitattributes
-.editorconfig:.editorconfig"
+.editorconfig:.editorconfig
+WORKSPACE.md:WORKSPACE.md"
 
 ADDED=0; UPDATED=0; UNCHANGED=0; MISSING=0
 do_copy() { [ "$DRY" = 1 ] && return 0; mkdir -p "$(dirname "$2")"; cp "$1" "$2"; }
