@@ -11,6 +11,7 @@
 |---|---|
 | เข้าใจ **สถาปัตยกรรม / เขียนโค้ดต่อ layer / วิธีเขียน test** (methodology) | 📘 **[Developer Handbook](https://bebestdev.com/developer-handbook/)** (เว็บ · อ่านง่าย) |
 | **สร้าง workspace · ใช้ generator (CLI) · รัน test** | README นี้ (↓ Quick Start · 🧪 Test) |
+| **`infrastructure` / `backend-test` มาจากไหน — auto ไหม?** | README นี้ (↓ [🏗️ infra + backend-test](#infra-on-demand)) |
 | **อัป (migrate) workspace เป็นเวอร์ชันใหม่** | [docs/migration-guide.md](./docs/migration-guide.md) |
 | **พัฒนา generator เอง (contribute)** | [CONTRIBUTING.md](./CONTRIBUTING.md) |
 
@@ -45,13 +46,51 @@ bash workspace-generator/script-generator/migrate/apply-migration.sh <ws>       
 
 ## 🧪 รัน test (workspace ที่ gen มา มีเครื่องพร้อม)
 
-workspace-generator สร้าง `Makefile` + `workspaces/infrastructure/` + `workspaces/backend-test/` ให้ = **เครื่องมือรัน api-test ตามที่ handbook สอน** · รันจาก git root ของ workspace:
+เมื่อสั่ง **`pnpm gen:infra`** (one-time/system — ไม่ได้มาอัตโนมัติตอนสร้าง workspace · ดู [🏗️ infra + backend-test](#infra-on-demand)) จะได้ `Makefile` + `workspaces/infrastructure/` + `workspaces/backend-test/` = **เครื่องมือรัน api-test ตามที่ handbook สอน** · รันจาก git root ของ workspace:
 ```bash
 make api-test          # black-box: compose ยก DB+API จริง → ยิง HTTP (contract + assertDb) → down -v
 make verify-backend    # in-container: lint + tsc + unit test (ไม่ต้องมี DB) · nx variant = make verify-nx-backend
 make test              # host node:test เร็ว (ต้อง make api-up ให้ stack ขึ้นก่อน)
 ```
 > **วิธีเขียน contract & test (methodology) → 📘 [handbook › Backend Testing](https://bebestdev.com/developer-handbook/backend-testing.html)** · เพิ่ม endpoint → `pnpm gen:api-*` (ดู [§API Project](#api-project))
+
+<a id="infra-on-demand"></a>
+
+## 🏗️ infrastructure + backend-test มาจากไหน? (on-demand)
+
+> **สรุปสั้น:** ตอนสร้าง workspace ใหม่ (`create-workspace` + `init-system`) จะ **ยังไม่มี** `workspaces/infrastructure/` และ `workspaces/backend-test/` — ได้แค่โครง monorepo (`apps/` · `libs/` · `storybook-host/` · `tools/` · config). ทั้งสองเป็น **on-demand**: สั่งสร้างเองครั้งเดียวต่อ 1 system ด้วย `pnpm gen:infra` เหมือน project type อื่นๆ (ไม่ได้แถมมาให้อัตโนมัติ)
+
+**ได้อะไร ตอนไหน:**
+
+| ขั้นตอน | คำสั่ง | ได้อะไร |
+|---|---|---|
+| สร้าง workspace | `create-workspace` + `init-system` | โครง monorepo: `apps/` · `libs/` · `storybook-host/` · `tools/` · config ราก — **ยังไม่มี** infra/backend-test |
+| **สั่ง infra** (one-time/system) | `pnpm gen:infra <service> <db-schema>` | `workspaces/infrastructure/` + `workspaces/backend-test/` + root `Makefile` |
+| ต่อ action | `pnpm gen:api-contract <service> <domain> [action]` | เติม contract(SSOT) ⇄ backend-test test คู่กัน (`gen:api-wire` เรียกให้อัตโนมัติ) |
+
+### วิธีสั่งสร้าง
+
+รันจาก `workspaces/node-app` (wrapper resolve ชื่อ workspace ให้เอง · ไม่ใส่ param จะถามทีละค่า):
+```bash
+# one-time ต่อ 1 system — สร้าง infrastructure + backend-test + root Makefile
+pnpm gen:infra <service> <db-schema> [scope] [data-pkg] [api-pkg]
+#   เช่น: pnpm gen:infra demo-shop-webapi demo-shop
+```
+หรือเรียก bash ตรงๆ (จาก dir แม่ที่มี workspace + generator เป็น sibling):
+```bash
+bash workspace-generator/script-generator/new-infrastructure.sh <workspace> <service> <db-schema> [scope] [data-pkg] [api-pkg]
+#   เช่น: bash workspace-generator/script-generator/new-infrastructure.sh demo-shop-system demo-shop-webapi demo-shop
+```
+
+### หลังสั่งแล้วได้
+
+- **`workspaces/infrastructure/`** — `contract/` (SSOT `.json`) · `db/<db-schema>/` + liquibase · `docker-compose.yml`
+- **`workspaces/backend-test/`** — node:test harness (black-box) + `_conformance`
+- **root `Makefile`** — entrypoint: `make up` / `migrate` / `init` / `seed` / `api-up` / `test` / `down` / `api-test`
+
+> - **สั่งซ้ำได้ปลอดภัย (idempotent)** — guard ที่ `infrastructure/docker-compose.yml`: ถ้ามีแล้ว skip ไม่ทับของเดิม · ถ้า root `Makefile` มีอยู่แล้วจะเขียนเป็น `Makefile.backend-test.example` ให้ merge เอง
+> - **ตอน migrate ไม่ต้องสั่งเอง** — driver ([apply-migration.sh](./docs/migration-guide.md)) เรียก `gen:infra` ให้อัตโนมัติ (rung v1.5.0) สำหรับ workspace เดิมที่ยกระดับเข้ามา + auto-derive service/db-schema จาก store-prisma
+> - รายละเอียดเต็ม → [docs/backend-test-migration.md](./docs/backend-test-migration.md) · [api-scaffolding · user](./docs/api-scaffolding.user-guide.md) (§infra one-time/system)
 
 ## 📚 เอกสาร
 
