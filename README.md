@@ -464,10 +464,10 @@ bash workspace-generator/script-generator/new-uicommon.sh gu-example-system
 ```
 
 ### ui-function, api-functions, common-functions
-เป็น Project ที่เก็บ แต่ pure function ที่เอาไว้ใช้ ให้ Project อื่นๆ นำไปใช้งาน โดย
-- **ui-functions** คือ project ที่มีการใช้ builtin ของ browser เช่น window,localstorage เป็นต้น
-- **api-functions** คือ project ที่มีการใช้ builtin ของ nodejs เช่น path,os,fs เป็นต้น
-- **common-functions** คือ project ที่รันไ้ด้ทั้ง ใน  browser และ nodejs environment
+เป็น Project ที่เก็บ pure function ที่ share ให้ System Workspace อื่นเอาไปใช้ — **แกนที่ตัดสินว่าเป็น ui / api / common = "ตั้งใจให้ระบบฝั่งไหนเอาไปใช้" (intent) ไม่ใช่ "เขียนด้วย builtin อะไร" (capability)** · capability เป็นแค่ *ข้อจำกัดที่ตามมา*:
+- **ui-functions** — ตั้งใจให้ฝั่ง **frontend (browser)** ใช้ → จึง import browser builtin ได้ (window, localStorage)
+- **api-functions** — ตั้งใจให้ฝั่ง **backend (nodejs)** ใช้ → จึง import node builtin ได้ (path, os, fs) · ⚠️ ของที่ **backend-only โดยเจตนา** (เช่นถือ private key / client secret) = api-functions เสมอ แม้โค้ดจะ universal (ไม่แตะ node builtin เลย) เพราะ intent คือ backend — ตั้งเป็น common = เชิญให้ถูก import เข้า frontend bundle (secret รั่ว)
+- **common-functions** — ตั้งใจให้ **ทั้งสองฝั่ง (frontend + backend)** ใช้ → ต้อง universal จริง (ห้ามผูก builtin ฝั่งใดฝั่งหนึ่ง) · ⚠️ "universal ทางเทคนิค" ≠ "ควรเป็น common": ถ้า intent คือฝั่งเดียว ให้เป็น ui / api ตามฝั่งนั้น
 
 ตัวอย่าง การสร้าง api-function และ ui-functions
 ```bash
