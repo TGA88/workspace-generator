@@ -121,6 +121,7 @@ bash workspace-generator/script-generator/new-infrastructure.sh <workspace> <ser
 - [System Workspace](#system-workspace)
   - [Frontend Project](#frontend-project) — web · frontend-lib-modules · feature · ui-components · ui-state · web-config
   - [API Project](#api-project) — **scaffolding** + base package (core/service/client/store-prisma/webapi)
+  - [libs vs packages](#libs-vs-packages) — โครงสร้าง: libs (in-repo, restricted) vs packages (publish, public)
   - [Global Packages](#global-packages) — ui-common · functions · base-types · fastify-plugins
 - [Other (troubleshooting)](#other)
 
@@ -448,8 +449,21 @@ bash workspace-generator/script-generator/new-webapi.sh gu-example-system demo-e
 ```
 
 ---
+## libs vs packages
+**ที่วางโค้ดที่แชร์ใน System Workspace** — โค้ดที่แชร์มักเกิดใน System Workspace ก่อน แล้วค่อย promote ขึ้น Global Workspace (section ถัดไป) · วางที่ไหนใช้เกณฑ์ **intent (ตั้งใจให้ใครใช้)**:
+
+| folder | intent / audience | scope · publish |
+|---|---|---|
+| **`libs/`** | ใช้**เฉพาะใน repo นี้** | restricted (เช่น `@my-system/*`) · `publishConfig.access: restricted` · ไม่ publish |
+| **`packages/`** | **แชร์ข้าม repo · publish npm** (candidate ย้ายขึ้น Global Workspace) | public (เช่น `@my-org/*`) · `access: public` · แบ่ง env: `packages/frontend/` \| `packages/backend/` (\| `packages/shared/` เมื่อมีของใช้ทั้ง 2 ฝั่ง) |
+
+- **เกณฑ์ mechanical = `publishConfig.access`** (มีในทุก `package.json` อยู่แล้ว) → ไม่ต้องเถียงรายตัว
+- **strict placement:** lib ที่ตั้งชื่อเอง (hand-created) ต้องอยู่ใต้ **scope folder** (`libs/<scope>/`) หรือ **`packages/<env>/`** — **`libs/<name>` แบน = สงวนให้ generator** (`ui-`/`api-`/`common-functions` จาก `new-functions.sh`)
+- **release** ของ `packages/` = **changesets** (scaffold ไว้แล้ว: `.changeset/` + `@changesets/cli`) → `pnpm changeset` ประกาศ bump ต่อ package แล้ว `changeset version` + publish
+
+---
 ## Global Packages
-คือ Package ที่สร้างไว้ใน Global Workspace สำหรับ เอาไว้ Share การใช้งาน ในหลายๆ System Workspace
+คือ Package ที่สร้างไว้ใน Global Workspace สำหรับ เอาไว้ Share การใช้งาน ในหลายๆ System Workspace · **`packages/` ใน System Workspace ที่ publish (`access: public`) = candidate ย้ายขึ้นมาเป็น Global Package ที่นี่** (ดู [libs vs packages](#libs-vs-packages) ด้านบน)
 
 ### ui-common
 เป็น Project ที่ เก็บ Common-Component เช่น DataTable,Dropdown เป็นต็น , Generic Custom-hook อย่างเช่น useDebounce และ Theme

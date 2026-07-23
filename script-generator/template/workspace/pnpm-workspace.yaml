@@ -2,8 +2,12 @@
 packages:
   # all packages in sub dirs of apps/
   - 'apps/**'
-  # all packages in sub dirs of libs/
+  # repo-internal libs — used only within this system workspace (restricted scope)
   - 'libs/**'
+  # cross-repo publishable packages (public scope) — split by environment: frontend/ | backend/
+  # criterion: publishConfig.access === 'public' -> here ; 'restricted' -> libs/
+  # (staging area — promote these into the Global Workspace / global-package repo later)
+  - 'packages/**'
   # all packages in sub dirs of storybook/
   - 'storybook-host/**'
   # exclude packages that are inside test directories
