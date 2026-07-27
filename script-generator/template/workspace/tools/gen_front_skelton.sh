@@ -63,40 +63,48 @@ base_folder="$DEST_DIR/$base_name"
 
 echo "Creating skeleton for frontend_type: $frontend_type"
 
-# Create base directory structure
-mkdir -p "$base_folder/components/sample"
-touch "$base_folder/components/sample/index.ts"
+# โครงตาม developer-handbook: frontend-structure §3 (pages/ + logic/ — เทมเพลตเดิมเรียก containers/ + functions/)
+# stories อยู่ __stories__/ ข้างของที่มัน demo · tests อยู่ __test__/ ข้างของที่มันเทส
+
+# components — FEATURE-LEVEL: ใช้ข้ามหน้า (page-private อยู่ pages/<page>/components/)
+mkdir -p "$base_folder/components/sample/__stories__"
 touch "$base_folder/components/sample/sample.tsx"
-touch "$base_folder/components/sample/sample.types.ts"
-touch "$base_folder/components/sample/sample.stories.tsx"
+touch "$base_folder/components/sample/sample.type.ts"
+touch "$base_folder/components/sample/__stories__/sample.stories.tsx"
 
-# create container structure
-mkdir -p "$base_folder/containers/sample"
-touch "$base_folder/containers/sample/index.ts"
-touch "$base_folder/containers/sample/sample.tsx"
-touch "$base_folder/containers/sample/sample.types.ts"
-touch "$base_folder/containers/sample/sample.stories.tsx"
+# hooks — 1 hook = สมองของ component ที่มี state (ไฟล์แบน hook-*.ts)
+mkdir -p "$base_folder/hooks/__test__"
+touch "$base_folder/hooks/hook-sample.ts"
+touch "$base_folder/hooks/__test__/hook-sample.test.tsx"
 
-# create hooks structure
-mkdir -p "$base_folder/hooks/sample"
-touch "$base_folder/hooks/sample/use-sample.ts"
-
-mkdir -p "$base_folder/hooks/sample/__test__"
-touch "$base_folder/hooks/sample/__test__/use-sample.test.tsx"
-
-mkdir -p "$base_folder/hooks/sample/functions"
-touch "$base_folder/hooks/sample/functions/sample-reducer.logic.ts"
-touch "$base_folder/hooks/sample/functions/simple-fn.logic.ts"
-
-mkdir -p "$base_folder/hooks/sample/functions/__test__"
-touch "$base_folder/hooks/sample/functions/__test__/sample-reducer.logic.test.ts"
-touch "$base_folder/hooks/sample/functions/__test__/simple-fn.logic.test.ts"
-
-mkdir -p "$base_folder/mocks"
-touch "$base_folder/mocks/index.ts"
+# logic — pure function ระดับ feature (เดิมซ่อนอยู่ hooks/*/functions/)
+mkdir -p "$base_folder/logic/__test__"
+touch "$base_folder/logic/sample-fn.ts"
+touch "$base_folder/logic/__test__/sample-fn.test.ts"
 
 mkdir -p "$base_folder/types"
 touch "$base_folder/types/index.ts"
 
+if [ "$frontend_type" = "feature" ]; then
+    # pages — entry-point ของ feature (host เอาไป mount เป็น 1 หน้า)
+    mkdir -p "$base_folder/pages/sample/__stories__"
+    mkdir -p "$base_folder/pages/sample/components"
+    touch "$base_folder/pages/sample/sample.page.tsx"
+    touch "$base_folder/pages/sample/__stories__/sample.page.stories.tsx"
+
+    # mocks — MSW 3 ไฟล์ต่อ feature (storybook-testing §0)
+    mkdir -p "$base_folder/mocks"
+    touch "$base_folder/mocks/handlers.ts"
+    touch "$base_folder/mocks/browser.ts"
+    touch "$base_folder/mocks/server.ts"
+fi
+
+# main.ts — public surface ของ folder นี้ (feature: export เฉพาะ page + type)
+touch "$base_folder/main.ts"
+
 
 echo "Skeleton structure created successfully in $base_name/"
+echo ""
+echo "ขั้นต่อไป (อย่าลืม):"
+echo "  1. เพิ่ม exports entry './$base_name' (ชี้เข้า main) ใน package.json ของ lib — หรือรัน: pnpm gen:exports"
+echo "  2. รัน: pnpm update:alias-paths && pnpm update:config  (ทุกครั้งที่เพิ่ม/ลบ sub-module)"

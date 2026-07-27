@@ -120,17 +120,18 @@ flow มาตรฐานสำหรับ frontend-dev เมื่อจะ�
 - state ที่ต้อง share → `ui-state-redux/<name>/<name>.slice.ts` (เก็บแค่ slice/reducer/action — **ห้าม** สร้าง store ที่นี่)
 
 **ขั้นที่ 2 — เขียน component พร้อม story (พัฒนาใน Storybook)**
-- วาง component ใน feature: `feature-<x>/containers/<comp>/<comp>.tsx`
-- เขียน story คู่กันเสมอ: `<comp>.stories.tsx` (title = `feature-product/ProductList` หรือ `ui-components/Button`)
+- วาง component ใน feature: `feature-<x>/components/<comp>/<comp>.tsx` · หน้า (entry-point) อยู่ `feature-<x>/pages/<page>/<page>.page.tsx`
+- เขียน story คู่กันเสมอ: `__stories__/<comp>.stories.tsx` (title = `feature-product/ProductList` หรือ `ui-components/Button`)
 - `pnpm storybook` แล้วปั้น component จนครบทุก state (default / loading / error / empty)
 - ถ้า component ต้องเรียก data → ใส่ MSW handler ใน story (ดู §5)
 
 **ขั้นที่ 3 — เขียนเทสต์**
-- unit test คู่กับ component: `<comp>/__test__/<comp>.test.tsx`
+- unit test คู่กับ component: `<comp>/__test__/<comp>.test.tsx` · pure function → `logic/__test__/`
+- flow สำคัญ → เขียน play function ใน story + ติด `tags: ['ci']` (เกณฑ์เลือก play vs RTL: handbook `storybook-testing` §5)
 - `pnpm lint && pnpm test` ใน lib
 
 **ขั้นที่ 4 — integrate เข้า web app (Next.js)**
-- import feature เข้าหน้าใน `apps/<base>-web/nextjs/app/...`
+- import feature เข้าหน้าใน `apps/<base>-web/nextjs/app/...` ผ่าน **package subpath**: `import { XxxPage } from '@scope/<lib>/feature-<x>'` (exports ชี้เข้า `main` ให้ — deep import ทำไม่ได้ · ไม่ตั้ง alias ฝั่ง app — ดู [frontend-structure.md](./frontend-structure.md) §3 ตาราง import)
 - ตั้ง Redux store จริงที่ระดับ app (`configureStore` + `<Provider>`) — slice มาจาก `ui-state-redux`
 - ต่อ data layer จริง (axios + React Query) — endpoint เดียวกับที่ mock ไว้ใน MSW
 - `pnpm serve` (`next dev`) ทดสอบ flow จริง
@@ -138,6 +139,7 @@ flow มาตรฐานสำหรับ frontend-dev เมื่อจะ�
 **ขั้นที่ 5 — ก่อนส่งงาน**
 - `pnpm lint` (eslint + tsc) ทั้ง lib และ app
 - `pnpm build` ที่ storybook-host เพื่อยืนยัน stories build ผ่าน
+- `pnpm test-storybook` ที่ storybook-host — smoke ทุก story + play function ผ่าน (handbook `storybook-testing` §6)
 - release storybook ให้ designer/QA review ถ้าต้องการ
 
 > **หลักการ:** ทุก component ควรพัฒนาและ "เสร็จ" ใน Storybook ก่อน แล้วค่อยเอาไปต่อใน Next.js — แยก "ทำ UI" ออกจาก "ต่อระบบ" ทำให้แก้บั๊กง่ายและ component reusable

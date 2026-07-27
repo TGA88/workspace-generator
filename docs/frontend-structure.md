@@ -71,26 +71,52 @@
 
 ## 3. โครงภายใน frontend-lib-module
 
+มอง 2 ระดับ: **ระดับ lib** (มี `feature-*` + shared) และ **ระดับภายใน feature** (โครงของ 1 feature). แต่ละ `feature-*` เป็น mini-package: เปิด public ผ่าน `main.ts` เท่านั้น ไม่ให้คนนอกเจาะเข้าไฟล์ภายในตรงๆ
+
+ระดับ lib:
+
 ```
 libs/demo-shop-lib/                         ← frontend-lib-module (base demo-shop)
   lib/
-    feature-cart/                          ← business slice
-      components/
-      containers/
-      hooks/
-      functions/
-      types/
-      mocks/
-      main.ts                              ← entry (export สิ่งที่ให้ภายนอกใช้)
+    feature-cart/                          ← business slice (โครงภายในดูด้านล่าง)
     feature-checkout/
       ...
     ui-components/                          ← shared UI ภายใน web นี้ (ยังไม่ข้าม web)
     ui-functions/                           ← shared pure function ภายใน web นี้
     ui-state-redux/                         ← shared state ภายใน web นี้ (slice/reducer/action)
-    main.ts                                ← re-export ระดับ lib
+    main.ts                                ← re-export ระดับ lib (ชี้ที่ feature/main.ts เท่านั้น)
 ```
 
-แต่ละ `feature-*` เป็น mini-package: เปิดสิ่งที่ให้คนอื่นใช้ผ่าน `main.ts` เท่านั้น ไม่ให้คนนอกเจาะเข้าไฟล์ภายในตรงๆ
+ระดับภายใน feature — co-location แบบ app-router (page-private อยู่ติดหน้าของมัน, ของใช้ข้ามหน้าอยู่ระดับ feature):
+
+```
+feature-cart/
+  pages/                                   ← entry-point (adapter; เทมเพลตเดิมเรียก containers/)
+    cart-summary/
+      cart-summary.page.tsx                ← host เอาไป mount เป็น 1 หน้า
+      __stories__/                          ← page-level story (acceptance ของ flow ที่ compose แล้ว)
+      components/                           ← PAGE-PRIVATE: ใช้แค่หน้านี้
+  components/                              ← FEATURE-LEVEL: ใช้ข้ามหน้า (มี __stories__/ ข้างตัว component)
+  hooks/        hook-cart.ts + __test__/   ← 1 hook = สมองของ component ที่มี state (ไฟล์แบน hook-*.ts)
+  logic/        price.ts + __test__/       ← pure function (เทมเพลตเดิมเรียก functions/)
+  types/        cart.type.ts
+  mocks/        handlers.ts · server.ts · browser.ts   ← MSW 3 ไฟล์ต่อ feature
+  main.ts                                  ← public surface (export เฉพาะ page + type)
+```
+
+**exports ของ lib** = root `.` + **1 exact entry ต่อ sub-module** (`./feature-<name>` ชี้ตรงเข้า `main` — เพิ่ม sub-module ต้องเพิ่ม entry · gen ด้วย `pnpm gen:exports`) — ดูรูปเต็ม + กติกา import ฝั่ง consumer ใน [export-strategy.md](./export-strategy.md) §ตัวอย่าง frontend lib
+
+**กติกา import (สรุปทุกกรณี):**
+
+| จาก → ไป | ใช้อะไร |
+|---|---|
+| ภายใน feature เดียวกัน | relative (`./ ../`) — รอดตอน promote |
+| feature → `ui-*` shared ใน lib เดียวกัน | alias `@ui-components/*` (จาก `update:alias-paths`) |
+| feature → feature | ❌ ห้าม (§4) |
+| app / storybook-host → feature | `@scope/<lib>/feature-<name>` (package subpath · exports ชี้เข้า `main` ให้ — deep import ทำไม่ได้ = boundary enforce ด้วยกลไก · ห้ามตั้ง alias ฝั่ง app ชี้ source ตรง) |
+| หลัง promote | `@scope/feature-<name>` — find-replace เดียว |
+
+> รายละเอียดกฎ (วิธีอ่าน design แล้วแตกไฟล์ · การแบ่ง hook · การวาง test/story) → developer-handbook หน้า `frontend-structure` + `feature-playbook` + `storybook-testing` (canonical — เอกสารนี้เป็น mirror ย่อ)
 
 ---
 
@@ -269,7 +295,8 @@ CSS module ปลอดภัยกว่า plain import เพราะมั�
 3. **import ภายใน** ที่เป็น relative → ไม่ต้องแตะ (ย้ายทั้งก้อน relative ยังถูก)
 4. **import จาก consumer** เปลี่ยน alias เดิม (`@ui-state-redux/*`) → package name (`@scope/ui-state-redux`) — find-replace
 5. ย้าย **peerDependencies** ที่เกี่ยว (redux/react-redux) มาที่ package.json ของ project ใหม่
-6. ตั้ง **exports** ของ project ใหม่ให้ชี้ระดับ action + dev-condition (`development`) ตาม [export-strategy.md](./export-strategy.md)
+6. ตั้ง **exports** ของ project ใหม่: root `.` + wildcard ต่อ sub-module พร้อม dev-condition (`development`) ตาม [export-strategy.md](./export-strategy.md) §ตัวอย่าง frontend lib (backend ใช้คำว่า "ระดับ action" — แกนเดียวกัน)
+7. **consumer ที่ import ผ่าน package subpath อยู่แล้ว** (`@scope/<lib>/feature-<name>`) → find-replace เป็น `@scope/feature-<name>` (จุดเดียว grep ตรวจได้)
 
 เงื่อนไขเดียวที่ทำให้ขั้นตอนข้างบนเป็น pure move: **slice/component ต้อง assumption-free ตั้งแต่ตอนเขียน** (ไม่ฝัง config/business ของ web เฉพาะ) — เป็น invariant ที่ enforce ตอนเขียน ไม่ใช่ตอน move ถ้ารักษาไว้ promote ก็แค่ย้ายไฟล์
 

@@ -39,6 +39,14 @@ fi
 
 CUR_PATH=$(pwd)
 
+# npm scope จริง = name ใน root package.json ของ workspace — อาจไม่ตรงชื่อ dir
+# (เช่น dir=auth-portal แต่ scope=tei-auth-portal) · อ่านไม่ได้ → fallback ชื่อ dir เดิม
+NPM_SCOPE=$(node -p "JSON.parse(require('fs').readFileSync(process.argv[1],'utf8')).name" "$WORKSPACE_DIR/workspaces/$SYSTEM_DIR/package.json" 2>/dev/null)
+if [ -z "$NPM_SCOPE" ] || [ "$NPM_SCOPE" = "undefined" ]; then
+    NPM_SCOPE=$WORKSPACE_DIR
+fi
+echo "NPM_SCOPE => $NPM_SCOPE"
+
 # สร้าง folder project
 # mkdir -p <workspace_dir>/workspaces/<system_name>
 echo 'mkdir -p $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME'
@@ -47,7 +55,8 @@ mkdir -p $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME
 
 
 
-cp -r $GENERATOR_DIR/script-generator/template/project/features/* $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME/
+# ใช้ "/." ไม่ใช่ "/*" — glob ไม่หยิบ dotfiles (.gitignore ของ template จะหาย)
+cp -r $GENERATOR_DIR/script-generator/template/project/features/. $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME/
 rm  -rf $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME/lib/*
 touch $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME/lib/.gitkeep
 touch $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME/lib/main.ts
@@ -149,7 +158,7 @@ fi
 
 echo "Replaced 'feature-exm' with '$PROJECT_NAME/' in all files under $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/libs/$SCOPE_NAME/$PROJECT_NAME/"
 
-npm pkg set name=@$WORKSPACE_DIR/$PROJECT_NAME
+npm pkg set name=@$NPM_SCOPE/$PROJECT_NAME
 
 if [[ $PROJECT_NAME == $SCOPE_NAME ]]; then
     echo "set PROJECT_NAME = '' "

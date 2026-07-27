@@ -32,9 +32,13 @@ const featureConfig: Config = {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     // pin react ให้ทุก lib ใช้สำเนาเดียว (กัน dual-React: "Cannot read properties of null (reading 'useState')")
     // ไว้ที่ base config เพราะ update_alias_path.sh เขียน moduleNameMapper ของ per-lib ใหม่ทับ — react-pin จะหายถ้าไว้ใน per-lib
+    // ครอบ subpath ด้วย (react-dom/client ที่ @testing-library/react ใช้) — pin แค่ bare specifier ไม่พอ:
+    // testing-library ติดตั้งที่ root workspace → pnpm resolve peer เป็น react-dom เวอร์ชันของมันเอง
+    // → react (pinned) คู่กับ react-dom/client (หลุด pin) = TypeError ตอน import (dual-React ข้ามเวอร์ชัน)
     '^react$': require.resolve('react'),
+    '^react/(.*)$': path.join(path.dirname(require.resolve('react/package.json')), '$1'),
     '^react-dom$': require.resolve('react-dom'),
-    '^react/jsx-runtime$': require.resolve('react/jsx-runtime')
+    '^react-dom/(.*)$': path.join(path.dirname(require.resolve('react-dom/package.json')), '$1')
   },
 
   // setupFilesAfterEnv: ['<rootDir>/src/test/setup.ts'],

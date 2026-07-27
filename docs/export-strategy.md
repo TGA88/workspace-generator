@@ -174,18 +174,28 @@ testEnvironmentOptions: { customExportConditions: ['development', ''] }
 
 ### ตัวอย่าง frontend lib (ไฟล์เป็น .tsx/.ts ใช้ fallback array)
 
+frontend-lib-module มี exports **2 ระดับ**: root `.` (re-export ของ lib) + **1 exact entry ต่อ sub-module** (`feature-*` / `ui-*` / `functions` — ชี้ตรงเข้า `main` ของ sub-module) — เพิ่ม sub-module ใหม่ต้องเพิ่ม entry เสมอ (gen ได้ด้วย `pnpm gen:exports` → `tools/generate-exports-web.sh`):
+
 ```jsonc
 "exports": {
-  "./components/*": {
-    "development": ["./lib/components/*/*.tsx", "./lib/components/*/*.ts"],
-    "types": "./dist/types/components/*/*.d.ts",
-    "import": "./dist/components/*/*.js",
-    "require": "./dist/components/*/*.cjs"
+  ".": {
+    "development": ["./lib/main.tsx", "./lib/main.ts"],
+    "types": "./dist/types/main.d.ts",
+    "import": "./dist/main.js",
+    "require": "./dist/main.cjs"
+  },
+  "./feature-user-management": {
+    "development": ["./lib/feature-user-management/main.tsx", "./lib/feature-user-management/main.ts"],
+    "types": "./dist/types/feature-user-management/main.d.ts",
+    "import": "./dist/feature-user-management/main.js",
+    "require": "./dist/feature-user-management/main.cjs"
   }
 }
 ```
 
-resolver จะลองไฟล์ตามลำดับใน array — `.tsx` ก่อน ถ้าไม่เจอค่อย `.ts`
+- resolver จะลองไฟล์ตามลำดับใน array — `.tsx` ก่อน ถ้าไม่เจอค่อย `.ts`
+- **กติกา consumer (app/storybook-host):** import feature ด้วย `@scope/<lib>/feature-<name>` (ไม่ต้องต่อ `/main` — exports ชี้ให้แล้ว · ชื่อไฟล์ `main.ts` เป็น internal ของ lib) — **deep import เจาะไฟล์ข้างในทำไม่ได้เลย** (exact entry ไม่เปิดทาง = boundary ของ feature ถูก enforce ด้วยกลไก ไม่ใช่ convention) และไม่ตั้ง alias ฝั่ง app ชี้เข้า source ตรง (จะข้าม exports map — เสีย dual-condition ทั้ง dev/build)
+- ตอน promote เป็น project: `@scope/<lib>/feature-<name>` → `@scope/feature-<name>` (find-replace เดียว ดู [frontend-structure.md](./frontend-structure.md) §10) · sub-module ที่อยากเปิดจุดเข้าเพิ่ม (เช่น `./feature-x/mocks` ให้ app ใช้ตอนเทส) → เพิ่ม exact entry เป็นราย ๆ = opt-in ชัดเจน
 
 > เรื่องการจัดโครง frontend lib (feature / ui-components / ui-functions / ui-state-&lt;vendor&gt;), กฎ peer dependency ของ UI lib, boundary และ promotion ดู [frontend-structure.md](./frontend-structure.md) — ไฟล์นี้เน้นเฉพาะกลไก export/resolution
 
@@ -234,7 +244,7 @@ resolver จะลองไฟล์ตามลำดับใน array — `.t
 ## 7. กฎที่ต้องรักษา
 
 1. `development` ต้องเป็น **key แรก** ของทุก exports entry (condition แรกที่ match ชนะ — เรียงผิดจะกลับไปใช้ dist เงียบๆ โดยไม่มี error)
-2. เพิ่ม action ใหม่ → ใส่ exports entry ให้ครบทั้ง development/import/require/types (หรือใช้ `pnpm gen:exports` ที่ gen `development` ให้แล้วใน v1.4)
+2. เพิ่ม action ใหม่ (backend) หรือ sub-module ใหม่ (frontend) → ใส่ exports entry ให้ครบทั้ง development/import/require/types — ใช้ `pnpm gen:exports` ได้ทั้งสองฝั่ง แต่**คนละ tool**: backend = `generate-exports.sh` (key จาก `src/*/index.ts`) · frontend = `generate-exports-web.sh` (key จาก `lib/<sub>/main.ts`) — **ห้ามใช้ข้าม convention** (รันตัว backend ใน frontend lib จะได้ exports ว่างทับของเดิม)
 3. dependency ระหว่าง lib ต้องประกาศใน `dependencies` แบบ `workspace:^` เสมอ — ไม่งั้น tsup จะ bundle แทน externalize และ pnpm strict isolation จะ resolve ไม่เจอ
 4. jest ฝั่ง jsdom ห้ามลบ `''` ออกจาก `customExportConditions`
 5. dist จาก `pnpm build` มือทีละ project ห้ามนำไป deploy/publish — ใช้ `nx release` หรือ `build:all` เท่านั้น
@@ -248,7 +258,7 @@ resolver จะลองไฟล์ตามลำดับใน array — `.t
 | tsc/jest ยังฟ้อง "Cannot find module" ของ local package | `customConditions`/`customExportConditions` ไม่ได้ตั้ง หรือ `development` ไม่ได้อยู่บนสุดของ exports |
 | รัน dev แล้วได้พฤติกรรมของ dist (แก้ src ไม่เห็นผล) | ลำดับ key ผิด — `import`/`types` มาก่อน `development` |
 | jest ฝั่ง web/features พัง resolve `msw/node` | ลบ `''` ออกจาก customExportConditions ของ jsdom |
-| `Cannot read properties of null (reading 'useState')` ใน renderHook test | dual React — เพิ่ม moduleNameMapper pin `^react$`/`^react-dom$` ให้ใช้ copy เดียว (template web/features/ui-common ตั้งให้แล้ว) |
+| `Cannot read properties of null (reading 'useState')` / `TypeError` ตอน import ใน renderHook test | dual React — moduleNameMapper pin ต้อง**ครอบ subpath ด้วย** (`^react/(.*)$` + `^react-dom/(.*)$` ไม่ใช่แค่ bare `^react$`) ไม่งั้น `react-dom/client` ที่ testing-library ใช้หลุด pin ไปคนละเวอร์ชัน (template web/features ตั้งให้แล้ว) |
 | build app แล้ว runtime หา dist ของ lib ไม่เจอ | app ขาด `nx.targets.build.dependsOn: ["^build"]` |
 | tsup error `Expected "}"` หลังแก้ comment ใน config | comment ภาษาไทยมี `/` หรืออักขระที่ทำ JS parse เพี้ยน — ตรวจ syntax |
 
