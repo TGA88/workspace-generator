@@ -174,7 +174,7 @@ testEnvironmentOptions: { customExportConditions: ['development', ''] }
 
 ### ตัวอย่าง frontend lib (ไฟล์เป็น .tsx/.ts ใช้ fallback array)
 
-frontend-lib-module มี exports **2 ระดับ**: root `.` (re-export ของ lib) + **1 wildcard entry ต่อ sub-module** (`feature-*` / `ui-*` / `functions`) — เพิ่ม sub-module ใหม่ต้องเพิ่ม entry เสมอ (gen ได้ด้วย `pnpm gen:exports` → `tools/generate-exports-web.sh`):
+frontend-lib-module มี exports **2 ระดับ**: root `.` (re-export ของ lib) + **1 exact entry ต่อ sub-module** (`feature-*` / `ui-*` / `functions` — ชี้ตรงเข้า `main` ของ sub-module) — เพิ่ม sub-module ใหม่ต้องเพิ่ม entry เสมอ (gen ได้ด้วย `pnpm gen:exports` → `tools/generate-exports-web.sh`):
 
 ```jsonc
 "exports": {
@@ -184,18 +184,18 @@ frontend-lib-module มี exports **2 ระดับ**: root `.` (re-export �
     "import": "./dist/main.js",
     "require": "./dist/main.cjs"
   },
-  "./feature-user-management/*": {
-    "development": ["./lib/feature-user-management/*.tsx", "./lib/feature-user-management/*.ts"],
-    "types": "./dist/types/feature-user-management/*.d.ts",
-    "import": "./dist/feature-user-management/*.js",
-    "require": "./dist/feature-user-management/*.cjs"
+  "./feature-user-management": {
+    "development": ["./lib/feature-user-management/main.tsx", "./lib/feature-user-management/main.ts"],
+    "types": "./dist/types/feature-user-management/main.d.ts",
+    "import": "./dist/feature-user-management/main.js",
+    "require": "./dist/feature-user-management/main.cjs"
   }
 }
 ```
 
 - resolver จะลองไฟล์ตามลำดับใน array — `.tsx` ก่อน ถ้าไม่เจอค่อย `.ts`
-- `*` ใน subpath pattern match ข้าม `/` ได้ → resolve รายไฟล์ทั้ง dev (source) และ prod (dist) เช่น `@scope/<lib>/feature-x/main`
-- **กติกา consumer (app/storybook-host):** import feature ผ่าน `@scope/<lib>/feature-<name>/main` เท่านั้น — ห้ามเจาะลึกกว่า `main` (boundary ของ feature) และไม่ตั้ง alias ฝั่ง app ชี้เข้า source ตรง (จะข้าม exports map — เสีย dual-condition ทั้ง dev/build) → ตอน promote เป็น project แก้แค่ prefix `@scope/<lib>/` → `@scope/` (find-replace เดียว ดู [frontend-structure.md](./frontend-structure.md) §10)
+- **กติกา consumer (app/storybook-host):** import feature ด้วย `@scope/<lib>/feature-<name>` (ไม่ต้องต่อ `/main` — exports ชี้ให้แล้ว · ชื่อไฟล์ `main.ts` เป็น internal ของ lib) — **deep import เจาะไฟล์ข้างในทำไม่ได้เลย** (exact entry ไม่เปิดทาง = boundary ของ feature ถูก enforce ด้วยกลไก ไม่ใช่ convention) และไม่ตั้ง alias ฝั่ง app ชี้เข้า source ตรง (จะข้าม exports map — เสีย dual-condition ทั้ง dev/build)
+- ตอน promote เป็น project: `@scope/<lib>/feature-<name>` → `@scope/feature-<name>` (find-replace เดียว ดู [frontend-structure.md](./frontend-structure.md) §10) · sub-module ที่อยากเปิดจุดเข้าเพิ่ม (เช่น `./feature-x/mocks` ให้ app ใช้ตอนเทส) → เพิ่ม exact entry เป็นราย ๆ = opt-in ชัดเจน
 
 > เรื่องการจัดโครง frontend lib (feature / ui-components / ui-functions / ui-state-&lt;vendor&gt;), กฎ peer dependency ของ UI lib, boundary และ promotion ดู [frontend-structure.md](./frontend-structure.md) — ไฟล์นี้เน้นเฉพาะกลไก export/resolution
 

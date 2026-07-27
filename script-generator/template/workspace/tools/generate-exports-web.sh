@@ -6,10 +6,10 @@
 # (รันตัว backend ใน frontend lib จะเจอ 0 index.ts แล้วทับ exports เป็นก้อนว่าง)
 #
 # รูปที่ gen (ตาม developer-handbook export-strategy — dual-condition v1.4):
-#   "."          จาก <SOURCE>/main.ts(x)
-#   "./<sub>/*"  ต่อ top-level dir ของ <SOURCE> ที่มี main.ts(x) (feature-* / ui-* / functions ...)
-# wildcard * ใน subpath pattern match ข้าม "/" ได้ → consumer เจาะรายไฟล์ได้
-# เช่น @scope/lib/feature-x/main หรือ @scope/lib/feature-x/pages/login/login.page
+#   "."        จาก <SOURCE>/main.ts(x)
+#   "./<sub>"  exact entry ต่อ top-level dir ของ <SOURCE> ที่มี main.ts(x) — ชี้ตรงเข้า main
+# consumer import: @scope/<lib>/feature-x (ไม่ต้องต่อ /main) — deep import resolve ไม่ได้
+# = boundary ของ sub-module ถูก enforce ด้วยกลไก exports (owner เคาะ 2026-07-27)
 set -euo pipefail
 
 SOURCE_PATH=${1:-lib}
@@ -48,18 +48,18 @@ EOF
     count=$((count + 1))
 fi
 
-# "./<sub>/*" ต่อ top-level dir ที่มี main.ts(x)
+# "./<sub>" exact entry ต่อ top-level dir ที่มี main.ts(x)
 for dir in "$SOURCE_PATH"/*/; do
     [ -d "$dir" ] || continue
     sub=$(basename "$dir")
     if [ -f "${dir}main.ts" ] || [ -f "${dir}main.tsx" ]; then
         sep
         cat >> "$temp_exports" <<EOF
-    "./${sub}/*": {
-      "development": ["./${SOURCE_PATH}/${sub}/*.tsx", "./${SOURCE_PATH}/${sub}/*.ts"],
-      "types": "./dist/types/${sub}/*.d.ts",
-      "import": "./dist/${sub}/*.${ESM_EXT}",
-      "require": "./dist/${sub}/*.${CJS_EXT}"
+    "./${sub}": {
+      "development": ["./${SOURCE_PATH}/${sub}/main.tsx", "./${SOURCE_PATH}/${sub}/main.ts"],
+      "types": "./dist/types/${sub}/main.d.ts",
+      "import": "./dist/${sub}/main.${ESM_EXT}",
+      "require": "./dist/${sub}/main.${CJS_EXT}"
     }
 EOF
         count=$((count + 1))

@@ -26,14 +26,14 @@
       "import": "./dist/main.js",
       "require": "./dist/main.cjs"
     },
-    "./feature-user-management/*": {
+    "./feature-user-management": {
       "development": [
-        "./lib/feature-user-management/*.tsx",
-        "./lib/feature-user-management/*.ts"
+        "./lib/feature-user-management/main.tsx",
+        "./lib/feature-user-management/main.ts"
       ],
-      "types": "./dist/types/feature-user-management/*.d.ts",
-      "import": "./dist/feature-user-management/*.js",
-      "require": "./dist/feature-user-management/*.cjs"
+      "types": "./dist/types/feature-user-management/main.d.ts",
+      "import": "./dist/feature-user-management/main.js",
+      "require": "./dist/feature-user-management/main.cjs"
     }
   },
   "scripts": {

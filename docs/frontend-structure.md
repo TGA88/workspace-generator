@@ -104,7 +104,7 @@ feature-cart/
   main.ts                                  ← public surface (export เฉพาะ page + type)
 ```
 
-**exports ของ lib** = root `.` + **1 wildcard entry ต่อ sub-module** (`./feature-<name>/*` — เพิ่ม sub-module ต้องเพิ่ม entry · gen ด้วย `pnpm gen:exports`) — ดูรูปเต็ม + กติกา import ฝั่ง consumer ใน [export-strategy.md](./export-strategy.md) §ตัวอย่าง frontend lib
+**exports ของ lib** = root `.` + **1 exact entry ต่อ sub-module** (`./feature-<name>` ชี้ตรงเข้า `main` — เพิ่ม sub-module ต้องเพิ่ม entry · gen ด้วย `pnpm gen:exports`) — ดูรูปเต็ม + กติกา import ฝั่ง consumer ใน [export-strategy.md](./export-strategy.md) §ตัวอย่าง frontend lib
 
 **กติกา import (สรุปทุกกรณี):**
 
@@ -113,8 +113,8 @@ feature-cart/
 | ภายใน feature เดียวกัน | relative (`./ ../`) — รอดตอน promote |
 | feature → `ui-*` shared ใน lib เดียวกัน | alias `@ui-components/*` (จาก `update:alias-paths`) |
 | feature → feature | ❌ ห้าม (§4) |
-| app / storybook-host → feature | `@scope/<lib>/feature-<name>/main` (package subpath — ห้ามเจาะลึกกว่า `main` · ห้ามตั้ง alias ฝั่ง app ชี้ source ตรง) |
-| หลัง promote | `@scope/feature-<name>/main` — เปลี่ยนแค่ prefix |
+| app / storybook-host → feature | `@scope/<lib>/feature-<name>` (package subpath · exports ชี้เข้า `main` ให้ — deep import ทำไม่ได้ = boundary enforce ด้วยกลไก · ห้ามตั้ง alias ฝั่ง app ชี้ source ตรง) |
+| หลัง promote | `@scope/feature-<name>` — find-replace เดียว |
 
 > รายละเอียดกฎ (วิธีอ่าน design แล้วแตกไฟล์ · การแบ่ง hook · การวาง test/story) → developer-handbook หน้า `frontend-structure` + `feature-playbook` + `storybook-testing` (canonical — เอกสารนี้เป็น mirror ย่อ)
 
@@ -296,7 +296,7 @@ CSS module ปลอดภัยกว่า plain import เพราะมั�
 4. **import จาก consumer** เปลี่ยน alias เดิม (`@ui-state-redux/*`) → package name (`@scope/ui-state-redux`) — find-replace
 5. ย้าย **peerDependencies** ที่เกี่ยว (redux/react-redux) มาที่ package.json ของ project ใหม่
 6. ตั้ง **exports** ของ project ใหม่: root `.` + wildcard ต่อ sub-module พร้อม dev-condition (`development`) ตาม [export-strategy.md](./export-strategy.md) §ตัวอย่าง frontend lib (backend ใช้คำว่า "ระดับ action" — แกนเดียวกัน)
-7. **consumer ที่ import ผ่าน package subpath อยู่แล้ว** (`@scope/<lib>/feature-<name>/main`) → แก้แค่ prefix `@scope/<lib>/` → `@scope/` (find-replace เดียว grep ตรวจได้)
+7. **consumer ที่ import ผ่าน package subpath อยู่แล้ว** (`@scope/<lib>/feature-<name>`) → find-replace เป็น `@scope/feature-<name>` (จุดเดียว grep ตรวจได้)
 
 เงื่อนไขเดียวที่ทำให้ขั้นตอนข้างบนเป็น pure move: **slice/component ต้อง assumption-free ตั้งแต่ตอนเขียน** (ไม่ฝัง config/business ของ web เฉพาะ) — เป็น invariant ที่ enforce ตอนเขียน ไม่ใช่ตอน move ถ้ารักษาไว้ promote ก็แค่ย้ายไฟล์
 

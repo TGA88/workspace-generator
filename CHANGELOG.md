@@ -11,7 +11,7 @@
 **Frontend loop alignment (harvest จาก auth-portal P-PW.3)**
 
 - **features template restructure** — ตัวอย่างใน template เป็นโครง canonical ตาม handbook `frontend-structure` §3: `lib/feature-<name>/{pages/*.page.tsx, components, hooks/hook-*.ts, logic, types, mocks, main.ts}` (เดิม `containers/` + `hooks/*/functions/`) · stories อยู่ `__stories__/` + play ติด `tags: ['ci']` · `gen_front_skelton.sh` สร้างโครงใหม่ตาม
-- **exports convention (frontend lib)** — `.` + `./feature-<name>/*` ต่อ sub-module (dual-condition ครบ) · **เพิ่ม sub-module ใหม่ต้องเพิ่ม exports entry เสมอ** — gen ได้ด้วย tool ใหม่ด้านล่าง
+- **exports convention (frontend lib)** — `.` + exact entry `./feature-<name>` ต่อ sub-module ชี้ตรงเข้า `main` (dual-condition ครบ) · consumer import `@scope/<lib>/feature-<name>` ไม่ต้องต่อ `/main` · deep import ทำไม่ได้ = boundary enforce ด้วยกลไก · **เพิ่ม sub-module ใหม่ต้องเพิ่ม exports entry เสมอ** — gen ได้ด้วย tool ใหม่ด้านล่าง
 - **⚠️ tool ใหม่ `tools/generate-exports-web.sh`** — `pnpm gen:exports` ของ frontend lib ชี้ตัวนี้แล้ว · **ตัวเดิม `generate-exports.sh` = backend-only** (key จาก `src/*/index.ts`) — รันใน frontend lib โครงใหม่จะได้ exports ว่างทับของเดิม ห้ามใช้ข้าม convention (ตัวใหม่มี guard: 0 entry = abort ไม่แตะ `package.json`)
 - **storybook-host template** — script `test-storybook` + devDeps `@storybook/test-runner` + `http-server` (acceptance ผ่าน play function — ดู handbook `storybook-testing`)
 - **fix สะสม** — react-pin ใน `jest.config.features.ts` ครอบ subpath (กัน dual-React จาก `react-dom/client`) · lib scripts อ่าน npm scope จริงจาก root `package.json` (เดิมใช้ชื่อ dir) · `cp` template หยิบ dotfiles (`.gitignore` ไม่หายแล้ว) · vite `renderChunk` ใส่ return type

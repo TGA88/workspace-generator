@@ -131,7 +131,7 @@ flow มาตรฐานสำหรับ frontend-dev เมื่อจะ�
 - `pnpm lint && pnpm test` ใน lib
 
 **ขั้นที่ 4 — integrate เข้า web app (Next.js)**
-- import feature เข้าหน้าใน `apps/<base>-web/nextjs/app/...` ผ่าน **package subpath**: `import { XxxPage } from '@scope/<lib>/feature-<x>/main'` (ห้ามเจาะลึกกว่า `main` · ไม่ตั้ง alias ฝั่ง app — ดู [frontend-structure.md](./frontend-structure.md) §3 ตาราง import)
+- import feature เข้าหน้าใน `apps/<base>-web/nextjs/app/...` ผ่าน **package subpath**: `import { XxxPage } from '@scope/<lib>/feature-<x>'` (exports ชี้เข้า `main` ให้ — deep import ทำไม่ได้ · ไม่ตั้ง alias ฝั่ง app — ดู [frontend-structure.md](./frontend-structure.md) §3 ตาราง import)
 - ตั้ง Redux store จริงที่ระดับ app (`configureStore` + `<Provider>`) — slice มาจาก `ui-state-redux`
 - ต่อ data layer จริง (axios + React Query) — endpoint เดียวกับที่ mock ไว้ใน MSW
 - `pnpm serve` (`next dev`) ทดสอบ flow จริง
