@@ -71,26 +71,40 @@
 
 ## 3. โครงภายใน frontend-lib-module
 
+มอง 2 ระดับ: **ระดับ lib** (มี `feature-*` + shared) และ **ระดับภายใน feature** (โครงของ 1 feature). แต่ละ `feature-*` เป็น mini-package: เปิด public ผ่าน `main.ts` เท่านั้น ไม่ให้คนนอกเจาะเข้าไฟล์ภายในตรงๆ
+
+ระดับ lib:
+
 ```
 libs/demo-shop-lib/                         ← frontend-lib-module (base demo-shop)
   lib/
-    feature-cart/                          ← business slice
-      components/
-      containers/
-      hooks/
-      functions/
-      types/
-      mocks/
-      main.ts                              ← entry (export สิ่งที่ให้ภายนอกใช้)
+    feature-cart/                          ← business slice (โครงภายในดูด้านล่าง)
     feature-checkout/
       ...
     ui-components/                          ← shared UI ภายใน web นี้ (ยังไม่ข้าม web)
     ui-functions/                           ← shared pure function ภายใน web นี้
     ui-state-redux/                         ← shared state ภายใน web นี้ (slice/reducer/action)
-    main.ts                                ← re-export ระดับ lib
+    main.ts                                ← re-export ระดับ lib (ชี้ที่ feature/main.ts เท่านั้น)
 ```
 
-แต่ละ `feature-*` เป็น mini-package: เปิดสิ่งที่ให้คนอื่นใช้ผ่าน `main.ts` เท่านั้น ไม่ให้คนนอกเจาะเข้าไฟล์ภายในตรงๆ
+ระดับภายใน feature — co-location แบบ app-router (page-private อยู่ติดหน้าของมัน, ของใช้ข้ามหน้าอยู่ระดับ feature):
+
+```
+feature-cart/
+  pages/                                   ← entry-point (adapter; เทมเพลตเดิมเรียก containers/)
+    cart-summary/
+      cart-summary.page.tsx                ← host เอาไป mount เป็น 1 หน้า
+      __stories__/                          ← page-level story (acceptance ของ flow ที่ compose แล้ว)
+      components/                           ← PAGE-PRIVATE: ใช้แค่หน้านี้
+  components/                              ← FEATURE-LEVEL: ใช้ข้ามหน้า (มี __stories__/ ข้างตัว component)
+  hooks/        hook-cart.ts + __test__/   ← 1 hook = สมองของ component ที่มี state (ไฟล์แบน hook-*.ts)
+  logic/        price.ts + __test__/       ← pure function (เทมเพลตเดิมเรียก functions/)
+  types/        cart.type.ts
+  mocks/        handlers.ts · server.ts · browser.ts   ← MSW 3 ไฟล์ต่อ feature
+  main.ts                                  ← public surface (export เฉพาะ page + type)
+```
+
+> รายละเอียดกฎ (วิธีอ่าน design แล้วแตกไฟล์ · การแบ่ง hook · การวาง test/story) → developer-handbook หน้า `frontend-structure` + `feature-playbook` + `storybook-testing` (canonical — เอกสารนี้เป็น mirror ย่อ)
 
 ---
 
