@@ -15,10 +15,10 @@ const preserveUseClientDirective = (): Plugin => {
   return {
     name: 'preserve-use-client',
     renderChunk(
-      code: string, 
+      code: string,
       chunk: RenderedChunk,
       _options: NormalizedOutputOptions
-    ) {
+    ): string {
       // เพิ่ม this context
       const moduleInfo = this.getModuleInfo(chunk.facadeModuleId as string);
       const sourceCode = moduleInfo?.code || '';
