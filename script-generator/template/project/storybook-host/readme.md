@@ -84,3 +84,21 @@ pnpm storybook
 pnpm build-storybook
 
 ```
+
+## test-storybook — รัน acceptance (play function) ผ่าน test-runner
+
+รายละเอียดมาตรฐาน (tags `ci` · test tiers · CI strategy) → developer-handbook หน้า `storybook-testing`
+
+```bash
+# ต้องมี Storybook ให้ test-runner วิ่งเข้า — ใช้ static build
+pnpm build                                            # build libs + storybook → storybook-static/
+npx http-server storybook-static -p 6006 --silent &
+
+# ⚠️ อย่าใส่ "--" คั่นก่อน args (pnpm จะส่ง "--" เป็น literal เข้า jest แล้วพัง)
+pnpm test-storybook --url http://127.0.0.1:6006                    # ทุก story (smoke + play)
+pnpm test-storybook --url http://127.0.0.1:6006 --includeTags ci   # เฉพาะเคสสำคัญ (PR gate)
+```
+
+หมายเหตุ:
+- ครั้งแรกบนเครื่อง ถ้า Playwright ยังไม่มี browser: `node node_modules/.pnpm/playwright@<ver>/node_modules/playwright/cli.js install chromium`
+- `.storybook/test-runner.ts` (visual regression hook) + `@storybook/addon-a11y` ยังไม่ใส่ใน template — รอ CI tiers (handbook `storybook-testing` §7/§8/§9)

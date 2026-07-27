@@ -10,7 +10,8 @@
     "release": "pnpm release-storybook",
     "release:only": "cd ../../ && bash build-script/container/release-storybook-app.sh example",
     "release-storybook": "pnpm build && cd ../../ && bash build-script/container/release-storybook-app.sh example",
-    "update:storybook_alias": "cd ../../../../../gu-example-system && bash workspaces/node-app/tools/update_storybookhost_alias.sh . example "
+    "update:storybook_alias": "cd ../../../../../gu-example-system && bash workspaces/node-app/tools/update_storybookhost_alias.sh . example ",
+    "test-storybook": "test-storybook"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -25,7 +26,10 @@
   "author": "",
   "license": "ISC",
   "description": "msw,vite ติดตั้งไ้ว้ที่ root workspace แล้ว",
-  "devDependencies": {},
+  "devDependencies": {
+    "@storybook/test-runner": "^0.21.0",
+    "http-server": "^14.1.1"
+  },
   "msw": {
     "workerDirectory": [
       "public"
