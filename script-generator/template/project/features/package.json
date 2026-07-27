@@ -25,6 +25,15 @@
       "types": "./dist/types/main.d.ts",
       "import": "./dist/main.js",
       "require": "./dist/main.cjs"
+    },
+    "./feature-user-management/*": {
+      "development": [
+        "./lib/feature-user-management/*.tsx",
+        "./lib/feature-user-management/*.ts"
+      ],
+      "types": "./dist/types/feature-user-management/*.d.ts",
+      "import": "./dist/feature-user-management/*.js",
+      "require": "./dist/feature-user-management/*.cjs"
     }
   },
   "scripts": {
@@ -40,7 +49,7 @@
     "add:front-skelton": "bash ../../tools/gen_front_skelton.sh lib",
     "update:alias-paths": "bash ../../tools/update_alias_path.sh feature-exm",
     "update:config": "bash ../../tools/update_config_path.sh",
-    "gen:exports": "bash ../../tools/generate-exports.sh lib js cjs "
+    "gen:exports": "bash ../../tools/generate-exports-web.sh lib js cjs"
   },
   "devDependencies": {
     "@storybook/react": "^8.5.0",
