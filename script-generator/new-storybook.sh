@@ -41,8 +41,8 @@ mkdir -p $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/storybook-host/$PROJECT_NAME
 
 
 
-cp -r $GENERATOR_DIR/script-generator/template/project/storybook-host/* $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/storybook-host/$PROJECT_NAME/
-cp -r $GENERATOR_DIR/script-generator/template/project/storybook-host/.storybook $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/storybook-host/$PROJECT_NAME/
+# ใช้ "/." ไม่ใช่ "/*" — หยิบ dotfiles มาด้วยในรอบเดียว (.storybook ฯลฯ ไม่ต้อง copy แยก)
+cp -r $GENERATOR_DIR/script-generator/template/project/storybook-host/. $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/storybook-host/$PROJECT_NAME/
 
 bash $GENERATOR_DIR/script-generator/update-sb.sh $WORKSPACE_DIR $PROJECT_NAME
 
