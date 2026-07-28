@@ -8,9 +8,26 @@
 ---
 
 ## [Unreleased]
-**Frontend loop alignment (harvest จาก auth-portal P-PW.3)**
 
+_(ยังไม่มี — รุ่นถัดไปเริ่มจดที่นี่)_
+
+## [1.6.0] — 2026-07-28
+**Frontend loop alignment (harvest จาก auth-portal P-PW.3) + `packages/` taxonomy**
+
+> 📖 [migration-v1.6](./docs/migration-v1.6.md) — **อ่านก่อน upgrade**: อะไร "ถึง workspace เดิม" vs "เฉพาะ project ที่ generate ใหม่" · ทำไม migration รุ่นนี้ patch `pnpm-workspace.yaml`/root globs เอง · วิธีซ่อม lib ที่เคยโดน `update_alias_path.sh` ตัวเก่าทำพัง
+
+### Fixed
+- **🔴 `tools/update_alias_path.sh` — เขียนใหม่ทั้งตัว (sed line-surgery → brace-matching patch ด้วย node)** · ของเดิมใช้ `sed` command `c\` แทนที่ *บรรทัด* ที่ match แล้วเดาขอบเขตบล็อก (พฤติกรรม BSD/GNU sed ต่างกัน) ⇒ **เจอจริงบน reference workspace**: `jest.config.ts` ได้ `moduleNameMapper` **ซ้ำ 2 บล็อก** (duplicate key = TS parse error) · `tsconfig{,.build}.json` เสีย key อื่นใน `compilerOptions` + วงเล็บปิดหาย · ตัวใหม่แทนที่ **เฉพาะเนื้อในบล็อกเป้าหมาย** โดยไล่วงเล็บจริง (ข้าม string/comment) → comment/key อื่น/การจัดรูปนอกบล็อกไม่ถูกแตะ · **fail-closed**: หาบล็อกไม่เจอ = ไม่แตะไฟล์ + บอกวิธีแก้ · idempotent (รันซ้ำ = 0 diff)
+
+### Added
+- **`packages/` taxonomy** — โฟลเดอร์ที่ 3 คู่ `apps/`+`libs/` สำหรับ lib ที่ publish ข้าม repo · แยกตาม environment (`packages/{frontend,backend}/`) · เกณฑ์ mechanical = `publishConfig.access` (`public` → `packages/` · `restricted` → `libs/`) · template `pnpm-workspace.yaml` + root globs 6 ตัว + README section ใหม่ · **migration patch ให้ workspace เดิมด้วย** (sync-infra ไม่แตะ 2 ไฟล์นี้โดยดีไซน์)
+- **`migration-v1.6.0.sh`** — rung ใหม่: `sync-infra` + patch workspace-owned 2 ไฟล์ (idempotent + guard)
+
+### Changed
 - **features template restructure** — ตัวอย่างใน template เป็นโครง canonical ตาม handbook `frontend-structure` §3: `lib/feature-<name>/{pages/*.page.tsx, components, hooks/hook-*.ts, logic, types, mocks, main.ts}` (เดิม `containers/` + `hooks/*/functions/`) · stories อยู่ `__stories__/` + play ติด `tags: ['ci']` · `gen_front_skelton.sh` สร้างโครงใหม่ตาม
+- **⭐ README §ui/api/common-functions — reframe เป็น *intent* ไม่ใช่ capability** (ตั้งใจให้ฝั่งไหนใช้ · ไม่ใช่ "ใช้ builtin ของอะไร") + คำเตือน backend-only/private-key ห้ามตั้งชื่อ `common` (secret รั่วเข้า frontend bundle) — นิยามเดิมทำให้คนตั้งชื่อผิดจริงมาแล้ว
+- **docs** — `infrastructure/` + `backend-test/` = **on-demand** (`gen:infra`) ไม่ใช่ของที่มาพร้อม workspace ทุกอัน
+- **webapi template** — ตัด placeholder `src/api-client/.gitkeep` (โฟลเดอร์เปล่าที่ทำ app ใหม่ drift จาก convention จริง)
 - **exports convention (frontend lib)** — `.` + exact entry `./feature-<name>` ต่อ sub-module ชี้ตรงเข้า `main` (dual-condition ครบ) · consumer import `@scope/<lib>/feature-<name>` ไม่ต้องต่อ `/main` · deep import ทำไม่ได้ = boundary enforce ด้วยกลไก · **เพิ่ม sub-module ใหม่ต้องเพิ่ม exports entry เสมอ** — gen ได้ด้วย tool ใหม่ด้านล่าง
 - **⚠️ tool ใหม่ `tools/generate-exports-web.sh`** — `pnpm gen:exports` ของ frontend lib ชี้ตัวนี้แล้ว · **ตัวเดิม `generate-exports.sh` = backend-only** (key จาก `src/*/index.ts`) — รันใน frontend lib โครงใหม่จะได้ exports ว่างทับของเดิม ห้ามใช้ข้าม convention (ตัวใหม่มี guard: 0 entry = abort ไม่แตะ `package.json`)
 - **storybook-host template** — script `test-storybook` + devDeps `@storybook/test-runner` + `http-server` (acceptance ผ่าน play function — ดู handbook `storybook-testing`)
