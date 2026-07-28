@@ -1,198 +1,152 @@
-PACKAGE_NAME=$1
-lib_folder="./lib"
+#!/usr/bin/env bash
+# update_alias_path.sh <package-name>
+#
+# เขียน alias ของ sub-module ใน ./lib/* ลง 4 ไฟล์ config ของ frontend lib:
+#   tsconfig.json · tsconfig.build.json (compilerOptions.paths)
+#   jest.config.ts (moduleNameMapper) · vite.config.ts (resolve.alias)
+#
+# v1.6.0 — เขียนใหม่จาก sed line-surgery เป็น brace-matching patch (node)
+#   ของเดิมใช้ `sed` command `c\` แทนที่ "บรรทัด" ที่ match → พฤติกรรม BSD/GNU sed ต่างกัน
+#   และไม่รู้จักขอบเขตของบล็อก ⇒ เคสจริงที่เจอ: jest ได้ `moduleNameMapper` ซ้ำ 2 บล็อก
+#   (duplicate key = ts parse error) · tsconfig เสีย compilerOptions ที่เหลือ/วงเล็บหาย
+#   ตัวใหม่แทนที่ "เฉพาะเนื้อในบล็อกเป้าหมาย" โดยไล่วงเล็บจริง (ข้าม string/comment)
+#   ⇒ comment · key อื่น · การจัดรูป นอกบล็อก ไม่ถูกแตะเลย
+#
+# fail-closed: หาบล็อกเป้าหมายไม่เจอ = abort ไม่แตะไฟล์ (ยกเว้น paths ที่ insert ให้ได้
+# ใต้ compilerOptions) — ยอมให้คนเติมเองดีกว่าเขียนทับพัง
+set -euo pipefail
 
-# ตรวจสอบว่าโฟลเดอร์ lib มีอยู่จริง
-if [ ! -d "$lib_folder" ]; then
-  echo "Error: lib folder not found at $lib_folder"
+PACKAGE_NAME="${1:-}"
+if [ -z "$PACKAGE_NAME" ]; then
+  echo "Usage: update_alias_path.sh <package-name>" >&2
   exit 1
 fi
 
-
-
-# สร้าง paths JSON
-paths_json="{ \"@$PACKAGE_NAME/*\": [\"./lib/*\"]"
-# คง base mapper (react-pin, css, @/@root) ไว้ด้วยการ spread baseConfig.moduleNameMapper เป็นตัวแรกเสมอ
-# ไม่งั้นการเขียน moduleNameMapper ใหม่จะทับ react-pin/css หาย -> jest พัง (dual-React / parse css)
-jest_paths_json=" ...(baseConfig.moduleNameMapper || {}), '^@$PACKAGE_NAME/(.*)$': '<rootDir>/lib/\$1'"
-vite_paths_json=" '@$PACKAGE_NAME':  resolve(__dirname, './lib') "
-first=false
-
-
-# หาโฟลเดอร์ใน lib
-for folder in "$lib_folder"/*; do
-  if [ -d "$folder" ]; then
-    folder_name=$(basename "$folder")
-    
-    # เพิ่ม comma ถ้าไม่ใช่รายการแรก
-    if [ "$first" = true ]; then
-      first=false
-    else
-      paths_json="$paths_json,"
-      jest_paths_json="$jest_paths_json,"
-      vite_paths_json="$vite_paths_json,"
-    fi
-    
-    # เพิ่ม alias path (single line)
-    paths_json="$paths_json \"@$folder_name/*\": [\"./lib/$folder_name/*\"]"
-    jest_paths_json="$jest_paths_json '^@$folder_name/(.*)$': '<rootDir>/lib/$folder_name/\$1'"
-    vite_paths_json="$vite_paths_json '@$folder_name': resolve(__dirname, './lib/$folder_name') "
-  fi
-done
-
-# ปิด JSON object
-paths_json="$paths_json }"
-
-
-
-echo $paths_json
-
-# สร้าง backup file
-cp tsconfig.json tsconfig.json.bak
-
-
-# สร้าง sed script แยกและบันทึกลงไฟล์
-cat > sed_remove.txt << EOF
-/[[:space:]]*"paths"[[:space:]]*:[[:space:]]*{/,/}/ {
-  c\\
-
-}
-EOF
-
-cat > sed_replace.txt << EOF
-/[[:space:]]*"compilerOptions"[[:space:]]*:/ {
-  c\\
-  "compilerOptions": {\\
-    "paths": $paths_json,
-}
-EOF
-
-
-
-
-# รัน sed ด้วย script ไฟล์ (ซึ่งสามารถรองรับ multi-line ได้)
-sed -f sed_remove.txt tsconfig.json > tsconfig.temp.json
-sed -f sed_replace.txt tsconfig.temp.json > tsconfig.temp2.json
-mv tsconfig.temp2.json tsconfig.json
-rm tsconfig.temp.json
-# rm sed_remove.txt
-rm sed_remove.txt
-rm sed_replace.txt
-
- npx prettier --write tsconfig.json
-echo "Updated paths in tsconfig.json with only lib folder aliases"
-
-
-# tsconfig.build.json — มี paths block แยกของตัวเอง (ไม่ inherit tsconfig.json)
-# ของเดิม tool อัปเดตแค่ tsconfig.json -> build (tsc -p tsconfig.build.json) หา per-submodule alias ไม่เจอ
-# จึงต้อง inject paths ชุดเดียวกันเข้า tsconfig.build.json ด้วย
-if [ -f tsconfig.build.json ]; then
-  cp tsconfig.build.json tsconfig.build.json.bak
-  cat > sed_remove.txt << EOF
-/[[:space:]]*"paths"[[:space:]]*:[[:space:]]*{/,/}/ {
-  c\\
-
-}
-EOF
-  cat > sed_replace.txt << EOF
-/[[:space:]]*"compilerOptions"[[:space:]]*:/ {
-  c\\
-  "compilerOptions": {\\
-    "paths": $paths_json,
-}
-EOF
-  sed -f sed_remove.txt tsconfig.build.json > tsconfig.build.temp.json
-  sed -f sed_replace.txt tsconfig.build.temp.json > tsconfig.build.temp2.json
-  mv tsconfig.build.temp2.json tsconfig.build.json
-  rm tsconfig.build.temp.json sed_remove.txt sed_replace.txt
-  npx prettier --write tsconfig.build.json
-  echo "Updated paths in tsconfig.build.json with only lib folder aliases"
+lib_folder="./lib"
+if [ ! -d "$lib_folder" ]; then
+  echo "Error: lib folder not found at $lib_folder" >&2
+  exit 1
 fi
 
+# sub-module = โฟลเดอร์ชั้นเดียวใต้ ./lib (feature-* · ui-* · ฯลฯ)
+submodules=()
+for folder in "$lib_folder"/*; do
+  [ -d "$folder" ] && submodules+=("$(basename "$folder")")
+done
 
-# jest
+patcher="$(mktemp -t update_alias_path.XXXXXX).mjs"
+trap 'rm -f "$patcher"' EXIT
 
-echo $jest_paths_json
+cat > "$patcher" << 'PATCHER_EOF'
+import { readFileSync, writeFileSync, existsSync, copyFileSync } from 'node:fs';
 
-# สร้าง backup file
-cp jest.config.ts jest.config.ts.bak
+const [pkg, ...subs] = process.argv.slice(2);
 
-
-# สร้าง sed script แยกและบันทึกลงไฟล์
-cat > sed_jest_remove.txt << EOF
-/[[:space:]]*[\'"]\\^@*:*/  {
-  c\\
-
+// ── brace matcher ที่ข้าม string + comment (กันวงเล็บใน '// {' หรือ "a{b" หลอก) ──
+function findBlock(src, keyPattern) {
+  const re = new RegExp(`^([ \\t]*)(${keyPattern})[ \\t]*:[ \\t]*\\{`, 'm');
+  const m = re.exec(src);
+  if (!m) return null;
+  const open = m.index + m[0].length; // ตำแหน่งถัดจาก '{'
+  let depth = 1;
+  let i = open;
+  let quote = null;
+  let comment = null;
+  while (i < src.length && depth > 0) {
+    const c = src[i];
+    const next = src[i + 1];
+    if (comment === 'line') {
+      if (c === '\n') comment = null;
+    } else if (comment === 'block') {
+      if (c === '*' && next === '/') { comment = null; i++; }
+    } else if (quote) {
+      if (c === '\\') i++;
+      else if (c === quote) quote = null;
+    } else if (c === '/' && next === '/') { comment = 'line'; i++; }
+    else if (c === '/' && next === '*') { comment = 'block'; i++; }
+    else if (c === '"' || c === "'" || c === '`') quote = c;
+    else if (c === '{') depth++;
+    else if (c === '}') depth--;
+    i++;
+  }
+  if (depth !== 0) return null; // วงเล็บไม่สมดุล — ไม่แตะดีกว่า
+  return { indent: m[1], open, close: i - 1 }; // close = index ของ '}' ที่ปิด
 }
-EOF
 
-cat > sed_jest_replace.txt << EOF
-/[[:space:]]*moduleNameMapper:*/ {
-  c\\
-  moduleNameMapper: {\\
-   $jest_paths_json,
+/** แทนที่เฉพาะเนื้อในบล็อก `key: { … }` — ของนอกบล็อกไม่ขยับสักตัว */
+function replaceBlock(file, keyPattern, innerLines, opts = {}) {
+  if (!existsSync(file)) return 'skip';
+  const src = readFileSync(file, 'utf8');
+  const block = findBlock(src, keyPattern);
+  const body = innerLines.map((l) => `  ${l}`).join('\n');
+
+  if (block) {
+    const inner = `\n${block.indent}${body.split('\n').join(`\n${block.indent}`)}\n${block.indent}`;
+    copyFileSync(file, `${file}.bak`);
+    writeFileSync(file, src.slice(0, block.open) + inner + src.slice(block.close));
+    return 'patched';
+  }
+
+  // ไม่มีบล็อก: insert ได้เฉพาะเมื่อบอก anchor มา (เคส paths ใต้ compilerOptions)
+  if (opts.anchor) {
+    const anchor = findBlock(src, opts.anchor);
+    if (anchor) {
+      const inner = `\n${anchor.indent}  ${opts.key}: {\n${anchor.indent}  ${body}\n${anchor.indent}  },`;
+      copyFileSync(file, `${file}.bak`);
+      writeFileSync(file, src.slice(0, anchor.open) + inner + src.slice(anchor.open));
+      return 'inserted';
+    }
+  }
+  return 'missing';
 }
-EOF
 
-
-
-
-
-# รัน sed ด้วย script ไฟล์ (ซึ่งสามารถรองรับ multi-line ได้)
-npx prettier --write jest.config.ts
-sed -f sed_jest_remove.txt jest.config.ts > jest.config.temp.ts.bak
-sed -f sed_jest_replace.txt jest.config.temp.ts.bak > jest.config.temp2.ts.bak
-mv jest.config.temp2.ts.bak jest.config.ts
-rm jest.config.temp2.ts.bak
-rm jest.config.temp.ts.bak
-
-
-rm sed_jest_remove.txt
-rm sed_jest_replace.txt
-
- npx prettier --write jest.config.ts
-echo "Updated paths in jest.config.ts with only lib folder moduleNameMapper"
-
-# ==========
-
-# vite
-
-echo $vite_paths_json
-
-# สร้าง backup file
-cp vite.config.ts vite.config.ts.bak
-
-
-# สร้าง sed script แยกและบันทึกลงไฟล์
-cat > sed_vite_remove.txt << EOF
-/[[:space:]]*['"]@[^'"]*['"]:[[:space:]]*/  {
-  c\\
-
+function report(file, key, outcome) {
+  if (outcome === 'skip') return;
+  if (outcome === 'missing') {
+    console.error(`✖ ${file}: หาบล็อก \`${key}\` ไม่เจอ (หรือวงเล็บไม่สมดุล) — ไม่แตะไฟล์`);
+    console.error(`  เติมบล็อกว่างเองแล้วรันใหม่:  ${key}: {}`);
+    process.exitCode = 1;
+    return;
+  }
+  console.log(`✔ ${file}: ${key} ${outcome}`);
 }
-EOF
 
-cat > sed_vite_replace.txt << EOF
-/[[:space:]]*alias:*/ {
-  c\\
-  alias: {\\
-   $vite_paths_json,
+// ── สร้างเนื้อของแต่ละบล็อกจาก sub-module list ──
+const tsPaths = [
+  `"@${pkg}/*": ["./lib/*"],`,
+  ...subs.map((s) => `"@${s}/*": ["./lib/${s}/*"],`),
+];
+const jestMappers = [
+  // ต้อง spread base ไว้ตัวแรกเสมอ ไม่งั้น react-pin/css mapper ของ base หาย → jest พัง
+  '...(baseConfig.moduleNameMapper || {}),',
+  `'^@${pkg}/(.*)$': '<rootDir>/lib/$1',`,
+  ...subs.map((s) => `'^@${s}/(.*)$': '<rootDir>/lib/${s}/$1',`),
+];
+const viteAliases = [
+  `'@${pkg}': resolve(__dirname, './lib'),`,
+  ...subs.map((s) => `'@${s}': resolve(__dirname, './lib/${s}'),`),
+];
+
+for (const f of ['tsconfig.json', 'tsconfig.build.json']) {
+  report(f, '"paths"', replaceBlock(f, '"paths"', tsPaths, { anchor: '"compilerOptions"', key: '"paths"' }));
 }
-EOF
+report('jest.config.ts', 'moduleNameMapper', replaceBlock('jest.config.ts', 'moduleNameMapper', jestMappers));
+report('vite.config.ts', 'alias', replaceBlock('vite.config.ts', 'alias', viteAliases));
+PATCHER_EOF
 
+# ไฟล์ไหน fail (บล็อกหาย) patcher จะรายงานแล้วคืน 1 — แต่ไฟล์ที่สำเร็จต้องได้จัดรูปด้วย
+# จึงเก็บ exit code ไว้ก่อน แล้วค่อยคืนตอนท้าย (ไม่ให้ set -e ตัดจบกลางคัน)
+patch_status=0
+node "$patcher" "$PACKAGE_NAME" "${submodules[@]}" || patch_status=$?
 
+# จัดรูปด้วย prettier ของ workspace (บล็อกที่เขียนไปเป็น valid syntax อยู่แล้ว — prettier แค่จัดสวย)
+for f in tsconfig.json tsconfig.build.json jest.config.ts vite.config.ts; do
+  [ -f "$f" ] && npx prettier --write "$f" > /dev/null
+done
 
+if [ "$patch_status" -ne 0 ]; then
+  echo "✖ alias update ไม่ครบ — ดูไฟล์ที่รายงานด้านบน (ของที่สำเร็จถูกเขียน+จัดรูปแล้ว)" >&2
+  exit "$patch_status"
+fi
 
-
-# รัน sed ด้วย script ไฟล์ (ซึ่งสามารถรองรับ multi-line ได้)
-npx prettier --write vite.config.ts
-sed -f sed_vite_remove.txt vite.config.ts > vite.config.temp.ts.bak
-sed -f sed_vite_replace.txt vite.config.temp.ts.bak > vite.config.temp2.ts.bak
-mv vite.config.temp2.ts.bak vite.config.ts
-rm vite.config.temp2.ts.bak
-rm vite.config.temp.ts.bak
-
-
-rm sed_vite_remove.txt
-rm sed_vite_replace.txt
-
- npx prettier --write vite.config.ts
-echo "Updated paths in vite.config.ts with only lib folder alias"
+echo "Updated alias paths for @$PACKAGE_NAME (${#submodules[@]} sub-modules: ${submodules[*]})"

@@ -3,7 +3,7 @@
 > Generator สร้าง **pnpm monorepo** (Nx · Fastify · Next.js) แบบ scaffold ครบวงจร:
 > backend API (core/service/client/store-prisma/webapi) · frontend (Next.js/Storybook) · infra + black-box test
 >
-> **เวอร์ชันล่าสุด: v1.6.0** · ต้องใช้ **Node 22+** · 📘 [Developer Handbook](https://bebestdev.com/developer-handbook/) · 📜 [Changelog](./CHANGELOG.md) · ⬆️ [Migration guide](./docs/migration-guide.md) · 🤝 [Contributing](./CONTRIBUTING.md)
+> **เวอร์ชันล่าสุด: v1.5.2** · ต้องใช้ **Node 22+** · 📘 [Developer Handbook](https://bebestdev.com/developer-handbook/) · 📜 [Changelog](./CHANGELOG.md) · ⬆️ [Migration guide](./docs/migration-guide.md) · 🤝 [Contributing](./CONTRIBUTING.md)
 
 ## 🧭 หาอะไรอยู่?
 
@@ -11,7 +11,6 @@
 |---|---|
 | เข้าใจ **สถาปัตยกรรม / เขียนโค้ดต่อ layer / วิธีเขียน test** (methodology) | 📘 **[Developer Handbook](https://bebestdev.com/developer-handbook/)** (เว็บ · อ่านง่าย) |
 | **สร้าง workspace · ใช้ generator (CLI) · รัน test** | README นี้ (↓ Quick Start · 🧪 Test) |
-| **`infrastructure` / `backend-test` มาจากไหน — auto ไหม?** | README นี้ (↓ [🏗️ infra + backend-test](#infra-on-demand)) |
 | **อัป (migrate) workspace เป็นเวอร์ชันใหม่** | [docs/migration-guide.md](./docs/migration-guide.md) |
 | **พัฒนา generator เอง (contribute)** | [CONTRIBUTING.md](./CONTRIBUTING.md) |
 
@@ -46,51 +45,13 @@ bash workspace-generator/script-generator/migrate/apply-migration.sh <ws>       
 
 ## 🧪 รัน test (workspace ที่ gen มา มีเครื่องพร้อม)
 
-เมื่อสั่ง **`pnpm gen:infra`** (one-time/system — ไม่ได้มาอัตโนมัติตอนสร้าง workspace · ดู [🏗️ infra + backend-test](#infra-on-demand)) จะได้ `Makefile` + `workspaces/infrastructure/` + `workspaces/backend-test/` = **เครื่องมือรัน api-test ตามที่ handbook สอน** · รันจาก git root ของ workspace:
+workspace-generator สร้าง `Makefile` + `workspaces/infrastructure/` + `workspaces/backend-test/` ให้ = **เครื่องมือรัน api-test ตามที่ handbook สอน** · รันจาก git root ของ workspace:
 ```bash
 make api-test          # black-box: compose ยก DB+API จริง → ยิง HTTP (contract + assertDb) → down -v
 make verify-backend    # in-container: lint + tsc + unit test (ไม่ต้องมี DB) · nx variant = make verify-nx-backend
 make test              # host node:test เร็ว (ต้อง make api-up ให้ stack ขึ้นก่อน)
 ```
 > **วิธีเขียน contract & test (methodology) → 📘 [handbook › Backend Testing](https://bebestdev.com/developer-handbook/backend-testing.html)** · เพิ่ม endpoint → `pnpm gen:api-*` (ดู [§API Project](#api-project))
-
-<a id="infra-on-demand"></a>
-
-## 🏗️ infrastructure + backend-test มาจากไหน? (on-demand)
-
-> **สรุปสั้น:** ตอนสร้าง workspace ใหม่ (`create-workspace` + `init-system`) จะ **ยังไม่มี** `workspaces/infrastructure/` และ `workspaces/backend-test/` — ได้แค่โครง monorepo (`apps/` · `libs/` · `storybook-host/` · `tools/` · config). ทั้งสองเป็น **on-demand**: สั่งสร้างเองครั้งเดียวต่อ 1 system ด้วย `pnpm gen:infra` เหมือน project type อื่นๆ (ไม่ได้แถมมาให้อัตโนมัติ)
-
-**ได้อะไร ตอนไหน:**
-
-| ขั้นตอน | คำสั่ง | ได้อะไร |
-|---|---|---|
-| สร้าง workspace | `create-workspace` + `init-system` | โครง monorepo: `apps/` · `libs/` · `storybook-host/` · `tools/` · config ราก — **ยังไม่มี** infra/backend-test |
-| **สั่ง infra** (one-time/system) | `pnpm gen:infra <service> <db-schema>` | `workspaces/infrastructure/` + `workspaces/backend-test/` + root `Makefile` |
-| ต่อ action | `pnpm gen:api-contract <service> <domain> [action]` | เติม contract(SSOT) ⇄ backend-test test คู่กัน (`gen:api-wire` เรียกให้อัตโนมัติ) |
-
-### วิธีสั่งสร้าง
-
-รันจาก `workspaces/node-app` (wrapper resolve ชื่อ workspace ให้เอง · ไม่ใส่ param จะถามทีละค่า):
-```bash
-# one-time ต่อ 1 system — สร้าง infrastructure + backend-test + root Makefile
-pnpm gen:infra <service> <db-schema> [scope] [data-pkg] [api-pkg]
-#   เช่น: pnpm gen:infra demo-shop-webapi demo-shop
-```
-หรือเรียก bash ตรงๆ (จาก dir แม่ที่มี workspace + generator เป็น sibling):
-```bash
-bash workspace-generator/script-generator/new-infrastructure.sh <workspace> <service> <db-schema> [scope] [data-pkg] [api-pkg]
-#   เช่น: bash workspace-generator/script-generator/new-infrastructure.sh demo-shop-system demo-shop-webapi demo-shop
-```
-
-### หลังสั่งแล้วได้
-
-- **`workspaces/infrastructure/`** — `contract/` (SSOT `.json`) · `db/<db-schema>/` + liquibase · `docker-compose.yml`
-- **`workspaces/backend-test/`** — node:test harness (black-box) + `_conformance`
-- **root `Makefile`** — entrypoint: `make up` / `migrate` / `init` / `seed` / `api-up` / `test` / `down` / `api-test`
-
-> - **สั่งซ้ำได้ปลอดภัย (idempotent)** — guard ที่ `infrastructure/docker-compose.yml`: ถ้ามีแล้ว skip ไม่ทับของเดิม · ถ้า root `Makefile` มีอยู่แล้วจะเขียนเป็น `Makefile.backend-test.example` ให้ merge เอง
-> - **ตอน migrate ไม่ต้องสั่งเอง** — driver ([apply-migration.sh](./docs/migration-guide.md)) เรียก `gen:infra` ให้อัตโนมัติ (rung v1.5.0) สำหรับ workspace เดิมที่ยกระดับเข้ามา + auto-derive service/db-schema จาก store-prisma
-> - รายละเอียดเต็ม → [docs/backend-test-migration.md](./docs/backend-test-migration.md) · [api-scaffolding · user](./docs/api-scaffolding.user-guide.md) (§infra one-time/system)
 
 ## 📚 เอกสาร
 
@@ -121,7 +82,6 @@ bash workspace-generator/script-generator/new-infrastructure.sh <workspace> <ser
 - [System Workspace](#system-workspace)
   - [Frontend Project](#frontend-project) — web · frontend-lib-modules · feature · ui-components · ui-state · web-config
   - [API Project](#api-project) — **scaffolding** + base package (core/service/client/store-prisma/webapi)
-  - [libs vs packages](#libs-vs-packages) — โครงสร้าง: libs (in-repo, restricted) vs packages (publish, public)
   - [Global Packages](#global-packages) — ui-common · functions · base-types · fastify-plugins
 - [Other (troubleshooting)](#other)
 
@@ -449,21 +409,8 @@ bash workspace-generator/script-generator/new-webapi.sh gu-example-system demo-e
 ```
 
 ---
-## libs vs packages
-**ที่วางโค้ดที่แชร์ใน System Workspace** — โค้ดที่แชร์มักเกิดใน System Workspace ก่อน แล้วค่อย promote ขึ้น Global Workspace (section ถัดไป) · วางที่ไหนใช้เกณฑ์ **intent (ตั้งใจให้ใครใช้)**:
-
-| folder | intent / audience | scope · publish |
-|---|---|---|
-| **`libs/`** | ใช้**เฉพาะใน repo นี้** | restricted (เช่น `@my-system/*`) · `publishConfig.access: restricted` · ไม่ publish |
-| **`packages/`** | **แชร์ข้าม repo · publish npm** (candidate ย้ายขึ้น Global Workspace) | public (เช่น `@my-org/*`) · `access: public` · แบ่ง env: `packages/frontend/` \| `packages/backend/` (\| `packages/shared/` เมื่อมีของใช้ทั้ง 2 ฝั่ง) |
-
-- **เกณฑ์ mechanical = `publishConfig.access`** (มีในทุก `package.json` อยู่แล้ว) → ไม่ต้องเถียงรายตัว
-- **strict placement:** lib ที่ตั้งชื่อเอง (hand-created) ต้องอยู่ใต้ **scope folder** (`libs/<scope>/`) หรือ **`packages/<env>/`** — **`libs/<name>` แบน = สงวนให้ generator** (`ui-`/`api-`/`common-functions` จาก `new-functions.sh`)
-- **release** ของ `packages/` = **changesets** (scaffold ไว้แล้ว: `.changeset/` + `@changesets/cli`) → `pnpm changeset` ประกาศ bump ต่อ package แล้ว `changeset version` + publish
-
----
 ## Global Packages
-คือ Package ที่สร้างไว้ใน Global Workspace สำหรับ เอาไว้ Share การใช้งาน ในหลายๆ System Workspace · **`packages/` ใน System Workspace ที่ publish (`access: public`) = candidate ย้ายขึ้นมาเป็น Global Package ที่นี่** (ดู [libs vs packages](#libs-vs-packages) ด้านบน)
+คือ Package ที่สร้างไว้ใน Global Workspace สำหรับ เอาไว้ Share การใช้งาน ในหลายๆ System Workspace
 
 ### ui-common
 เป็น Project ที่ เก็บ Common-Component เช่น DataTable,Dropdown เป็นต็น , Generic Custom-hook อย่างเช่น useDebounce และ Theme
@@ -478,10 +425,10 @@ bash workspace-generator/script-generator/new-uicommon.sh gu-example-system
 ```
 
 ### ui-function, api-functions, common-functions
-เป็น Project ที่เก็บ pure function ที่ share ให้ System Workspace อื่นเอาไปใช้ — **แกนที่ตัดสินว่าเป็น ui / api / common = "ตั้งใจให้ระบบฝั่งไหนเอาไปใช้" (intent) ไม่ใช่ "เขียนด้วย builtin อะไร" (capability)** · capability เป็นแค่ *ข้อจำกัดที่ตามมา*:
-- **ui-functions** — ตั้งใจให้ฝั่ง **frontend (browser)** ใช้ → จึง import browser builtin ได้ (window, localStorage)
-- **api-functions** — ตั้งใจให้ฝั่ง **backend (nodejs)** ใช้ → จึง import node builtin ได้ (path, os, fs) · ⚠️ ของที่ **backend-only โดยเจตนา** (เช่นถือ private key / client secret) = api-functions เสมอ แม้โค้ดจะ universal (ไม่แตะ node builtin เลย) เพราะ intent คือ backend — ตั้งเป็น common = เชิญให้ถูก import เข้า frontend bundle (secret รั่ว)
-- **common-functions** — ตั้งใจให้ **ทั้งสองฝั่ง (frontend + backend)** ใช้ → ต้อง universal จริง (ห้ามผูก builtin ฝั่งใดฝั่งหนึ่ง) · ⚠️ "universal ทางเทคนิค" ≠ "ควรเป็น common": ถ้า intent คือฝั่งเดียว ให้เป็น ui / api ตามฝั่งนั้น
+เป็น Project ที่เก็บ แต่ pure function ที่เอาไว้ใช้ ให้ Project อื่นๆ นำไปใช้งาน โดย
+- **ui-functions** คือ project ที่มีการใช้ builtin ของ browser เช่น window,localstorage เป็นต้น
+- **api-functions** คือ project ที่มีการใช้ builtin ของ nodejs เช่น path,os,fs เป็นต้น
+- **common-functions** คือ project ที่รันไ้ด้ทั้ง ใน  browser และ nodejs environment
 
 ตัวอย่าง การสร้าง api-function และ ui-functions
 ```bash
