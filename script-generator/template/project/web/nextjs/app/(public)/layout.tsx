@@ -2,26 +2,19 @@ import React from 'react';
 import '../globals.css';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
-import { cookies } from 'next/headers';
+import { routing } from '../../i18n/routing';
 
-
-export default async function LocaleLayout({
+// non-localed public group → provide the default-locale messages so useTranslations works.
+// <html>/<body> live in the ROOT layout only (same reason as app/[locale]/layout.tsx).
+export default async function PublicLayout({
   children,
-  params: { locale },
 }: Readonly<{
   children: React.ReactNode;
-  params: { locale: string };
-}>) {
+}>): Promise<React.JSX.Element> {
   const messages = await getMessages();
-  const cookieStore = cookies();
-  const lang = cookieStore.get('NEXT_LOCALE')?.value;
   return (
-    <html lang={locale ?? lang}>
-      <body>
-        <NextIntlClientProvider messages={messages}>
-          {children}
-        </NextIntlClientProvider>
-      </body>
-    </html>
+    <NextIntlClientProvider locale={routing.defaultLocale} messages={messages}>
+      {children}
+    </NextIntlClientProvider>
   );
 }
