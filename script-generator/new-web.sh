@@ -5,7 +5,18 @@
 WORKSPACE_DIR=$1
 PROJECT_NAME=$2
 GENERATOR_DIR=$3
+# MODE = รูปแบบ deploy ของ Next app: standalone (server) | static (output:'export')
+# ⚠️ อยู่ที่ $4 โดยตั้งใจ — $3 เป็น GENERATOR_DIR มาแต่เดิม แทรกตรงนั้นจะพัง caller เก่าทั้งหมด
+# default = standalone (คงพฤติกรรมเดิมของ v1.6.x เป๊ะ)
+MODE=${4:-standalone}
 SYSTEM_DIR='node-app'
+
+if [[ "$MODE" != "standalone" && "$MODE" != "static" ]]; then
+    echo "ERROR: mode ต้องเป็น 'standalone' หรือ 'static' (ได้: '$MODE')"
+    echo "usage: new-web.sh <workspace-dir> <project-name> [generator-dir] [standalone|static]"
+    exit 1
+fi
+echo "MODE => $MODE"
 
 
 
@@ -41,8 +52,29 @@ mkdir -p $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/apps/$PROJECT_NAME/nextjs
 
 
 
-cp -r $GENERATOR_DIR/script-generator/template/project/web/nextjs/* $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/apps/$PROJECT_NAME/nextjs/
-cp -r $GENERATOR_DIR/script-generator/template/project/web/nextjs/.env.example $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/apps/$PROJECT_NAME/nextjs/.env.development
+APP_DIR=$WORKSPACE_DIR/workspaces/$SYSTEM_DIR/apps/$PROJECT_NAME/nextjs
+WEB_TEMPLATE=$GENERATOR_DIR/script-generator/template/project/web
+
+# ใช้ "/." ไม่ใช่ "/*" — glob ไม่หยิบ dotfiles (.gitignore ของ template จะหาย)
+cp -r $WEB_TEMPLATE/nextjs/. $APP_DIR/
+cp -r $WEB_TEMPLATE/nextjs/.env.example $APP_DIR/.env.development
+
+# ── mode: เลือกชุดไฟล์ให้สอดคล้องกันทั้งชุด ตั้งแต่ตอน gen ──────────────────────────
+# mode ไม่ได้เปลี่ยนแค่ next.config.mjs — มันเปลี่ยน layout / i18n / การมี middleware พร้อมกัน
+# การทิ้ง next-config-mjs-{static,standalone} ไว้ให้ผู้ใช้ copy เอง = แก้ให้แค่ 1 ใน 4 ไฟล์ที่ต้องเปลี่ยน
+if [[ "$MODE" == "static" ]]; then
+    echo "mode=static → output:'export' (SPA เสิร์ฟด้วย web server ธรรมดา)"
+    cp $APP_DIR/next-config-mjs-static $APP_DIR/next.config.mjs
+    # static export ไม่มี server runtime → middleware ไม่ถูกเรียก (next build จะเตือน/พัง)
+    rm -f $APP_DIR/middleware.ts
+    # layout + i18n + messages ฉบับ static (ไม่มี getMessages()/cookies()/requestLocale ที่พึ่ง request)
+    cp -r $WEB_TEMPLATE/nextjs-static-overlay/. $APP_DIR/
+else
+    echo "mode=standalone → output:'standalone' (Next server)"
+    cp $APP_DIR/next-config-mjs-standalone $APP_DIR/next.config.mjs
+fi
+# ต้นฉบับทั้งสองแบบไม่ต้องติดไปกับโปรเจกต์ที่ gen แล้ว (เลือกไปแล้วตั้งแต่บรรทัดบน)
+rm -f $APP_DIR/next-config-mjs-static $APP_DIR/next-config-mjs-standalone
 
 cd $WORKSPACE_DIR/workspaces/$SYSTEM_DIR/apps/$PROJECT_NAME/nextjs
 # Search and replace in all files under web directory

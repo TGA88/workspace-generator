@@ -64,7 +64,8 @@ migrate/
 | **→ 1.5.1** | `migration-v1.5.1.sh` | re-sync generic infra (verify Dockerfiles + `tools/` + conventions) | (นี่ = แค่เรียก `lib/sync-infra.sh`) |
 | **→ 1.5.2** | `migration-v1.5.2.sh` | ship `WORKSPACE.md` (operational cheat sheet + ลิงก์ Developer Handbook) · **force-sync ผ่าน `lib/sync-infra`** (generator-owned · ไม่ชน README ของโปรเจกต์) | — |
 | **→ 1.6.0** | `migration-v1.6.0.sh` | frontend loop alignment (tools ใหม่/ที่แก้ ผ่าน `sync-infra`) **+ `packages/` taxonomy** — patch `pnpm-workspace.yaml` + root globs ที่ `sync-infra` จงใจไม่แตะ | [migration-v1.6.md](./migration-v1.6.md) |
-| _→ 1.7.0_ | _(ออกเมื่อมีรุ่นใหม่ — เพิ่มไฟล์ `migration-v1.7.0.sh`)_ | — | — |
+| **→ 1.7.0** | `migration-v1.7.0.sh` | **no-op โดยตั้งใจ** — release แตะเฉพาะ template ตอน gen + `new-web.sh` (ไม่ถูก copy เข้า workspace) ⇒ workspace เดิมไม่ต้องแก้อะไร · **ไม่เรียก `sync-infra`** เพราะไม่มีไฟล์ generator-owned เปลี่ยนสักตัว | [migration-v1.7.md](./migration-v1.7.md) |
+| _→ 1.8.0_ | _(ออกเมื่อมีรุ่นใหม่ — เพิ่มไฟล์ `migration-v1.8.0.sh`)_ | — | — |
 
 > driver ค้นไฟล์ `migration-v*` เอง เรียงด้วย semver — **เพิ่มไฟล์ = เพิ่ม rung** (ไม่ต้องแก้ driver)
 

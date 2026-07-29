@@ -11,6 +11,40 @@
 
 _(ยังไม่มี — รุ่นถัดไปเริ่มจดที่นี่)_
 
+## [1.7.0] — 2026-07-29
+
+> ที่มา: dogfood `ws-scaffold-web` ตอน auth-portal **P-PW.5c** (ตั้ง base ที่ 2 = `admin-portal`) — พบว่าการแปลง
+> Next app เป็น **static export** ต้องแก้มือ **7 จุดเดิมซ้ำทุกครั้ง** (auth-portal ทำไปแล้วรอบหนึ่งตอน P-PW.0
+> แต่ไม่เคยยกกลับเข้า template) ⇒ base ที่ 3 ก็จะทำซ้ำอีก
+
+### Added
+- **`new-web.sh` เลือก deploy mode ได้ตอน gen** — `new-web.sh <ws> <project> [generator-dir] [standalone|static]`
+  - **default `standalone`** = พฤติกรรมเดิมของ v1.6.x **ไม่เปลี่ยน** · mode ผิด → fail พร้อม usage (exit 1)
+  - **mode อยู่ที่ `$4` โดยตั้งใจ** — `$3` เป็น `GENERATOR_DIR` มาแต่เดิม แทรกตรงนั้นจะพัง caller เก่าทุกตัว
+  - `static` → `output:'export'` + ลบ `middleware.ts` + วาง overlay ฉบับ static ให้ครบชุด
+  - เหตุผลที่ต้องทำที่ generator ไม่ใช่ปล่อยให้ copy เอง: **mode เปลี่ยนพร้อมกัน 4 ไฟล์** (`next.config.mjs` ·
+    `app/[locale]/layout.tsx` · `app/(public)/layout.tsx` · `i18n/request.ts` + ต้องมี `messages/index.ts`
+    และต้อง**ไม่มี** `middleware.ts`) — การทิ้ง `next-config-mjs-{static,standalone}` ไว้ให้ copy แก้ให้แค่ 1 ใน 4
+- `template/project/web/nextjs-static-overlay/` — layout/i18n/messages ฉบับ static (ไม่มี `getMessages()`/
+  `cookies()`/`requestLocale` ที่พึ่ง request context ซึ่ง `output:'export'` ไม่มี)
+
+### Fixed
+- **layout ซ้อน `<html>`/`<body>` 3 ชั้น** (`app/layout.tsx` + `app/[locale]/layout.tsx` + `app/(public)/layout.tsx`
+  ต่าง render เอง) → เหลือเจ้าของเดียวที่ root · **ผิดทั้ง 2 mode ไม่ใช่เฉพาะ static**
+- `app/(public)/layout.tsx` ประกาศ `params.locale` ทั้งที่ route group นั้นไม่มี segment · ชื่อ fn ซ้ำ
+  `LocaleLayout` → `PublicLayout` · ตัด `cookies()` ที่อ่าน `NEXT_LOCALE` มาทับ locale ของ route param
+- root layout `title: 'Smart Prescription'` (ชื่อโปรเจกต์อื่นค้างใน template) → placeholder `'App'` + TODO
+- **`new-web.sh` ทำ `.gitignore` ของ template หาย** — `cp -r .../nextjs/*` (glob ไม่หยิบ dotfile) →
+  `cp -r .../nextjs/.` · เดิมมี workaround copy `.env.example` แยกบรรทัดเฉพาะไฟล์นั้น
+- ต้นฉบับ `next-config-mjs-{static,standalone}` ไม่ติดไปกับโปรเจกต์ที่ gen แล้ว (เลือก mode ไปแล้วตั้งแต่ต้น)
+- เติม explicit return type ให้ layout ทุกตัว (arm lint ของ adopter บังคับ)
+
+### Migration
+- `migration-v1.7.0.sh` = **no-op โดยตั้งใจ** — release นี้แตะเฉพาะ template ที่ใช้ตอน gen + `new-web.sh`
+  ซึ่งไม่ถูก copy เข้า workspace ⇒ ไม่มีอะไรใน workspace เดิมต้องแก้ · **ไม่เรียก `sync-infra`**
+  (ไม่มีไฟล์ generator-owned เปลี่ยนสักตัว — เรียกไปมีแต่ความเสี่ยงทับ customization ของ repo)
+- แอปที่แปลง static ด้วยมือไปแล้วก่อน v1.7.0 **ยังถูกต้อง** — v1.7.0 ทำให้แอป *ตัวถัดไป* ไม่ต้องทำซ้ำ
+
 ## [1.6.0] — 2026-07-28
 **Frontend loop alignment (harvest จาก auth-portal P-PW.3) + `packages/` taxonomy**
 
