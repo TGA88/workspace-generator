@@ -160,10 +160,17 @@ bash workspace-generator/script-generator/init-system.sh gu-example-system node-
 **หลังจาก สร้างมาแล้วก่อน สั่ง run ให้สั่ง build ก่อน 1ครั้ง เพื่อติดตั้ง libs ที่เกี่ยวข้อง**
 ตัวอย่างการ generate project type storybook-host
 ```bash
-# สำหรับ clone ไปใช้ให้ วาง folderไว้ ระดับเดียวกับที่ต้องการ สร้าง workspace
+# new-storybook.sh <workspace-dir> <host-name> [generator-dir] [lib-scope]
+# lib-scope = โฟลเดอร์ใต้ libs/ ที่ host นี้ครอบ · ไม่ระบุ = <host-name>-lib
 bash workspace-generator/script-generator/new-storybook.sh gu-example-system example
 
+# lib อยู่ที่อื่น (เช่น default `shared-web` ของ new-frontend-lib-modules.sh) → ส่ง $4
+bash workspace-generator/script-generator/new-storybook.sh gu-example-system example "" shared-web
 ```
+
+> ⚠️ **host หนึ่งตัว = base เดียว** — `stories` ใน `.storybook/main.ts` คือ SSOT ว่า host นี้ครอบ lib ไหน
+> (`update_storybookhost_alias.sh` อ่าน alias จากตรงนั้น) · เขียนเป็น `libs/**` = ครอบทุก base
+> ⇒ `test-storybook` จะเขียวด้วย story ของ base อื่นโดยไม่มีอะไรเตือน (v1.7.1)
 
 ### Update
 ตัวอย่างการ update project storybook-host เพื่อ update reference lib feature
@@ -172,6 +179,9 @@ bash workspace-generator/script-generator/new-storybook.sh gu-example-system exa
 bash workspace-generator/script-generator/update-sb.sh gu-example-system example
 
 ```
+
+> ตัวนี้ = wrapper บาง ๆ ของ `workspaces/node-app/tools/update_storybookhost_alias.sh`
+> (ใน workspace เรียกผ่าน `pnpm update:storybook_alias` ที่ host ได้เลย) — implementation เดียวทั้งสองทาง
 
 ### การ Trigger Release Storybook Project ใน pipeline
 

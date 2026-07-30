@@ -5,6 +5,9 @@
 #   · verify ด้วย **nx scripts ของ repo** (lint/test:backend-libs · lint/test:backend-apps) — ตรง pipeline จริงที่ใช้ nx
 #     (ต่างจาก Dockerfile.verify-backend ที่ใช้ pnpm --filter แค่ **คำสั่ง verify** — ที่เหลือเหมือนกัน · default = pnpm variant)
 #   · prisma client มากับ pnpm install (store-prisma postinstall) · build fail = lint/tsc/test พัง (เขียว = CMD echo ✅)
+#   · ⚠️ **OOM knob ของไฟล์นี้ไม่ใช่ตัวเดียวกับ Dockerfile.verify-backend** — step lint/test วิ่งผ่าน nx run-many
+#     ⇒ ความขนานอยู่ที่ `nx --parallel` (ตั้งใน nx.json / script ของ repo) **ไม่ใช่** `pnpm --workspace-concurrency`
+#     v1.7.1 pin ให้เฉพาะ step ที่เป็น pnpm recursive จริง (prisma:generate) · เจอ exit 137 ที่ lint/test → ลด `--parallel`
 # ⚠️ verify image ของ **stack เดียว** (node-app) · workspace แบบ multi-stack (dotnet-app/springboot-app) แต่ละ stack มี verify ของตัวเอง (คนละ toolchain)
 # ต่างจาก `make api-test` (black-box: compose ยก DB+API จริงแล้วยิง HTTP) — คนละ layer แต่ทั้งคู่ = local==CI
 # build context = workspaces/node-app (reuse .dockerignore กัน host artifacts)
@@ -20,7 +23,7 @@ COPY . ./
 
 RUN pnpm install --no-frozen-lockfile
 # insurance เผื่อ data-store ที่ generate ไม่ผ่าน postinstall (--if-present = ข้าม package ที่ไม่มี script)
-RUN pnpm -r --if-present run prisma:generate
+RUN pnpm -r --workspace-concurrency=1 --if-present run prisma:generate
 
 # ---- verify ด้วย nx run-many (repo scripts): backend libs (lint+test) · backend apps (lint+test) ----
 RUN NX_DAEMON=false pnpm run lint:backend-libs && NX_DAEMON=false pnpm run test:backend-libs
