@@ -5,6 +5,11 @@
 #   · เลือก package ด้วย pnpm --filter glob (ตรงกับ build:backend-libs/backend-apps) — robust สุด ไม่พึ่ง nx project-graph
 #     (ต่างจาก Dockerfile.verify-nx-backend ที่ใช้ nx run-many แค่ **คำสั่ง verify** — ที่เหลือเหมือนกัน)
 #   · prisma client มากับ pnpm install (store-prisma postinstall) · build fail = lint/tsc/test พัง (เขียว = CMD echo ✅)
+#   · **`--workspace-concurrency=1` ทุก step ที่รันสคริปต์ของ package (v1.7.1)** — pnpm default = ขนานตามจำนวน core
+#     ⇒ tsc/jest หลายตัวพร้อมกันในคอนเทนเนอร์ที่ RAM จำกัด → OOM (**exit 137**) ซึ่งอ่านเหมือน "เทสตก" ทั้งที่โค้ดไม่ผิด
+#     auth-portal เจอซ้ำจน pin ไว้เองใน repo แต่ไฟล์นี้เป็น generator-owned (lib/sync-infra.sh) ⇒ โดนทับทุก migration
+#     ⇒ promote เข้า template ตรงนี้ (ทุก repo ได้ประโยชน์ · ดีกว่ารายชื่อ opt-out ที่ต้องมาไล่ดูแลทีหลัง)
+#     ช้าลงบ้างแต่ verify ที่ **แดงเพราะ RAM** แพงกว่ามาก — เพิ่มเมื่อรู้ว่าเครื่อง/CI มี RAM พอ
 # ⚠️ verify image ของ **stack เดียว** (node-app) · workspace แบบ multi-stack (dotnet-app/springboot-app) แต่ละ stack มี verify ของตัวเอง (คนละ toolchain)
 # ต่างจาก `make api-test` (black-box: compose ยก DB+API จริงแล้วยิง HTTP) — คนละ layer แต่ทั้งคู่ = local==CI
 # build context = workspaces/node-app (reuse .dockerignore กัน host artifacts)
@@ -20,14 +25,14 @@ COPY . ./
 
 RUN pnpm install --no-frozen-lockfile
 # insurance เผื่อ data-store ที่ generate ไม่ผ่าน postinstall (--if-present = ข้าม package ที่ไม่มี script)
-RUN pnpm -r --if-present run prisma:generate
+RUN pnpm -r --workspace-concurrency=1 --if-present run prisma:generate
 
 # ---- verify backend libs (lint = tsc+eslint · + unit test) — glob ตรงกับ build:backend-libs ----
 # ⚠️ exclude app patterns: `*api-*` จับ **webapi** (demo-shop-web`api-`mcs) ด้วย → กันไว้ ไม่งั้น libs test เผลอรัน app jest (ติด coverage gate)
-RUN pnpm --filter "*api-*" --filter "*-data-store*" --filter "*common-functions*" --filter "!*webapi*" --filter "!*webpub*" --filter "!*websub*" --filter "!*webio*" --if-present run lint
-RUN pnpm --filter "*api-*" --filter "*-data-store*" --filter "*common-functions*" --filter "!*webapi*" --filter "!*webpub*" --filter "!*websub*" --filter "!*webio*" --if-present run test
+RUN pnpm --filter "*api-*" --filter "*-data-store*" --filter "*common-functions*" --filter "!*webapi*" --filter "!*webpub*" --filter "!*websub*" --filter "!*webio*" --workspace-concurrency=1 --if-present run lint
+RUN pnpm --filter "*api-*" --filter "*-data-store*" --filter "*common-functions*" --filter "!*webapi*" --filter "!*webpub*" --filter "!*websub*" --filter "!*webio*" --workspace-concurrency=1 --if-present run test
 # ---- verify backend apps (lint + unit test) — glob ตรงกับ build:backend-apps ----
-RUN pnpm --filter "*webapi*" --filter "*webpub*" --filter "*websub*" --filter "*webio*" --if-present run lint
-RUN pnpm --filter "*webapi*" --filter "*webpub*" --filter "*websub*" --filter "*webio*" --if-present run test
+RUN pnpm --filter "*webapi*" --filter "*webpub*" --filter "*websub*" --filter "*webio*" --workspace-concurrency=1 --if-present run lint
+RUN pnpm --filter "*webapi*" --filter "*webpub*" --filter "*websub*" --filter "*webio*" --workspace-concurrency=1 --if-present run test
 
 CMD ["echo", "✅ node-app backend: libs + apps lint+test passed (pnpm --filter)"]

@@ -11,6 +11,54 @@
 
 _(ยังไม่มี — รุ่นถัดไปเริ่มจดที่นี่)_
 
+## [1.7.1] — 2026-07-30
+
+> ที่มา: retro `web-skill-dogfood-3-rounds` ของ auth-portal (P-PW.5d) — **`test-storybook` ของ host
+> `admin-portal` เขียวทั้งที่ `libs/admin-portal-lib` ยังว่างเปล่า** เพราะรัน story ของ `portal-lib`
+> · repo แก้ `stories` glob เองได้ แต่ `pnpm update:storybook_alias` เขียน alias ข้าม base กลับมา
+> ทุกครั้ง เพราะ `tools/` = generator-owned ⇒ ต้องแก้ที่ต้นทาง
+
+### Fixed
+
+- **`tools/update_storybookhost_alias.sh` ไม่เคยใช้ `$2` (base) ในการ filter** — `find "$LIBS_PATH" …`
+  สแกน `libs/` ทั้งก้อน ⇒ host ของทุก base ได้ alias ของทุก base · ตัวใหม่ derive scan root จาก
+  **`stories` ของ host เอง** = `stories` เป็น SSOT ตัวเดียวของ "host นี้ครอบ lib ไหน"
+  (แก้ glob ที่เดียว alias ตามทันที · host เก่าที่ยังเป็น `libs/**` ได้พฤติกรรมเดิมเป๊ะ)
+- **alias ข้าม base ที่ถูกเขียนไปแล้วล้างไม่ออก** — เกณฑ์ preserve เดิมคือ `grep -v "feature-"`
+  ⇒ `@ui-*` ของ base อื่นถูกนับเป็น "ของเดิมที่ต้องเก็บ" แล้วรอดทุกรอบ · เปลี่ยนเป็น `@(feature|ui)-`
+- **`tools/update_alias_path.sh` ลบ alias `@` / `@root` ที่ template ใส่มาเอง** — template ↔ tool
+  ขัดกันมาตลอด · owner เคาะ: **template เป็นเจ้าของ** ⇒ tool preserve entry ที่ไม่ใช่ sub-module
+  (ยังล้าง `@feature-*` / `@ui-*` ที่ dir หายไปแล้วเหมือนเดิม)
+- **`script-generator/update-sb.sh` เป็นสำเนาทั้งดุ้นของ tool ตัวเดียวกัน และ drift ไปแล้ว**
+  (ค้างที่ `ui-*-lib`/`ui-components`/`ui-common` ขณะที่ตัวใน `tools/` เป็น `ui-*`) → เหลือ
+  implementation เดียว ตัวนี้กลายเป็น thin wrapper
+- **`new-storybook.sh` เรียก alias tool *ก่อน* sed แทนที่ token** ⇒ อ่าน glob ต้นแบบที่ยังเป็น
+  `example` → ย้ายไปเรียกหลัง sed (ของเดิมไม่มีผลเพราะ tool สแกน `libs/` ทั้งก้อนอยู่แล้ว)
+
+### Added
+
+- **`new-storybook.sh <ws> <host> [gen-dir] [lib-scope]`** — `lib-scope` = โฟลเดอร์ใต้ `libs/` ที่ host
+  ครอบ · default `<host>-lib` · อยู่ที่ `$4` เหมือน mode ของ `new-web.sh` ($3 = `GENERATOR_DIR` มาแต่เดิม)
+- **template `storybook-host/.storybook/main.ts` emit glob ที่ scope ตาม base ตั้งแต่ scaffold**
+  (`libs/example-lib/**` → sed เป็น `libs/<lib-scope>/**`) แทน `libs/**`
+- **`--workspace-concurrency=1` ใน `Dockerfile.verify-backend` / `-nx-backend` ของ template** —
+  promote จาก auth-portal ที่ pin เองมาตลอดเพราะ OOM (exit 137) อ่านเหมือน "เทสตก"
+  · ไฟล์นี้เป็น generator-owned (`lib/sync-infra.sh`) ⇒ ของ repo โดนทับทุก migration
+  · **เลือก promote เข้า template** แทน opt-out list (ทุก repo ได้ประโยชน์ · ไม่ต้องไล่ดูแลรายชื่อ)
+- `migration-v1.7.1.sh` + ladder row + [docs/migration-v1.7.md](./docs/migration-v1.7.md) §v1.7.1
+
+### Migration notes
+
+- **ไม่เรียก `lib/sync-infra.sh`** — มัน copy `Dockerfile.verify-backend` ทับทั้งไฟล์ ซึ่งจะลบ
+  deviation ของ adopter (auth-portal แยก fe/be เป็น `Dockerfile.verify-frontend` ที่ template ยังไม่มี)
+  ⇒ migration **patch เฉพาะ flag** ที่ต้องเติม · บรรทัดอื่นไม่ขยับ · idempotent
+- **หลัง migrate ต้องรัน `pnpm update:storybook_alias` เองที่ host แต่ละตัว** เพื่อล้าง alias ข้าม base
+  ที่เขียนไว้แล้ว (migration ไม่รันให้ — ต้องใช้ npx/prettier ของ workspace)
+- host ที่ `stories` ยังเป็น `libs/**` → migration **รายงาน** ให้ แต่ไม่แก้ไฟล์ให้
+  ("ครอบทุก base" อาจเป็นเจตนาจริงของบาง workspace)
+- ⚠️ **หนี้ที่ยังไม่ปิด**: เรียก `sync-infra` ตรง ๆ ก็ยังทับ `Dockerfile.verify-backend` อยู่ดี ·
+  **fe/be split เข้า template = ยกไปคุยแยก** (template ยังไม่มี frontend arm มาตรฐาน — เป็นงานระดับ minor)
+
 ## [1.7.0] — 2026-07-29
 
 > ที่มา: dogfood `ws-scaffold-web` ตอน auth-portal **P-PW.5c** (ตั้ง base ที่ 2 = `admin-portal`) — พบว่าการแปลง
