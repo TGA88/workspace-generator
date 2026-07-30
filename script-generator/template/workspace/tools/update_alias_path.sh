@@ -73,11 +73,39 @@ function findBlock(src, keyPattern) {
   return { indent: m[1], open, close: i - 1 }; // close = index ของ '}' ที่ปิด
 }
 
-/** แทนที่เฉพาะเนื้อในบล็อก `key: { … }` — ของนอกบล็อกไม่ขยับสักตัว */
-function replaceBlock(file, keyPattern, innerLines, opts = {}) {
+// ── v1.7.1: เก็บ entry ที่ "ไม่ใช่ของที่ tool นี้ดูแล" ไว้ ──────────────────────────
+// ของเดิมแทนที่ทั้งบล็อก ⇒ alias `@` / `@root` ที่ **template ใส่มาเอง** หายทุกครั้งที่รัน
+// (template ↔ tool ขัดกัน — owner เคาะ: template เป็นเจ้าของ ⇒ tool ต้องไม่ลบ)
+// managed = ชื่อ package + sub-module เท่านั้น · ที่เหลือ = ของคนอื่น ห้ามแตะ
+function foreignEntries(src, block, managed) {
+  const out = [];
+  for (const raw of src.slice(block.open, block.close).split('\n')) {
+    const line = raw.trim();
+    if (!line) continue;
+    if (line.startsWith('//') || line.startsWith('/*') || line.startsWith('*')) continue;
+    if (line.startsWith('...')) continue; // spread ของ base config — ตัวสร้างใส่เองอยู่แล้ว
+    const m = line.match(/^['"]?\^?@([A-Za-z0-9._-]*)/);
+    if (!m) continue;                          // อ่าน key ไม่ออก = ไม่เก็บ (กันสะสมขยะ)
+    const key = m[1];
+    if (managed.has(key)) continue;            // ของ tool เอง — เดี๋ยวสร้างใหม่
+    if (/^(feature|ui)-/.test(key)) continue;  // sub-module ที่ไม่มีอยู่แล้ว (ลบ/เปลี่ยนชื่อ) — ต้องหายไป
+    // ใส่ comma ที่ **ท้ายโค้ด** ไม่ใช่ท้ายบรรทัด (บรรทัดที่มี trailing comment จะได้ไม่เพี้ยน)
+    const ci = line.indexOf('//');
+    let code = ci >= 0 ? line.slice(0, ci).trimEnd() : line;
+    const comment = ci >= 0 ? ' ' + line.slice(ci) : '';
+    if (!code.endsWith(',')) code += ',';
+    out.push(code + comment);
+  }
+  return out;
+}
+
+/** แทนที่เฉพาะเนื้อในบล็อก `key: { … }` — ของนอกบล็อกไม่ขยับสักตัว
+ *  build(foreign) → array ของบรรทัดที่จะเขียนลงบล็อก (foreign = entry เดิมที่ต้องเก็บไว้) */
+function replaceBlock(file, keyPattern, build, opts = {}) {
   if (!existsSync(file)) return 'skip';
   const src = readFileSync(file, 'utf8');
   const block = findBlock(src, keyPattern);
+  const innerLines = build(block ? foreignEntries(src, block, opts.managed || new Set()) : []);
   const body = innerLines.map((l) => `  ${l}`).join('\n');
 
   if (block) {
@@ -112,26 +140,32 @@ function report(file, key, outcome) {
 }
 
 // ── สร้างเนื้อของแต่ละบล็อกจาก sub-module list ──
-const tsPaths = [
+// managed = key ที่ tool นี้เป็นเจ้าของ (สร้างใหม่ทุกรอบ) · นอกเหนือจากนี้ = ของ template/repo → เก็บไว้
+const managed = new Set([pkg, ...subs]);
+
+const tsPaths = (foreign) => [
+  ...foreign,
   `"@${pkg}/*": ["./lib/*"],`,
   ...subs.map((s) => `"@${s}/*": ["./lib/${s}/*"],`),
 ];
-const jestMappers = [
+const jestMappers = (foreign) => [
   // ต้อง spread base ไว้ตัวแรกเสมอ ไม่งั้น react-pin/css mapper ของ base หาย → jest พัง
   '...(baseConfig.moduleNameMapper || {}),',
+  ...foreign,
   `'^@${pkg}/(.*)$': '<rootDir>/lib/$1',`,
   ...subs.map((s) => `'^@${s}/(.*)$': '<rootDir>/lib/${s}/$1',`),
 ];
-const viteAliases = [
+const viteAliases = (foreign) => [
+  ...foreign,
   `'@${pkg}': resolve(__dirname, './lib'),`,
   ...subs.map((s) => `'@${s}': resolve(__dirname, './lib/${s}'),`),
 ];
 
 for (const f of ['tsconfig.json', 'tsconfig.build.json']) {
-  report(f, '"paths"', replaceBlock(f, '"paths"', tsPaths, { anchor: '"compilerOptions"', key: '"paths"' }));
+  report(f, '"paths"', replaceBlock(f, '"paths"', tsPaths, { anchor: '"compilerOptions"', key: '"paths"', managed }));
 }
-report('jest.config.ts', 'moduleNameMapper', replaceBlock('jest.config.ts', 'moduleNameMapper', jestMappers));
-report('vite.config.ts', 'alias', replaceBlock('vite.config.ts', 'alias', viteAliases));
+report('jest.config.ts', 'moduleNameMapper', replaceBlock('jest.config.ts', 'moduleNameMapper', jestMappers, { managed }));
+report('vite.config.ts', 'alias', replaceBlock('vite.config.ts', 'alias', viteAliases, { managed }));
 PATCHER_EOF
 
 # ไฟล์ไหน fail (บล็อกหาย) patcher จะรายงานแล้วคืน 1 — แต่ไฟล์ที่สำเร็จต้องได้จัดรูปด้วย

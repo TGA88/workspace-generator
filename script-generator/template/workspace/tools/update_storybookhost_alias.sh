@@ -1,6 +1,20 @@
 #!/bin/bash
 
-# script-generator/update-sb-config.sh
+# update_storybookhost_alias.sh <workspace-root> <storybook-host-name>
+#
+# เขียน alias ของ sub-module (feature-* · ui-*) ลง `.storybook/main.ts` + `tsconfig.json` ของ host
+#
+# v1.7.1 — **scope ตาม `stories` glob ของ host เอง** (เดิมสแกน `libs/` ทั้งก้อน ไม่สน `$2`)
+#   ของเดิม: `find "$LIBS_PATH" …` ⇒ host ของ base ใหม่ได้ alias ของ base เก่าติดมาทุกครั้งที่รัน
+#   เมื่อคู่กับ `stories` glob ที่ scaffold ออกมาเป็น `libs/**` = storybook เขียวด้วย story ของ base อื่น
+#   (false signal — auth-portal เจอจริงที่ P-PW.5d-1: `libs/admin-portal-lib` ว่างแต่ test-storybook เขียว)
+#
+#   ตัวใหม่ derive "จะสแกน lib ไหน" จาก **`stories` ของ host เอง** — ไม่ใช่ convention ชื่อ (proxy)
+#   เพราะ `stories` คือที่ที่ host ประกาศอยู่แล้วว่า "ฉันครอบ lib ไหน" ⇒ 2 กลไกอ่านจากที่เดียวกัน
+#   แก้ glob ที่เดียว alias ตามทันที · host เก่าที่ยังเป็น `libs/**` ได้พฤติกรรมเดิมเป๊ะ (backward-compatible)
+#
+# fail-closed: ไม่มี `stories` glob ที่ชี้เข้า `libs/` เลย = abort ไม่แตะไฟล์
+# (root ที่ประกาศไว้แต่ยังไม่มีจริง = ปกติของ host ที่เพิ่ง scaffold → เตือนแล้วไปต่อด้วย alias ว่าง)
 WORKSPACE_DIR=$1
 PROJECT_NAME=$2
 PROJECT_LAYER='storybook-host'
@@ -13,15 +27,113 @@ STORYBOOK_MAIN_PATH="$WORKSPACE_PATH/$PROJECT_LAYER/$PROJECT_NAME/.storybook/mai
 TSCONFIG_PATH="$WORKSPACE_PATH/$PROJECT_LAYER/$PROJECT_NAME/tsconfig.json"
 PROJECT_PATH="$WORKSPACE_PATH/$PROJECT_LAYER/$PROJECT_NAME"
 
+# SCAN_ROOTS/SCAN_DEPTHS = คู่ขนาน (root ตัวที่ i ใช้ maxdepth ตัวที่ i)
+SCAN_ROOTS=()
+SCAN_DEPTHS=()
+LIBS_ABS=""
+
+# normalize_path — ยุบ `.` / `..` แบบ lexical (ไม่ต้องมี dir จริง · ต่างจาก `cd && pwd`)
+normalize_path() {
+    local part out=()
+    while IFS= read -r part; do
+        case "$part" in
+            ''|'.') ;;
+            '..') [ ${#out[@]} -gt 0 ] && unset "out[$((${#out[@]}-1))]" ;;
+            *) out+=("$part") ;;
+        esac
+    done < <(printf '%s\n' "$1" | tr '/' '\n')
+    [ ${#out[@]} -eq 0 ] && { printf '/'; return; }
+    printf '/%s' "${out[@]}"
+}
+
+# derive_scan_roots — อ่าน `stories: [...]` ของ host แล้วแปลงเป็น dir ที่จะ find
+#   '../../../libs/portal-lib/**/feature-*/**/*.stories.@(…)'  →  <libs>/portal-lib   (maxdepth 2)
+#   '../../../libs/**/feature-*/**/*.stories.@(…)'             →  <libs>              (maxdepth 3 = เดิม)
+# maxdepth คิดจาก "ลึกจาก libs/ ได้ไม่เกิน 3" เท่าของเดิม → เซ็ต sub-module ที่จับได้ไม่เปลี่ยน
+derive_scan_roots() {
+    local sb_dir libs_abs raw g prefix part root rel depth d exists=0
+    sb_dir="$(cd "$(dirname "$STORYBOOK_MAIN_PATH")" && pwd)"
+    libs_abs="$(cd "$LIBS_PATH" && pwd)"
+    LIBS_ABS="$libs_abs"
+
+    # string literal ทุกตัวในบล็อก stories: [ … ]
+    raw=$(awk '/stories[[:space:]]*:[[:space:]]*\[/{f=1} f{print} f&&/\]/{exit}' "$STORYBOOK_MAIN_PATH" \
+          | grep -o "['\"][^'\"]*['\"]" | tr -d "\"'")
+
+    while IFS= read -r g; do
+        [ -z "$g" ] && continue
+        # prefix = ส่วนหน้าสุดที่ยังไม่มี wildcard (ไม่แตะ IFS ระดับ shell — split ด้วย tr แทน)
+        prefix=""
+        while IFS= read -r part; do
+            case "$part" in *[*?{@]*) break;; esac
+            prefix="${prefix:+$prefix/}$part"
+        done < <(printf '%s\n' "$g" | tr '/' '\n')
+        [ -z "$prefix" ] && continue
+
+        # normalize แบบ lexical ก่อน — ต้องตัดสิน "เล็งมาที่ libs/ ไหม" ให้ได้แม้ dir ยังไม่มีจริง
+        # (ไม่งั้น glob ที่ชี้ออกนอก libs/ จะถูกนับเป็น 'ยังไม่ scaffold' แล้วรอดเส้น fail-closed ไป)
+        root="$(normalize_path "$sb_dir/$prefix")"
+        case "$root" in
+            "$libs_abs"|"$libs_abs"/*) ;;
+            *) continue;;   # glob ที่ไม่ได้ชี้เข้า libs/ (เช่น ../stories ของ host เอง) — ไม่เกี่ยวกับ alias
+        esac
+        exists=1            # เป็น glob ที่เล็ง libs/ จริง = host ประกาศ scope มาแล้ว
+        if [ ! -d "$root" ]; then
+            echo "  · stories ชี้ไปที่ '$prefix' ซึ่งยังไม่มีจริง (host เพิ่ง scaffold?) — ข้าม"
+            continue
+        fi
+
+        # depth ที่เหลือ = 3 - (ระดับที่ root ลึกจาก libs/)
+        rel="${root#"$libs_abs"}"; rel="${rel#/}"
+        depth=3
+        if [ -n "$rel" ]; then
+            d=$(printf '%s' "$rel" | tr '/' '\n' | grep -c .)
+            depth=$((3 - d))
+        fi
+        [ "$depth" -lt 1 ] && depth=1
+
+        # dedup: ข้ามถ้ามี root เดิมที่ครอบตัวนี้อยู่แล้ว
+        local seen=0 i
+        for i in "${!SCAN_ROOTS[@]}"; do
+            case "$root" in "${SCAN_ROOTS[$i]}"|"${SCAN_ROOTS[$i]}"/*) seen=1; break;; esac
+        done
+        [ "$seen" = 1 ] && continue
+
+        SCAN_ROOTS+=("$root")
+        SCAN_DEPTHS+=("$depth")
+    done <<< "$raw"
+
+    if [ "$exists" = 0 ]; then
+        echo "Error: หา stories glob ที่ชี้เข้า libs/ ไม่เจอใน $STORYBOOK_MAIN_PATH" >&2
+        echo "  host ต้องประกาศว่าครอบ lib ไหน เช่น:  '../../../libs/${PROJECT_NAME}-lib/**/feature-*/**/*.stories.@(js|jsx|ts|tsx)'" >&2
+        echo "  (alias ถูก derive จาก stories เพื่อไม่ให้ 2 กลไกขัดกัน — ดูหัวไฟล์)" >&2
+        exit 1
+    fi
+    echo "Scan roots (จาก stories ของ host): ${SCAN_ROOTS[*]:-(ยังไม่มี lib)}"
+}
+
+# scan_submodule_dirs — ไล่ทุก scan root (คนละ maxdepth) แล้วพ่น path ของ sub-module
+scan_submodule_dirs() {
+    local i
+    for i in "${!SCAN_ROOTS[@]}"; do
+        find "${SCAN_ROOTS[$i]}" -maxdepth "${SCAN_DEPTHS[$i]}" -type d \
+            \( -name "feature-*" -o -name "ui-*" \) \
+            -not -path "*/dist/*" -not -path "*/node_modules/*"
+    done | sort -u
+}
+
 update_config_files() {
     local feature_dirs=()
     local alias_config=""
     local paths_config=""
 
     echo "Scaning features libs ..."
-    # เก็บค่า non-feature configs เดิม
-    local existing_aliases=$(sed -n '/resolve: {/,/}/p' "$STORYBOOK_MAIN_PATH" | grep '@' | grep -v "feature-")
-    local existing_paths=$(sed -n '/"paths": {/,/}/p' "$TSCONFIG_PATH" | grep '@' | grep -v "feature-")
+    # เก็บค่า config เดิมที่ "ไม่ใช่ sub-module" ไว้ (เช่น '@' · '@root' ที่ template ใส่มา)
+    # ⚠️ v1.7.1: ต้องตัด **ทั้ง @feature-* และ @ui-*** ไม่ใช่แค่ feature-
+    #   ของเดิมกรองแค่ "feature-" ⇒ `@ui-*` ของ base อื่นที่เคยถูกเขียนไว้จะถูกนับเป็น "ของเดิมที่ต้องเก็บ"
+    #   แล้วรอดข้ามรอบไปตลอด (แม้ scan จะ scope ถูกแล้ว) — pollution ที่เขียนไปแล้วต้องล้างออกได้ด้วย
+    local existing_aliases=$(sed -n '/resolve: {/,/}/p' "$STORYBOOK_MAIN_PATH" | grep '@' | grep -Ev "@(feature|ui)-")
+    local existing_paths=$(sed -n '/"paths": {/,/}/p' "$TSCONFIG_PATH" | grep '@' | grep -Ev "@(feature|ui)-")
 
 
 
@@ -31,7 +143,8 @@ update_config_files() {
     while IFS= read -r dir; do
         feature_name=$(basename "$dir")
         feature_dirs+=("$feature_name")
-        feature_path=${dir#*libs/}
+        # ตัดด้วย $LIBS_ABS ที่รู้จริง ไม่ใช่ `#*libs/` (path เครื่องที่มีคำว่า libs/ อยู่ก่อนหน้าจะตัดผิด)
+        feature_path=${dir#"$LIBS_ABS"/}
         
         if [ -f "$dir/package.json" ]; then
         # ถ้าเป็น feature_name project level ให้อ้างถึง folder lib 
@@ -51,7 +164,8 @@ update_config_files() {
         # paths_config+="      \"@${feature_name}/*\": [\"../../libs/${feature_name}/${suffix_path}*\"],"
     # จับทุก sub-module ที่ขึ้นต้น feature- หรือ ui- (ครอบ ui-components, ui-functions, ui-state-<vendor>, ui-*-lib, ui-common)
     # ของเดิม list เฉพาะ ui-components/ui-common/ui-*-lib ทำให้ ui-functions, ui-state-redux ฯลฯ ไม่ได้ alias -> story ที่ import จากมันใน storybook พัง
-    done < <(find "$LIBS_PATH" -maxdepth 3 -type d  \( -name "feature-*"  -o -name "ui-*" \) -not -path "*/dist/*" -not -path "*/node_modules/*")
+    # v1.7.1: สแกนเฉพาะ root ที่ derive มาจาก `stories` ของ host (ไม่ใช่ `libs/` ทั้งก้อน) — ดูหัวไฟล์
+    done < <(scan_submodule_dirs)
   
 
   # check dup tsconfig paths with existing paths
@@ -240,4 +354,5 @@ fi
 
 npx prettier --write  $TSCONFIG_PATH
 npx prettier --write  $STORYBOOK_MAIN_PATH
+derive_scan_roots      # ต้องมาก่อน — update_config_files สแกนจาก SCAN_ROOTS ที่ตัวนี้ตั้ง
 update_config_files
